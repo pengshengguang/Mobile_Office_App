@@ -76,5 +76,25 @@ router.get('/', (req, res, next) => {
     }
   })
 })
+// // 加入购物车
+// router.get('/addCart', (req, res, next) => {
+//   let userId = '100000077'
+//   let User = require('../models/user')
+//
+//   User.findOne({userId: userId}, (err, userDoc) => {
+//     if (err) {
+//       res.json({
+//         status: '1',
+//         msg: err.message
+//       })
+//     } else {
+//       console.log('userDoc:' + userDoc)
+//       if (userDoc) {
+//
+//       }
+//     }
+//   })
+//   res.send('test')
+// })
 
 module.exports = router
