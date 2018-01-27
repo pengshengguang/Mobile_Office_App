@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="goodsList-wrapper">
     <nav-header></nav-header>
     <nav-bread>
       <span slot="two">goods</span>
@@ -17,9 +17,9 @@
           <div class="filter stopPop" id="filter" :class="{'filterby-show': filterBy}">
             <dl class="filter-price">
               <dt>Price:</dt>
-              <dd><a href="javascript:void(0)" :class="{'cur': priceChecked === 'all'}" @click="priceChecked = 'all'">All</a></dd>
+              <dd><a href="javascript:void(0)" :class="{'cur': priceLevel === 'all'}" @click="setPriceFilter('all')">All</a></dd>
               <dd v-for="(price,index) in priceFiter" @click="setPriceFilter(index)">
-                <a href="javascript:void(0)" :class="{'cur': priceChecked === index}">{{price.startPrice}} - {{price.endPrice}}</a>
+                <a href="javascript:void(0)" :class="{'cur': priceLevel === index}">{{price.startPrice}} - {{price.endPrice}}</a>
               </dd>
             </dl>
           </div>
@@ -41,6 +41,10 @@
                   </div>
                 </li>
               </ul>
+              <!--加载更多插件-->
+              <div class="load-more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+                <img src="./../assets/loading-spinning-bubbles.svg" v-show="loading">
+              </div>
             </div>
           </div>
         </div>
@@ -48,15 +52,13 @@
     </div>
     <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
     <nav-footer></nav-footer>
-    <!--加载更多插件-->
-    <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10"></div>
   </div>
 </template>
 <script>
   import NavHeader from '@/components/NavHeader'
   import NavFooter from '@/components/NavFooter'
   import NavBread from '@/components/NavBread'
-  import axios from 'axios'
+//  import axios from 'axios'
   import Httpservice from '@/services/HttpService'
 
   export default {
@@ -78,14 +80,15 @@
             endPrice: '2000.00'
           }
         ],
-        priceChecked: 'all',
+        priceLevel: 'all', // 商品价格区间标识
         filterBy: false,
         overLayFlag: false,
         sortFlag: true, // 排序标志，默认升序
         page: 1,
         pageSize: 8,
         // 加载更多属性
-        busy: true// 无线滚动禁用
+        busy: true, // 无线滚动禁用
+        loading: true
       }
     },
     components: {
@@ -94,12 +97,12 @@
       NavBread
     },
     mounted () {
-      axios.get('/api/goods').then(res => {
-        console.log('axios异步请求成功了！')
-        console.log(res.data)
-        this.goodsList = res.data.data
-        console.log(this.goodsList)
-      })
+//      axios.get('/api/goods').then(res => {
+//        console.log('axios异步请求成功了！')
+//        console.log(res.data)
+//        this.goodsList = res.data.data
+//        console.log(this.goodsList)
+//      })
       this.getGoodsList()
     },
     methods: {
@@ -108,8 +111,10 @@
         this.overLayFlag = true
       },
       setPriceFilter (index) {
-        this.priceChecked = index
+        this.priceLevel = index
         this.closePop()
+        this.page = 1
+        this.getGoodsList()
       },
       closePop () {
         this.filterBy = false
@@ -120,9 +125,12 @@
         let param = {
           page: this.page,
           pageSize: this.pageSize,
-          sort: this.sortFlag ? 1 : -1
+          sort: this.sortFlag ? 1 : -1,
+          priceLevel: this.priceLevel
         }
+        this.loading = true
         this.http.get('/goods', {params: param}).then((response) => {
+          this.loading = false
           let res = response.data
           if (res.status === '0') {
             // flag === true，证明是第二次或第二次以上加载数据了
@@ -156,7 +164,7 @@
         setTimeout(() => {
           this.page++
           this.getGoodsList(true) // 调用获取商品的接口
-        }, 500)
+        }, 10)
       }
     }
   }
@@ -166,6 +174,11 @@
     border: 1px solid #f16f75;
     .ddd{
       font-size: 50px;
+    }
+  }
+  .goodsList-wrapper{
+    .load-more{
+      text-align: center;
     }
   }
 </style>

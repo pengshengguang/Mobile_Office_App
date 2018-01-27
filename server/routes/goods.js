@@ -19,12 +19,42 @@ mongoose.connection.on('disconnected', () => {
 
 // 查询商品列表数据
 router.get('/', (req, res, next) => {
+  let params = {} // 查询参数
   // 接受前端传来的参数
   let page = parseInt(req.param('page'))
   let pageSize = parseInt(req.param('pageSize'))
   let sort = req.param('sort')
   let skip = (page - 1) * pageSize
-  let params = {}
+  // 过滤金额区间
+  let priceLevel = req.param('priceLevel')
+  let priceGt = 0 // 大于最小值
+  let priceLte = 0 // 小于等于最大值
+  if (priceLevel !== 'all') {
+    switch (priceLevel) {
+      case '0':
+        priceGt = 0
+        priceLte = 500
+        break
+      case '1':
+        priceGt = 500
+        priceLte = 1000
+        break
+      case '2':
+        priceGt = 1000
+        priceLte = 2000
+        break
+      default:
+        priceGt = 0
+        priceLte = 100
+        break
+    }
+    params = {
+      salePrice: {
+        $gt: priceGt,
+        $lte: priceLte
+      }
+    }
+  }
   let goodsModel = Goods.find(params).skip(skip).limit(pageSize)
   // mongodb提供的api
   goodsModel.sort({'salePrice': sort})
