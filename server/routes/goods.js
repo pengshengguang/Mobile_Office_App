@@ -20,7 +20,7 @@ mongoose.connection.on('disconnected', () => {
 // 查询商品列表数据
 router.get('/', (req, res, next) => {
   let params = {} // 查询参数
-  // 接受前端传来的参数
+  // 接受前端传来的参数 h
   let page = parseInt(req.param('page'))
   let pageSize = parseInt(req.param('pageSize'))
   let sort = req.param('sort')
