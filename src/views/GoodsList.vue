@@ -2,7 +2,7 @@
   <div>
     <nav-header></nav-header>
     <nav-bread>
-      <span slot="two">aaa</span>
+      <span slot="two">goods</span>
     </nav-bread>
     <div class="accessory-result-page accessory-page">
       <div class="container">
@@ -146,6 +146,7 @@
       },
       // 商品排序
       sortGoods () {
+        this.page = 1
         this.sortFlag = !this.sortFlag
         this.getGoodsList()
       },
@@ -155,7 +156,7 @@
         setTimeout(() => {
           this.page++
           this.getGoodsList(true) // 调用获取商品的接口
-        }, 1)
+        }, 500)
       }
     }
   }
