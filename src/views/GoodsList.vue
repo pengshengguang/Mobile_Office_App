@@ -135,6 +135,7 @@
                 this.busy = false // 无线滚动禁止 取消
               }
             } else { // 第一次加载数据
+              this.page = 1
               this.goodsList = res.result.list
               this.busy = false // 无线滚动禁止 取消
             }
