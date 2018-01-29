@@ -35,7 +35,7 @@
                   <div class="main">
                     <div class="name">{{item.productName}}</div>
                     <div class="price">{{item.salePrice}}</div>
-                    <div class="btn-area">
+                    <div class="btn-area" @click="addCart(item.productId)">
                       <a href="javascript:;" class="btn btn--m">加入购物车</a>
                     </div>
                   </div>
@@ -165,6 +165,16 @@
           this.page++
           this.getGoodsList(true) // 调用获取商品的接口
         }, 10)
+      },
+      // 加入购物车
+      addCart (proId) {
+        this.http.post('/goods/addCart', {productId: proId}).then((res) => {
+          if (res.status === 0) {
+            console.log('加入购物车成功！')
+          } else {
+            console.log('接口调取失败！')
+          }
+        })
       }
     }
   }

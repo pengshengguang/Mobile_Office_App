@@ -4,8 +4,8 @@ let port = 3000
 let host = '://localhost:' + port
 let baseURL = 'http' + host
 let axiosConfig = {
-  baseURL,
-  timeout: 1000
+  baseURL
+  // timeout: 2000
 }
 
 let instanceTmp = axios.create(axiosConfig)
