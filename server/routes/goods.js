@@ -82,6 +82,7 @@ router.post('/addCart', (req, res, next) => {
   let productId = req.body.productId
   let User = require('../models/user')
 
+  // 根据userId获取当前用户信息
   User.findOne({userId: userId}, (err, userDoc) => {
     if (err) {
       res.json({
@@ -89,27 +90,29 @@ router.post('/addCart', (req, res, next) => {
         msg: err.message
       })
     } else {
-      console.log('成功获取用户信息')
-      console.log('userDoc:' + userDoc)
       if (userDoc) {
-        Goods.findOne({productId: productId}, (err1, doc1) => {
+        // 根据productId获取当前商品信息
+        Goods.findOne({productId: productId}, (err1, productDoc) => {
           if (err1) {
             res.json({
               status: '1',
               msg: err.message
             })
           } else {
-            if (doc1) {
-              doc1.productNum = 1
-              doc1.checked = 1
-              userDoc.cartList.push(doc1)
-              User.save((err2, doc2) => {
+            if (productDoc) {
+              productDoc.productNum = 1
+              productDoc.checked = 1
+              // 把商品加入到购物车
+              userDoc.cartList.push(productDoc)
+              // 用户数据库保存
+              userDoc.save((err2, doc2) => {
                 if (err2) {
                   res.json({
                     status: '1',
                     msg: err.message
                   })
                 } else {
+                  // 加入购物车成功，数据已保存
                   res.json({
                     status: '0',
                     msg: '',
