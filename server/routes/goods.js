@@ -100,7 +100,9 @@ router.post('/addCart', (req, res, next) => {
           }
         })
         if (goodsItem) {
-          userDoc.save((err2, doc2) => {
+          let conditions = {'cartList.productId': productId}
+          let update = {'cartList.$.productNum': goodsItem.productNum}
+          User.update(conditions, update, (err2) => {
             if (err2) {
               res.json({
                 status: '1',
@@ -110,8 +112,7 @@ router.post('/addCart', (req, res, next) => {
               res.json({
                 status: '0',
                 msg: '',
-                result: 'suc',
-                doc2: doc2
+                result: 'suc'
               })
             }
           })
