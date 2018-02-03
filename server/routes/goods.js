@@ -92,43 +92,60 @@ router.post('/addCart', (req, res, next) => {
       })
     } else {
       if (userDoc) {
-        // 根据productId获取当前商品信息
-        Goods.findOne({productId: productId}, (err1, productDoc) => {
-          if (err1) {
-            res.json({
-              status: '1',
-              msg: err.message
-            })
-          } else {
-            if (productDoc) {
-              productDoc._doc.productNum = 1
-              productDoc._doc.checked = 1
-              console.log('----------------------')
-              console.log(productDoc)
-              console.log('----------------------')
-              // 把商品加入到购物车
-              userDoc.cartList.push(productDoc)
-              // 用户数据库保存
-              userDoc.save((err2, doc2) => {
-                if (err2) {
-                  res.json({
-                    status: '1',
-                    msg: err2.message,
-                    doc2: doc2
-                  })
-                } else {
-                  // 加入购物车成功，数据已保存
-                  res.json({
-                    status: '0',
-                    msg: '',
-                    result: 'suc',
-                    doc2: doc2
-                  })
-                }
-              })
-            }
+        let goodsItem = ''
+        userDoc.cartList.forEach((item) => {
+          if (item.productId === productId) {
+            goodsItem = item
+            item.productNum ++
           }
         })
+        if (goodsItem) {
+          userDoc.save((err2, doc2) => {
+            if (err2) {
+              res.json({
+                status: '1',
+                msg: err2.message
+              })
+            } else {
+              res.json({
+                status: '0',
+                msg: '',
+                result: 'suc',
+                doc2: doc2
+              })
+            }
+          })
+        } else {
+          Goods.findOne({productId: productId}, (err1, doc) => {
+            if (err1) {
+              res.json({
+                status: '1',
+                msg: err1.message
+              })
+            } else {
+              if (doc) {
+                doc._doc.productNum = 1
+                doc._doc.checked = 1
+                userDoc.cartList.push(doc)
+                userDoc.save((err2, doc2) => {
+                  if (err2) {
+                    res.json({
+                      status: '1',
+                      msg: err2.message
+                    })
+                  } else {
+                    res.json({
+                      status: '0',
+                      msg: '',
+                      result: 'suc',
+                      doc2: doc2
+                    })
+                  }
+                })
+              }
+            }
+          })
+        }
       }
     }
   })
