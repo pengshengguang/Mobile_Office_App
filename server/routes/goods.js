@@ -80,6 +80,7 @@ router.get('/', (req, res, next) => {
 router.post('/addCart', (req, res, next) => {
   let userId = '100000077'
   let productId = req.body.productId
+  // 通过模型来执行数据库更新的aip
   let User = require('../models/user')
 
   // 根据userId获取当前用户信息
@@ -100,8 +101,11 @@ router.post('/addCart', (req, res, next) => {
             })
           } else {
             if (productDoc) {
-              productDoc.productNum = 1
-              productDoc.checked = 1
+              productDoc._doc.productNum = 1
+              productDoc._doc.checked = 1
+              console.log('----------------------')
+              console.log(productDoc)
+              console.log('----------------------')
               // 把商品加入到购物车
               userDoc.cartList.push(productDoc)
               // 用户数据库保存
@@ -109,14 +113,16 @@ router.post('/addCart', (req, res, next) => {
                 if (err2) {
                   res.json({
                     status: '1',
-                    msg: err.message
+                    msg: err2.message,
+                    doc2: doc2
                   })
                 } else {
                   // 加入购物车成功，数据已保存
                   res.json({
                     status: '0',
                     msg: '',
-                    result: 'suc'
+                    result: 'suc',
+                    doc2: doc2
                   })
                 }
               })

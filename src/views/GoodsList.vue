@@ -169,7 +169,7 @@
       // 加入购物车
       addCart (proId) {
         this.http.post('/goods/addCart', {productId: proId}).then((res) => {
-          if (res.status === 0) {
+          if (res.status === 0 || res.status === 200) {
             console.log('加入购物车成功！')
           } else {
             console.log('接口调取失败！')
