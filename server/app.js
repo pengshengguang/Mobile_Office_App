@@ -2,8 +2,8 @@ var express = require('express')
 var path = require('path')
 // var favicon = require('serve-favicon') // 服务的一个icon
 var logger = require('morgan') // 日志文件，morgan就是对日志文件进行输出
-var cookieParser = require('cookie-parser')
-var bodyParser = require('body-parser')
+var cookieParser = require('cookie-parser') // 一个插件，专门做cookie处理的
+var bodyParser = require('body-parser') // 一个插件，对post请求进行json转换，获取我们post参数
 var ejs = require('ejs')
 
 var index = require('./routes/index')
