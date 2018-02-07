@@ -12,6 +12,7 @@ router.get('/test', function (req, res, next) {
   res.send('test')
 })
 
+/* 登陆 */
 router.post('/login', (req, res, next) => { // next 就是往后留着，什么都不处理，接着往后走
   let params = {
     userName: req.body.userName,
@@ -43,6 +44,47 @@ router.post('/login', (req, res, next) => { // next 就是往后留着，什么�
         res.json({
           status: '1',
           msg: '数据库没有该用户'
+        })
+      }
+    }
+  })
+})
+
+/* 登出 */
+router.post('/logout', (req, res, next) => {
+  res.cookie('userId', '', {
+    path: '/',
+    maxAge: -1 // 0 或者 -1都可以，让它失效
+  })
+  res.json({
+    status: '0',
+    msg: '',
+    result: ''
+  })
+})
+
+/* 查询当前用户购物车数据 */
+router.get('/cartList', (req, res, next) => {
+  let userId = req.cookies.userId
+  User.findOne({userId: userId}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (userDoc) {
+        res.json({
+          status: '0',
+          msg: '',
+          result: userDoc.cartList
+        })
+      } else {
+        res.json({
+          status: '1',
+          msg: '数据库无该用户',
+          result: ''
         })
       }
     }

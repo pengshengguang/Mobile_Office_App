@@ -19,7 +19,7 @@
           <span class="navbar-link"></span>
           <span v-text="nickName" v-if="nickName"></span>
           <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">Login</a>
-          <a href="javascript:void(0)" class="navbar-link" v-else>Logout</a>
+          <a href="javascript:void(0)" class="navbar-link" @click="logout" v-else>Logout</a>
           <div class="navbar-cart-container">
             <span class="navbar-cart-count"></span>
             <a class="navbar-link navbar-cart-link" href="/#/cart">
@@ -78,6 +78,7 @@
       }
     },
     methods: {
+      // 登陆
       login () {
         if (!this.userName || !this.userPwd) {
           this.errorTip = true
@@ -98,6 +99,19 @@
           } else {
             this.errorTip = true
             this.loginModalFlag = true
+            console.log('登陆失败！')
+          }
+        })
+      },
+      // 登出
+      logout () {
+        this.http.post('/users/logout').then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            this.nickName = ''
+            console.log('登出成功！')
+          } else {
+            console.log('登出失败！')
           }
         })
       }
