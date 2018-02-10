@@ -90,4 +90,21 @@ router.get('/cartList', (req, res, next) => {
     }
   })
 })
+
+/* 检查是否登陆 */
+router.get('/checkLogin', (req, res, nex) => {
+  if (req.cookies.userId) {
+    res.json({
+      status: '0',
+      msg: '',
+      result: req.cookies.userName || ''
+    })
+  } else {
+    res.json({
+      status: '1',
+      msg: '未登录',
+      result: ''
+    })
+  }
+})
 module.exports = router

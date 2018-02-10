@@ -73,9 +73,12 @@
         userName: '',
         userPwd: '',
         errorTip: false, // 错误提示
-        loginModalFlag: true, // 遮罩层闭关
+        loginModalFlag: false, // 遮罩层闭关
         nickName: '' // 用户姓名
       }
+    },
+    mounted () {
+//      this.checkLogin()
     },
     methods: {
       // 登陆
@@ -115,6 +118,20 @@
           }
         })
       }
+      // 检查是否登陆
+//      checkLogin () {
+//        this.http.get('/users/checkLogin').then((response) => {
+//          let res = response.data
+//          if (res.status === '0') {
+//            this.nickName = res.result
+//            this.loginModalFlag = false
+//          } else {
+//            if (this.$route.path !== '/goods') {
+//              this.$router.push('/goods')
+//            }
+//          }
+//        })
+//      }
     }
   }
 </script>
