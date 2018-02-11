@@ -115,4 +115,27 @@ router.get('/checkLogin', (req, res, next) => {
     })
   }
 })
+
+/* 删除购物车 */
+router.post('/delCart', (req, res, next) => {
+  // 从缓存获取用户id
+  let userId = req.cookies.userId
+  // post请求使用body获取参数
+  let productId = req.body.productId
+  User.update({userId: userId}, {$pull: {'cartList': {'productId': productId}}}, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: '删除失败'
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '删除成功',
+        result: ''
+      })
+    }
+  })
+})
 module.exports = router

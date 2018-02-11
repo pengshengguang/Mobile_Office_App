@@ -176,12 +176,19 @@
       },
       // 是否删除当前商品
       delCartConfirm (productId) {
-        console.log('123456')
         this.modalConfirm = true
+        this.productId = productId
       },
       // 删除当前商品
       delCart () {
-        console.log('123456')
+        this.http.post('/users/delCart', {productId: this.productId}).then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            this.modalConfirm = false
+            this.init()
+            console.log('删除商品成功！')
+          }
+        })
       },
       // 关闭模态框
       closeModal () {
