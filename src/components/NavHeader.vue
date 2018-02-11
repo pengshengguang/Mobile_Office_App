@@ -140,6 +140,7 @@
             // 把登陆状态传给父组件
             this.$emit('isLogin', '')
             // todo 这个if 条件还是有问题的
+            // 这里的拦截应该是对接口的拦截
             this.$router.push({
               name: 'GoodsList'
             })

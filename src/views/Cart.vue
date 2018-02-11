@@ -76,7 +76,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-2">
-                  <div class="item-price">{{item.salePrice|currency('$')}}</div>
+                  <div class="item-price">{{item.salePrice}}</div>
                 </div>
                 <div class="cart-tab-3">
                   <div class="item-quantity">
@@ -90,10 +90,10 @@
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">{{(item.productNum*item.salePrice)|currency('$')}}</div>
+                  <div class="item-price-total">{{(item.productNum*item.salePrice)}}</div>
                 </div>
                 <div class="cart-tab-5">
-                  <div class="cart-item-opration">
+                  <div class="cart-item-opration" @click="delCartConfirm(item.productId)">
                     <a href="javascript:;" class="item-edit-btn">
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del"></use>
@@ -129,6 +129,13 @@
         </div>
       </div>
     </div>
+    <modal :mdShow="modalConfirm" @close="closeModal">
+      <p slot="message">你确定要删除此条数据吗？</p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="delCart">确认</a>
+        <a class="btn btn--m" href="javascript:;" @click="modalConfirm = false">关闭</a>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -138,30 +145,47 @@
   import NavFooter from '@/components/NavFooter'
   import NavBread from '@/components/NavBread'
   import Httpservice from '@/services/HttpService'
+  import Modal from '@/components/Modal'
 
   export default {
     components: {
       NavHeader,
       NavFooter,
-      NavBread
+      NavBread,
+      Modal
     },
     data () {
       return {
         msg: 'hello',
         http: Httpservice.getAxios,
-        cartList: []
+        cartList: [],
+        modalConfirm: false // 删除的模态框
       }
     },
     mounted () {
       this.init()
     },
     methods: {
+      // 获取当前用户购物车信息
       init () {
         this.http.get('/users/cartList').then((response) => {
           let res = response.data
           this.cartList = res.result
           console.log(this.cartList)
         })
+      },
+      // 是否删除当前商品
+      delCartConfirm (productId) {
+        console.log('123456')
+        this.modalConfirm = true
+      },
+      // 删除当前商品
+      delCart () {
+        console.log('123456')
+      },
+      // 关闭模态框
+      closeModal () {
+        this.modalConfirm = false
       }
     }
   }

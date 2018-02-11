@@ -29,6 +29,9 @@
         msg: 'hello vue'
       }
     },
+    mounted () {
+      console.log(this.mdShow)
+    },
     methods: {
       closeModal () {
         this.$emit('close')
