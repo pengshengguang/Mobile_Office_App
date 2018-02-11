@@ -1,6 +1,6 @@
 <template>
   <div class="goodsList-wrapper">
-    <nav-header></nav-header>
+    <nav-header @isLogin="isLogin"></nav-header>
     <nav-bread>
       <span slot="two">goods</span>
     </nav-bread>
@@ -50,6 +50,26 @@
         </div>
       </div>
     </div>
+    <modal v-bind:mdShow="mdShow" v-on:close="closeModal">
+      <p slot="message">
+        请先登录,否则无法加入到购物车中!
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="mdShow = false">关闭</a>
+      </div>
+    </modal>
+    <modal :mdShow="mdShowCart" @close="closeModal">
+      <p slot="message">
+        <svg class="icon-status-ok">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-status-ok"></use>
+        </svg>
+        <span>加入购物车成功!</span>
+      </p>
+      <div slot="btnGroup">
+        <a class="btn btn--m" href="javascript:;" @click="mdShowCart = false">继续购物</a>
+        <router-link class="btn btn--m btn--red" href="javascript:;" to="/cart">查看购物车</router-link>
+      </div>
+    </modal>
     <div class="md-overlay" v-show="overLayFlag" @click="closePop"></div>
     <nav-footer></nav-footer>
   </div>
@@ -58,12 +78,20 @@
   import NavHeader from '@/components/NavHeader'
   import NavFooter from '@/components/NavFooter'
   import NavBread from '@/components/NavBread'
+  import Modal from './../components/Modal'
 //  import axios from 'axios'
   import Httpservice from '@/services/HttpService'
 
   export default {
+    components: {
+      NavHeader,
+      NavFooter,
+      NavBread,
+      Modal
+    },
     data () {
       return {
+        userName: '',
         http: Httpservice.getAxios,
         goodsList: [],
         priceFiter: [
@@ -88,13 +116,11 @@
         pageSize: 8,
         // 加载更多属性
         busy: true, // 无线滚动禁用
-        loading: true
+        loading: true,
+        // 购物车弹出窗口
+        mdShow: false,
+        mdShowCart: false
       }
-    },
-    components: {
-      NavHeader,
-      NavFooter,
-      NavBread
     },
     mounted () {
 //      axios.get('/api/goods').then(res => {
@@ -106,6 +132,9 @@
       this.getGoodsList()
     },
     methods: {
+      isLogin (flag) {
+        this.userName = flag
+      },
       showFilterPop () {
         this.filterBy = true
         this.overLayFlag = true
@@ -168,13 +197,23 @@
       },
       // 加入购物车
       addCart (proId) {
+        if (!this.userName) {
+          this.mdShow = true
+          return
+        }
         this.http.post('/goods/addCart', {productId: proId}).then((res) => {
           if (res.status === 0 || res.status === 200) {
+            this.mdShowCart = true
             console.log('加入购物车成功！')
           } else {
+            this.mdShow = true
             console.log('接口调取失败！')
           }
         })
+      },
+      closeModal () {
+        this.mdShow = false
+        this.mdShowCart = false
       }
     }
   }

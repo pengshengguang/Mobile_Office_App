@@ -97,6 +97,8 @@
             this.errorTip = false
             this.loginModalFlag = false
             this.nickName = res.result.userName
+            // 把登陆状态传给父组件
+            this.$emit('isLogin', this.nickName)
             console.log('登陆成功！')
             // to-do
           } else {
@@ -112,6 +114,8 @@
           let res = response.data
           if (res.status === '0') {
             this.nickName = ''
+            // 把登陆状态传给父组件
+            this.$emit('isLogin', '')
             console.log('登出成功！')
             // 返回商品展示页面
             this.$router.push({
@@ -130,12 +134,15 @@
           if (res.status === '0') {
             this.nickName = res.result
             this.loginModalFlag = false
+            // 把登陆状态传给父组件
+            this.$emit('isLogin', this.nickName)
           } else {
+            // 把登陆状态传给父组件
+            this.$emit('isLogin', '')
             // todo 这个if 条件还是有问题的
             this.$router.push({
               name: 'GoodsList'
             })
-            console.log('123')
           }
         })
       },
