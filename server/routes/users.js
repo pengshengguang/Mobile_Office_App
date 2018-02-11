@@ -31,6 +31,10 @@ router.post('/login', (req, res, next) => { // next 就是往后留着，什么�
           path: '/', // 把cookie写入服务器的根路径下（放到域名里面去，而不是子域名）
           maxAge: 1000 * 60 * 60 // cookie周期
         })
+        res.cookie('userName', userDoc.userName, {
+          path: '/', // 把cookie写入服务器的根路径下（放到域名里面去，而不是子域名）
+          maxAge: 1000 * 60 * 60 // cookie周期
+        })
         // 把用户信息存到session里面去，注意，session是放在请求req里面去的。
         // req.session.user = userDoc
         res.json({
@@ -92,12 +96,12 @@ router.get('/cartList', (req, res, next) => {
 })
 
 /* 检查是否登陆 */
-router.get('/checkLogin', (req, res, nex) => {
+router.get('/checkLogin', (req, res, next) => {
   if (req.cookies.userId) {
     res.json({
       status: '0',
       msg: '',
-      result: req.cookies.userName || ''
+      result: req.cookies.userName || '你还没起名字'
     })
   } else {
     res.json({

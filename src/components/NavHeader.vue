@@ -78,7 +78,7 @@
       }
     },
     mounted () {
-//      this.checkLogin()
+      this.checkLogin()
     },
     methods: {
       // 登陆
@@ -117,21 +117,23 @@
             console.log('登出失败！')
           }
         })
-      }
+      },
       // 检查是否登陆
-//      checkLogin () {
-//        this.http.get('/users/checkLogin').then((response) => {
-//          let res = response.data
-//          if (res.status === '0') {
-//            this.nickName = res.result
-//            this.loginModalFlag = false
-//          } else {
-//            if (this.$route.path !== '/goods') {
-//              this.$router.push('/goods')
-//            }
-//          }
-//        })
-//      }
+      checkLogin () {
+        this.http.get('/users/checkLogin').then((response) => {
+          let res = response.data
+          console.log(res)
+          if (res.status === '0') {
+            this.nickName = res.result
+            this.loginModalFlag = false
+          } else {
+            // todo 这个if 条件还是有问题的
+            if (this.$route.path !== '/goods') {
+              this.$router.push('/')
+            }
+          }
+        })
+      }
     }
   }
 </script>
