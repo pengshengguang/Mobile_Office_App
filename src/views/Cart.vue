@@ -148,7 +148,7 @@
     data () {
       return {
         msg: 'hello',
-        http: Httpservice,
+        http: Httpservice.getAxios,
         cartList: []
       }
     },
@@ -160,6 +160,7 @@
         this.http.get('/users/cartList').then((response) => {
           let res = response.data
           this.cartList = res.result
+          console.log(this.cartList)
         })
       }
     }

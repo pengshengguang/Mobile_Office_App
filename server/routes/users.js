@@ -60,6 +60,10 @@ router.post('/logout', (req, res, next) => {
     path: '/',
     maxAge: -1 // 0 或者 -1都可以，让它失效
   })
+  res.cookie('userName', '', {
+    path: '/',
+    maxAge: -1 // 0 或者 -1都可以，让它失效
+  })
   res.json({
     status: '0',
     msg: '',
