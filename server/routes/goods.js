@@ -125,8 +125,11 @@ router.post('/addCart', (req, res, next) => {
               })
             } else {
               if (doc) {
-                doc._doc.productNum = 1
-                doc._doc.checked = 1
+                doc.productNum = 1
+                doc.checked = 1
+                // 下面这两行代码是，当productNum与checked这两个字段如果没有在schema定义的话,可以用加一层_doc来直接插入新的指端
+                // doc._doc.productNum = 1
+                // doc._doc.checked = 1
                 userDoc.cartList.push(doc)
                 userDoc.save((err2, doc2) => {
                   if (err2) {

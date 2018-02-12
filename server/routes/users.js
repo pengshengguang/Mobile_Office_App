@@ -138,4 +138,36 @@ router.post('/delCart', (req, res, next) => {
     }
   })
 })
+
+/* 编辑购物车商品数量 */
+router.post('/cartEdit', (req, res, next) => {
+  let userId = req.cookies.userId
+  let productId = req.body.productId
+  let productNum = req.body.productNum
+  let checked = req.body.checked
+  let conditions = {
+    'userId': userId,
+    'cartList.productId': productId
+  }
+  let update = {
+    'cartList.$.productNum': productNum,
+    'cartList.$.checked': checked
+  }
+  User.update(conditions, update, (err) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: '商品编辑失败'
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '商品编辑成功',
+        result: ''
+      })
+    }
+  })
+})
+
 module.exports = router
