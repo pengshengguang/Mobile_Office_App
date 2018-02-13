@@ -62,7 +62,7 @@
               <li v-for="item in cartList">
                 <div class="cart-tab-1">
                   <div class="cart-item-check">
-                    <a href="javascipt:;" class="checkbox-btn item-check-btn" v-bind:class="{'check':item.checked=='1'}" @click="editCart('checked', item)">
+                    <a class="checkbox-btn item-check-btn" v-bind:class="{'check':item.checked=='1'}" @click="editCart('checked', item)">
                       <svg class="icon icon-ok">
                         <use xlink:href="#icon-ok"></use>
                       </svg>
@@ -109,7 +109,7 @@
           <div class="cart-foot-inner">
             <div class="cart-foot-l">
               <div class="item-all-check">
-                <a href="javascipt:;">
+                <a @click="toggleCheckAll">
                   <span class="checkbox-btn item-check-btn" v-bind:class="{'check':true}">
                       <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                   </span>
@@ -165,13 +165,28 @@
     mounted () {
       this.init()
     },
+    computed: {
+      // 购物车商品勾选数量
+      checkedCount () {
+        let i = 0
+        this.cartList.forEach((item) => {
+          if (item.checked === '1') {
+            i++
+          }
+        })
+        return i
+      },
+      // 商品是否已经全选
+      checkAllFlag () {
+        return this.cartList.length === this.checkedCount
+      }
+    },
     methods: {
       // 获取当前用户购物车信息
       init () {
         this.http.get('/users/cartList').then((response) => {
           let res = response.data
           this.cartList = res.result
-          console.log(this.cartList)
         })
       },
       // 是否删除当前商品
@@ -210,7 +225,22 @@
         }).then((response) => {
           let res = response.data
           if (res.status === '0') {
-            console.log('修改商品数量成功')
+            console.log('编辑购物车商品成功！')
+          }
+        })
+      },
+      // 全选操作
+      toggleCheckAll () {
+        let flag = !this.checkAllFlag
+        this.cartList.forEach((item) => {
+          item.checked = flag ? '1' : '0'
+        })
+        this.http.post('/users/editCheckAll', {checkAll: flag}).then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            console.log('购物车全选操作成功！')
+          } else {
+            console.log('购物车全选操作失败！')
           }
         })
       },

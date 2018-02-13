@@ -170,4 +170,40 @@ router.post('/cartEdit', (req, res, next) => {
   })
 })
 
+/* 全选与否 */
+router.post('/editCheckAll', (req, res, next) => {
+  let userId = req.cookies.userId
+  let checkAll = req.body.checkAll ? '1' : '0'
+  User.findOne({userId: userId}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: '该用户不存在'
+      })
+    } else {
+      if (userDoc) {
+        userDoc.cartList.forEach((item) => {
+          item.checked = checkAll
+        })
+      }
+      userDoc.save((err1, doc1) => {
+        if (err1) {
+          res.json({
+            status: '1',
+            msg: err1.message,
+            result: ''
+          })
+        } else {
+          res.json({
+            status: '0',
+            msg: '全选按钮操作成功，数据库已更新',
+            result: 'suc'
+          })
+        }
+      })
+    }
+  })
+})
+
 module.exports = router
