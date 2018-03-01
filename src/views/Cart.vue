@@ -110,7 +110,7 @@
             <div class="cart-foot-l">
               <div class="item-all-check">
                 <a @click="toggleCheckAll">
-                  <span class="checkbox-btn item-check-btn" v-bind:class="{'check':true}">
+                  <span class="checkbox-btn item-check-btn" v-bind:class="{'check':checkAllFlag}">
                       <svg class="icon icon-ok"><use xlink:href="#icon-ok"/></svg>
                   </span>
                   <span>Select all</span>
@@ -119,10 +119,10 @@
             </div>
             <div class="cart-foot-r">
               <div class="item-total">
-                Item total: <span class="total-price"></span>
+                Item total: <span class="total-price">{{totalPrice}}</span>
               </div>
               <div class="btn-wrap">
-                <a class="btn btn--red" v-bind:class="{'btn--dis': true}">Checkout</a>
+                <a class="btn btn--red" v-bind:class="{'btn--dis': checkedCount === 0}">Checkout</a>
               </div>
             </div>
           </div>
@@ -179,6 +179,16 @@
       // 商品是否已经全选
       checkAllFlag () {
         return this.cartList.length === this.checkedCount
+      },
+      // 计算购物车选中商品总价格
+      totalPrice () {
+        let money = 0
+        this.cartList.forEach((item) => {
+          if (item.checked === '1') {
+            money += parseFloat(item.salePrice) * parseInt(item.productNum)
+          }
+        })
+        return money
       }
     },
     methods: {
