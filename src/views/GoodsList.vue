@@ -132,8 +132,8 @@
       this.getGoodsList()
     },
     methods: {
-      isLogin (flag) {
-        this.userName = flag
+      isLogin (userName) {
+        this.userName = userName
       },
       showFilterPop () {
         this.filterBy = true

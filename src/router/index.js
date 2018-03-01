@@ -6,6 +6,7 @@ import ScrollTab from '@/components/scrollTab'
 import questionnaire from '@/components/questionnaire/Questionnaire'
 import questionnaireDetails from '@/components/questionnaire/QuestionnaireDetails'
 import questionnaireResult from '@/components/questionnaire/QuestionnaireResult'
+import Address from '@/views/Address'
 
 Vue.use(Router)
 
@@ -20,6 +21,11 @@ export default new Router({
       path: '/cart',
       name: 'Cart',
       component: Cart
+    },
+    {
+      path: '/address',
+      name: 'Address',
+      component: Address
     },
     {
       path: '/scrollTab',
