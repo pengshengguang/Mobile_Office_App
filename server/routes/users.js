@@ -212,4 +212,25 @@ router.post('/editCheckAll', (req, res, next) => {
   })
 })
 
+/* 查询用户地址 */
+router.get('/addressList', (req, res, next) => {
+  let userId = req.cookies.userId
+  User.findOne({userId: userId}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: '查询用户地址失败'
+      })
+    } else {
+      if (userDoc) {
+        res.json({
+          status: '0',
+          msg: '',
+          result: userDoc.addressList
+        })
+      }
+    }
+  })
+})
 module.exports = router

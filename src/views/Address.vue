@@ -60,21 +60,21 @@
           <div class="addr-list-wrap">
             <div class="addr-list">
               <ul>
-                <li>
+                <li v-for="(item,index) in addressListFilter" v-bind:class="{'check': checkIndex === index}" @click="checkIndex = index"> <!--这是切换的常用伎俩，使用点击的当前索引与列表循环索引对比，确定当前选中框-->
                   <dl>
-                    <dt>XXX</dt>
-                    <dd class="address">朝阳公园</dd>
-                    <dd class="tel">10000000000</dd>
+                    <dt>{{item.userName}}</dt>
+                    <dd class="address">{{item.streetName}}</dd>
+                    <dd class="tel">{{item.tel}}</dd>
                   </dl>
                   <div class="addr-opration addr-del">
-                    <a href="javascript:;" class="addr-del-btn">
+                    <a href="javascript:;" class="addr-del-btn" @click="delAddressConfirm(item.addressId)">
                       <svg class="icon icon-del"><use xlink:href="#icon-del"></use></svg>
                     </a>
                   </div>
                   <div class="addr-opration addr-set-default">
-                    <a href="javascript:;" class="addr-set-default-btn"><i>Set default</i></a>
+                    <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault"><i>Set default</i></a>
                   </div>
-                  <div class="addr-opration addr-default">Default address</div>
+                  <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
                 </li>
                 <li class="addr-new">
                   <div class="add-new-inner">
@@ -88,7 +88,7 @@
             </div>
 
             <div class="shipping-addr-more">
-              <a class="addr-more-btn up-down-btn" href="javascript:;">
+              <a class="addr-more-btn up-down-btn" href="javascript:;" @click="expand" v-bind:class="{'open':limit>3}">
                 more
                 <i class="i-up-down">
                   <i class="i-up-down-l"></i>
@@ -101,9 +101,6 @@
           <!-- shipping method-->
           <div class="page-title-normal checkout-title">
             <h2><span>Shipping method</span></h2>
-          </div>
-          <div class="lemall-msg-info hidden">
-            <span>The region you selected is not within our delivery area. Please select another shipping address within our delivery areas.</span>
           </div>
           <div class="shipping-method-wrap">
             <div class="shipping-method">
@@ -119,7 +116,7 @@
             </div>
           </div>
           <div class="next-btn-wrap">
-            <a class="btn btn--m btn--red">Next</a>
+            <div class="btn btn--m btn--red" >Next</div>
           </div>
         </div>
       </div>
@@ -133,18 +130,52 @@
   import NavFooter from '@/components/NavFooter'
   import NavBread from '@/components/NavBread'
   import Modal from './../components/Modal'
+  import Httpservice from '@/services/HttpService'
 
   export default {
-    data () {
-      return {
-        msg: 'hello world'
-      }
-    },
     components: {
       NavHeader,
       NavFooter,
       NavBread,
       Modal
+    },
+    data () {
+      return {
+        http: Httpservice.getAxios,
+        addressList: [],  // 地址对象数组
+        limit: 3, // 初次展开地址的数量
+        checkIndex: 0 // 当前选中的地址下标
+      }
+    },
+    mounted () {
+      this.init()
+    },
+    computed: {
+      addressListFilter () {
+        return this.addressList.slice(0, this.limit)  // slice，从0位置开始截取，3个长度的元素
+      }
+    },
+    methods: {
+      // 获得当前用户的地址数组
+      init () {
+        this.http.get('/users/addressList').then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            this.addressList = res.result
+            console.log(this.addressList)
+          } else {
+            console.log(res.msg)
+          }
+        })
+      },
+      // 地址展开功能
+      expand () {
+        if (this.limit === 3) {
+          this.limit = this.addressList.length
+        } else {
+          this.limit = 3
+        }
+      }
     }
   }
 </script>
