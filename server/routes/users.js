@@ -195,10 +195,16 @@ router.post('/editCheckAll', (req, res, next) => {
             result: ''
           })
         } else {
+          let msg1 = ''
+          if (checkAll === '1') {
+            msg1 = '全选操作成功，数据库已更新'
+          } else {
+            msg1 = '全不选操作成功，数据库已更新'
+          }
           res.json({
             status: '0',
-            msg: '全选按钮操作成功，数据库已更新',
-            result: 'suc'
+            msg: msg1,
+            result: doc1
           })
         }
       })

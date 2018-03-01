@@ -238,9 +238,9 @@
         this.http.post('/users/editCheckAll', {checkAll: flag}).then((response) => {
           let res = response.data
           if (res.status === '0') {
-            console.log('购物车全选操作成功！')
+            console.log(res.msg)
           } else {
-            console.log('购物车全选操作失败！')
+            console.log(res.msg)
           }
         })
       },
