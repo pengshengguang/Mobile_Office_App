@@ -233,4 +233,73 @@ router.get('/addressList', (req, res, next) => {
     }
   })
 })
+
+/* 设置默认收货地址 */
+router.post('/setDefault', (req, res, next) => {
+  let userId = req.cookies.userId
+  let addressId = req.body.addressId
+  // 对addressId作一个判断,如果前端传过来的addressId为空，则报一下错误
+  if (!addressId) {
+    res.json({
+      status: '1',
+      msg: 'address is null',
+      result: ''
+    })
+  }
+  User.findOne({userId: userId}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (userDoc) {
+        let addressList = userDoc.addressList
+        addressList.forEach((item) => {
+          item.isDefault = false
+          if (item.addressId === addressId) {
+            item.isDefault = true
+          }
+        })
+      }
+      userDoc.save((err, doc) => {
+        if (err) {
+          res.json({
+            status: '1',
+            msg: err.message,
+            result: '设置默认地址失败'
+          })
+        } else {
+          res.json({
+            status: '0',
+            msg: '',
+            result: doc
+          })
+        }
+      })
+    }
+  })
+})
+
+/* 删除地址接口 */
+router.post('/delAddress', (req, res, next) => {
+  let userId = req.cookies.userId
+  let addressId = req.body.addressId
+  User.update({userId: userId}, {$pull: {'addressList': {'addressId': addressId}}}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,  // 这个错误是系统级别的错误，就是mongoose通过底层mongodb查询更新数据的时候，它能捕捉到这个错误，保存再message里面
+        result: '地址删除失败'
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: userDoc
+      })
+    }
+  })
+})
 module.exports = router

@@ -72,7 +72,7 @@
                     </a>
                   </div>
                   <div class="addr-opration addr-set-default">
-                    <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault"><i>Set default</i></a>
+                    <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault" @click="setDefault(item.addressId)"><i>Set default</i></a>
                   </div>
                   <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
                 </li>
@@ -121,6 +121,13 @@
         </div>
       </div>
     </div>
+    <modal :mdShow="isMdShow" @close="closeModal">
+      <p slot="message">Are you sure you want to delete this address?</p>
+      <div slot="btnGroup">
+        <a class='btn btn--m' href="javascript:" @click="delAddress">Confirm</a>
+        <a class='btn btn--m' href="javascript:" @click="isMdShow=false">Cancel</a>
+      </div>
+    </modal>
     <nav-footer></nav-footer>
   </div>
 </template>
@@ -144,7 +151,9 @@
         http: Httpservice.getAxios,
         addressList: [],  // 地址对象数组
         limit: 3, // 初次展开地址的数量
-        checkIndex: 0 // 当前选中的地址下标
+        checkIndex: 0, // 当前选中的地址下标
+        isMdShow: false, // 删除地址模态框
+        addressId: '' // 当前需要删除的地址ID
       }
     },
     mounted () {
@@ -175,6 +184,42 @@
         } else {
           this.limit = 3
         }
+      },
+      // 设置为默认的收获地址
+      setDefault (addressId) {
+        this.http.post('/users/setDefault', {addressId: addressId}).then((response) => {
+          let res = response.data
+          let user = res.result
+          if (res.status === '0') {
+            this.addressList = user.addressList
+            console.log('设置默认收货地址成功！')
+          } else {
+            console.log('设置默认收获地址失败！')
+          }
+        })
+      },
+      // 垃圾桶功能
+      delAddressConfirm (addressId) {
+        this.isMdShow = true
+        this.addressId = addressId
+      },
+      // 确定删除该地址功能
+      delAddress () {
+        this.http.post('/users/delAddress', {addressId: this.addressId}).then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            this.isMdShow = false
+            // 重新调用接口把地址数组取出来
+            this.init()
+            console.log('地址删除操作成功！')
+          } else {
+            console.log('地址删除操作失败！')
+          }
+        })
+      },
+      // 模态框子组件调用父组件closeModal方法,模态框里面有一个div是flexd定位，点击这个div，就关闭模态框
+      closeModal () {
+        this.isMdShow = false
       }
     }
   }
