@@ -97,7 +97,7 @@
               </a>
             </div>
           </div>
-  
+   
           <!-- shipping method-->
           <div class="page-title-normal checkout-title">
             <h2><span>Shipping method</span></h2>
