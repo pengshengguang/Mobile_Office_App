@@ -60,7 +60,7 @@
           <div class="addr-list-wrap">
             <div class="addr-list">
               <ul>
-                <li v-for="(item,index) in addressListFilter" v-bind:class="{'check': checkIndex === index}" @click="checkIndex = index"> <!--这是切换的常用伎俩，使用点击的当前索引与列表循环索引对比，确定当前选中框-->
+                <li v-for="(item,index) in addressListFilter" v-bind:class="{'check': checkIndex === index}" @click="checkIndex = index; selectedAddrId = item.addressId"> <!--这是切换的常用伎俩，使用点击的当前索引与列表循环索引对比，确定当前选中框-->
                   <dl>
                     <dt>{{item.userName}}</dt>
                     <dd class="address">{{item.streetName}}</dd>
@@ -116,7 +116,7 @@
             </div>
           </div>
           <div class="next-btn-wrap">
-            <div class="btn btn--m btn--red" >Next</div>
+            <router-link class="btn btn--m btn--red" v-bind:to="{path: 'orderConfirm', query:{'addressId': selectedAddrId}}">Next</router-link>
           </div>
         </div>
       </div>
@@ -153,7 +153,8 @@
         limit: 3, // 初次展开地址的数量
         checkIndex: 0, // 当前选中的地址下标
         isMdShow: false, // 删除地址模态框
-        addressId: '' // 当前需要删除的地址ID
+        addressId: '', // 当前需要删除的地址ID
+        selectedAddrId: '' // 当前选中的地址Id
       }
     },
     mounted () {
@@ -171,6 +172,8 @@
           let res = response.data
           if (res.status === '0') {
             this.addressList = res.result
+            // 初始化默认选中地址为地址数组的第一个
+            this.selectedAddrId = this.addressList[0].addressId
             console.log(this.addressList)
           } else {
             console.log(res.msg)
