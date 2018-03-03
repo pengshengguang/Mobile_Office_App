@@ -174,9 +174,18 @@
             this.addressList = res.result
             // 初始化默认选中地址为地址数组的第一个
             this.selectedAddrId = this.addressList[0].addressId
-            console.log(this.addressList)
+            // 加载默认地址Id
+            this.loadDefaultAddrId(this.addressList)
           } else {
             console.log(res.msg)
+          }
+        })
+      },
+      // 默认地址Id的加载
+      loadDefaultAddrId (array) {
+        array.forEach((item) => {
+          if (item.isDefault === true) {
+            this.selectedAddrId = item.addressId
           }
         })
       },
@@ -201,7 +210,7 @@
           }
         })
       },
-      // 垃圾桶功能
+      // 垃圾桶功能, 删除当前选中地址
       delAddressConfirm (addressId) {
         this.isMdShow = true
         this.addressId = addressId
