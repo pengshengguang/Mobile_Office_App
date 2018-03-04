@@ -1,5 +1,6 @@
 var express = require('express')
 var router = express.Router()
+require('./../../src/services/util')
 
 var User = require('./../models/user')
 /* GET users listing. */
@@ -302,4 +303,72 @@ router.post('/delAddress', (req, res, next) => {
     }
   })
 })
+
+/* 订单确认按钮功能 */
+router.post('/payment', (req, res, next) => {
+  let userId = req.cookies.userId
+  let addressId = req.body.addressId
+  let orderTotal = req.body.orderTotal
+  User.findOne({userId: userId}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      let address = '' // 收货地址
+      let goodsList = []// 订单商品集合
+      // 获取当前用户的收获地址
+      userDoc.addressList.forEach((item) => {
+        if (addressId === item.addressId) {
+          address = item
+        }
+      })
+      // 获取当前用户的订单商品集合
+      userDoc.cartList.forEach((item) => {
+        if (item.checked === '1') {
+          goodsList.push(item)
+        }
+      })
+      // 订单ID的拼凑
+      let platform = '622' // 系统平台，622代表当前系统架构的一个码
+      let r1 = Math.floor(Math.random() * 10) // 随机数1
+      let r2 = Math.floor(Math.random() * 10) // 随机数2
+      let sysDate = new Date().Format('yyyyMMddhhmmss') // 系统时间
+      let createDate = new Date().Format('yyyy-MM-dd hh:mm:ss')
+      let orderId = platform + r1 + sysDate + r2 // 订单ID为21位，这么复杂是为了让订单ID不重复，但也有重复的可能
+      // 整理订单信息
+      let order = {
+        orderId: orderId,
+        orderTotal: orderTotal,
+        addressInfo: address,
+        goodsList: goodsList,
+        orderState: '1',
+        createData: createDate
+      }
+      // 把订单信息插入到数据库
+      userDoc.orderList.push(order)
+      userDoc.save((err1, doc1) => {
+        if (err1) {
+          res.json({
+            status: '1',
+            msg: err1.message,
+            result: ''
+          })
+        } else {
+          res.json({
+            status: '0',
+            msg: '订单成功插入数据库',
+            result: {
+              orderId: order.orderId,
+              orderTotal: order.orderTotal
+            }
+          })
+        }
+      })
+    }
+  })
+})
+
 module.exports = router

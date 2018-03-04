@@ -185,7 +185,25 @@
         })
       },
       // 订单付款按钮
-      payment () {}
+      payment () {
+        // 获取默认收获地址
+        let addressId = this.$route.query.addressId
+        console.log(addressId)
+        this.http.post('/users/payment', {
+          addressId: addressId,
+          orderTotal: this.orderTotal
+        }).then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            console.log('order created suc.')
+            this.$router.push({
+              path: '/orderSuccess?orderId=' + res.result.orderId
+            })
+          } else {
+            console.log('order created fau')
+          }
+        })
+      }
 
     }
   }
