@@ -371,4 +371,51 @@ router.post('/payment', (req, res, next) => {
   })
 })
 
+/* 获取订单详情 */
+router.post('/orderDetail', (req, res, next) => {
+  let userId = req.cookies.userId
+  let orderId = req.body.orderId
+  User.findOne({userId: userId}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      let orderList = userDoc.orderList
+      if (orderList.length > 0) {
+        let orderTotal = 0
+        orderList.forEach((item) => {
+          if (item.orderId === orderId) {
+            orderTotal = item.orderTotal
+          }
+        })
+        if (orderTotal > 0) {
+          res.json({
+            status: '0',
+            msg: '',
+            result: {
+              orderId: orderId,
+              orderTotal: orderTotal
+            }
+          })
+        } else {
+          res.json({
+            status: '120001',
+            msg: '通过查询出来的orderList，然后匹配orderId,发现无此订单',
+            result: ''
+          })
+        }
+      } else {
+        res.json({
+          status: '120001',
+          msg: '当前用户未创建订单',
+          result: ''
+        })
+      }
+    }
+
+  })
+})
 module.exports = router

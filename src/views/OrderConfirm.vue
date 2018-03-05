@@ -196,6 +196,8 @@
           let res = response.data
           if (res.status === '0') {
             console.log('order created suc.')
+            // 获取路由参数是用$route
+            // 通过路由的跳转用$router
             this.$router.push({
               path: '/orderSuccess?orderId=' + res.result.orderId
             })
