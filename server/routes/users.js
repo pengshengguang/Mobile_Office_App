@@ -372,9 +372,10 @@ router.post('/payment', (req, res, next) => {
 })
 
 /* 获取订单详情 */
-router.post('/orderDetail', (req, res, next) => {
+router.get('/orderDetail', (req, res, next) => {
   let userId = req.cookies.userId
-  let orderId = req.body.orderId
+  // let orderId = req.body.orderId
+  let orderId = req.param('orderId')
   User.findOne({userId: userId}, (err, userDoc) => {
     if (err) {
       res.json({
@@ -415,7 +416,6 @@ router.post('/orderDetail', (req, res, next) => {
         })
       }
     }
-
   })
 })
 module.exports = router

@@ -24,14 +24,16 @@
           <h3>Congratulations! <br>Your order is under processing!</h3>
           <p>
             <span>Order ID：{{orderId}}</span>
-            <span>Order total：{{orderTotal}}</span>
+            <span>Order total：{{orderTotal | currency('$')}}</span>
           </p>
           <div class="order-create-btn-wrap">
             <div class="btn-l-wrap">
-              <a href="javascript:;" class="btn btn--m">Cart List</a>
+              <!--<a href="javascript:;" class="btn btn&#45;&#45;m">Cart List</a>-->
+              <router-link class="btn btn--m" to="/cart">Cart List</router-link>
             </div>
             <div class="btn-r-wrap">
-              <a href="javascript:;" class="btn btn--m">Goods List</a>
+              <!--<a href="javascript:;" class="btn btn&#45;&#45;m">Goods List</a>-->
+              <router-link class="btn btn--m" to="/">Goods List</router-link>
             </div>
           </div>
         </div>
@@ -46,6 +48,7 @@
   import NavBread from '@/components/NavBread'
   import Modal from './../components/Modal'
   import Httpservice from '@/services/HttpService'
+  import {currency} from '@/services/currency'
 
   export default {
     data () {
@@ -61,6 +64,9 @@
       NavBread,
       Modal
     },
+    filters: {
+      currency: currency
+    },
     mounted () {
       this.getOrderDetail()
     },
@@ -73,7 +79,11 @@
           return
           // 或者是提示框
         }
-        this.http.post('/users/orderDetail', {orderId: orderId}).then((response) => {
+        this.http.get('/users/orderDetail', {
+          params: {
+            orderId: orderId
+          }
+        }).then((response) => {
           let res = response.data
           if (res.status === '0') {
             this.orderId = orderId
