@@ -204,6 +204,7 @@
         this.http.post('/goods/addCart', {productId: proId}).then((res) => {
           if (res.status === 0 || res.status === 200) {
             this.mdShowCart = true
+            this.$store.commit('updateCartCount', 1)
             console.log('加入购物车成功！')
           } else {
             this.mdShow = true

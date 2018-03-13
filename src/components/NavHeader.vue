@@ -21,7 +21,7 @@
           <a href="javascript:void(0)" class="navbar-link" @click="loginModalFlag=true" v-if="!nickName">Login</a>
           <a href="javascript:void(0)" class="navbar-link" @click="logout" v-else>Logout</a>
           <div class="navbar-cart-container">
-            <span class="navbar-cart-count"></span>
+            <span class="navbar-cart-count" v-if="cartCount > 0 ">{{cartCount}}</span>
             <a class="navbar-link navbar-cart-link" href="/#/cart">
               <svg class="navbar-cart-logo">
                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-cart"></use>
@@ -83,6 +83,9 @@
     computed: {
       nickName () {
         return this.$store.state.nickName
+      },
+      cartCount () {
+        return this.$store.state.cartCount
       }
     },
     methods: {
@@ -105,6 +108,7 @@
             this.$store.commit('updateUserInfo', res.result.userName)
             // 把登陆状态传给父组件
             // this.$emit('isLogin', this.nickName)
+            this.getCartCount()
             console.log('登陆成功！')
             // to-do
           } else {
@@ -123,6 +127,8 @@
             // 把登陆状态传给父组件
             // this.$emit('isLogin', '')
             this.$store.commit('updateUserInfo', '')
+            // 把store里面的购物车数量更新为0个
+            this.$store.commit('updateCartCount', 0)
             console.log('登出成功！')
             // 返回商品展示页面
             this.$router.push({
@@ -137,16 +143,16 @@
       checkLogin () {
         this.http.get('/users/checkLogin').then((response) => {
           let res = response.data
-          console.log(res)
           if (res.status === '0') {
             // this.nickName = res.result
             this.$store.commit('updateUserInfo', res.result)
+            this.getCartCount()
             this.loginModalFlag = false
             // 把登陆状态传给父组件
             // this.$emit('isLogin', this.nickName)
           } else {
             // 把登陆状态传给父组件
-            this.$emit('isLogin', '')
+            // this.$emit('isLogin', '')
             // todo 这个if 条件还是有问题的
             // 这里的拦截应该是对接口的拦截
             this.$router.push({
@@ -159,6 +165,15 @@
       goToCart () {
         this.$router.push({
           name: 'Cart'
+        })
+      },
+      // 获取购物车数量
+      getCartCount () {
+        this.http.get('/users/getCartCount').then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            this.$store.commit('initCartCount', res.result)
+          }
         })
       }
     }

@@ -418,4 +418,31 @@ router.get('/orderDetail', (req, res, next) => {
     }
   })
 })
+
+/* 获取购物车数量 */
+router.get('/getCartCount', (req, res, next) => {
+  if (req.cookies && req.cookies.userId) {
+    let userId = req.cookies.userId
+    User.findOne({userId: userId}, (err, userDoc) => {
+      if (err) {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: ''
+        })
+      } else {
+        let cartList = userDoc.cartList
+        let cartCount = 0
+        cartList.map(item => {
+          cartCount += parseInt(item.productNum)
+        })
+        res.json({
+          status: '0',
+          msg: '',
+          result: cartCount
+        })
+      }
+    })
+  }
+})
 module.exports = router

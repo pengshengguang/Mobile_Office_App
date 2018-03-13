@@ -93,7 +93,7 @@
                   <div class="item-price-total">{{(item.productNum*item.salePrice)}}</div>
                 </div>
                 <div class="cart-tab-5">
-                  <div class="cart-item-opration" @click="delCartConfirm(item.productId)">
+                  <div class="cart-item-opration" @click="delCartConfirm(item)">
                     <a href="javascript:;" class="item-edit-btn">
                       <svg class="icon icon-del">
                         <use xlink:href="#icon-del"></use>
@@ -200,17 +200,20 @@
         })
       },
       // 是否删除当前商品
-      delCartConfirm (productId) {
+      delCartConfirm (delItem) {
         this.modalConfirm = true
-        this.productId = productId
+        this.delItem = delItem
       },
       // 删除当前商品
       delCart () {
-        this.http.post('/users/delCart', {productId: this.productId}).then((response) => {
+        this.http.post('/users/delCart', {productId: this.delItem.productId}).then((response) => {
           let res = response.data
           if (res.status === '0') {
             this.modalConfirm = false
             this.init()
+            // 当前删除商品的数量
+            let delCount = parseInt(this.delItem.productNum)
+            this.$store.commit('updateCartCount', -delCount)
             console.log('删除商品成功！')
           }
         })
@@ -220,7 +223,7 @@
         if (flag === 'add') {  // 数量增加操作
           item.productNum++
         } else if (flag === 'reduce') { // 数量减少操作
-          if (item.productNum <= 2) {
+          if (item.productNum <= 1) {
             return
           } else {
             item.productNum--
@@ -236,6 +239,14 @@
           let res = response.data
           if (res.status === '0') {
             console.log('编辑购物车商品成功！')
+            // 更新购物车数量
+            let num = 0
+            if (flag === 'add') {
+              num = 1
+            } else if (flag === 'reduce') {
+              num = -1
+            }
+            this.$store.commit('updateCartCount', num)
           }
         })
       },
