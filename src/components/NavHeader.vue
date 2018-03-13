@@ -73,12 +73,17 @@
         userName: '',
         userPwd: '',
         errorTip: false, // 错误提示
-        loginModalFlag: false, // 遮罩层闭关
-        nickName: '' // 用户姓名
+        loginModalFlag: false // 遮罩层闭关
+        // nickName: '' // 用户姓名
       }
     },
     mounted () {
       this.checkLogin()
+    },
+    computed: {
+      nickName () {
+        return this.$store.state.nickName
+      }
     },
     methods: {
       // 登陆
@@ -96,9 +101,10 @@
           if (res.status === '0') {
             this.errorTip = false
             this.loginModalFlag = false
-            this.nickName = res.result.userName
+            // this.nickName = res.result.userName
+            this.$store.commit('updateUserInfo', res.result.userName)
             // 把登陆状态传给父组件
-            this.$emit('isLogin', this.nickName)
+            // this.$emit('isLogin', this.nickName)
             console.log('登陆成功！')
             // to-do
           } else {
@@ -113,9 +119,10 @@
         this.http.post('/users/logout').then((response) => {
           let res = response.data
           if (res.status === '0') {
-            this.nickName = ''
+            // this.nickName = ''
             // 把登陆状态传给父组件
-            this.$emit('isLogin', '')
+            // this.$emit('isLogin', '')
+            this.$store.commit('updateUserInfo', '')
             console.log('登出成功！')
             // 返回商品展示页面
             this.$router.push({
@@ -132,10 +139,11 @@
           let res = response.data
           console.log(res)
           if (res.status === '0') {
-            this.nickName = res.result
+            // this.nickName = res.result
+            this.$store.commit('updateUserInfo', res.result)
             this.loginModalFlag = false
             // 把登陆状态传给父组件
-            this.$emit('isLogin', this.nickName)
+            // this.$emit('isLogin', this.nickName)
           } else {
             // 把登陆状态传给父组件
             this.$emit('isLogin', '')

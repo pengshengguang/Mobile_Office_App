@@ -1,6 +1,6 @@
 <template>
   <div class="goodsList-wrapper">
-    <nav-header @isLogin="isLogin"></nav-header>
+    <nav-header></nav-header>
     <nav-bread>
       <span slot="two">goods</span>
     </nav-bread>
@@ -91,7 +91,7 @@
     },
     data () {
       return {
-        userName: '',
+        // userName: '',
         http: Httpservice.getAxios,
         goodsList: [],
         priceFiter: [
@@ -132,9 +132,9 @@
       this.getGoodsList()
     },
     methods: {
-      isLogin (userName) {
-        this.userName = userName
-      },
+      // isLogin (userName) {
+      //   this.userName = userName
+      // },
       showFilterPop () {
         this.filterBy = true
         this.overLayFlag = true
@@ -197,7 +197,7 @@
       },
       // 加入购物车
       addCart (proId) {
-        if (!this.userName) {
+        if (!this.$store.state.nickName) {
           this.mdShow = true
           return
         }
