@@ -128,7 +128,7 @@
             // this.$emit('isLogin', '')
             this.$store.commit('updateUserInfo', '')
             // 把store里面的购物车数量更新为0个
-            this.$store.commit('updateCartCount', 0)
+            this.$store.commit('initCartCount', 0)
             console.log('登出成功！')
             // 返回商品展示页面
             this.$router.push({
