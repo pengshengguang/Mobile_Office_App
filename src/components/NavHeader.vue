@@ -65,6 +65,7 @@
 <script>
   import './../assets/css/login.css'
   import Httpservice from '@/services/HttpService'
+  import { mapState } from 'vuex'
 
   export default {
     data () {
@@ -81,12 +82,15 @@
       this.checkLogin()
     },
     computed: {
-      nickName () {
-        return this.$store.state.nickName
-      },
-      cartCount () {
-        return this.$store.state.cartCount
-      }
+      // 方式1
+      // nickName () {
+      //   return this.$store.state.nickName
+      // },
+      // cartCount () {
+      //   return this.$store.state.cartCount
+      // }
+      // 方式二
+      ...mapState(['nickName', 'cartCount']) // mapState是vue中的一个函数封装，作用与上面的两个函数一样，返回一个对象，这个对象有两个值，然后通过ES6的扩展运算符进行解构输出
     },
     methods: {
       // 登陆
