@@ -10,6 +10,8 @@ import Address from '@/views/Address'
 import OrderConfirm from '@/views/OrderConfirm'
 import OrderSuccess from '@/views/OrderSuccess'
 
+import appRouters from './appRouters'
+
 Vue.use(Router)
 
 export default new Router({
@@ -60,6 +62,8 @@ export default new Router({
           component: questionnaireResult
         }
       ]
-    }
+    },
+    // 主页功能路由入口
+    appRouters.appRouters
   ]
 })
