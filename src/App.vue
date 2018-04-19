@@ -10,7 +10,17 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+  /*初始化，使得整个页面铺面整个页面*/
+  html,
+  body{
+    height: 100%;
+    width: 100%;
+  }
+  #app{
+    height: 100%;
+  }
+  /*end*/
   .cover {
     position: fixed;
     top: 0;
@@ -19,6 +29,9 @@ export default {
     right: 0;
     z-index: 201; // 不能大于501，影响actionSheet的显示
     background-color: #fff;
+  }
+  .weui-tabbar {
+    z-index: 200 !important;
   }
   /*通用标题栏*/
    .vux-header .vux-header-left .left-arrow {

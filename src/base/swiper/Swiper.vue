@@ -1,7 +1,7 @@
 <template>
   <div>
     <swiper loop auto :list="demo06_list" :index="img_index" @on-index-change="onIndexChange" dots-position="center" :aspect-ratio="400/800"></swiper>
-    <p>current index: {{img_index}}</p>
+    <!--<p>current index: {{img_index}}</p>-->
     <div class="home-box">
       <!--<Home></Home>-->
     </div>
@@ -47,12 +47,7 @@
     },
     data () {
       return {
-        demo01_list: baseList,
-        demo05_list: [],
         demo06_list: urlList,
-        demo01_index: 0,
-        demo02_index: 1,
-        demo05_index: 0,
         img_index: 0,
         swiperItemIndex: 1
       }

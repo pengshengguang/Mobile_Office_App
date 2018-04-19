@@ -12,6 +12,7 @@ import questionnaireDetails from '@/components/app/questionnaire/QuestionnaireDe
 import questionnaireResult from '@/components/app/questionnaire/QuestionnaireResult'
 
 import Home from '@/components/home/Home'
+import Work from '@/components/work/Work'
 
 Vue.use(Router)
 
@@ -44,11 +45,14 @@ const questionnaireRoute = {
   ]
 }
 
+// 日常工作
+const workRoute = { path: '/work', name: 'work', component: Work, children: [] }
+
 // 可滑动的头
 const scrollTabRoute = { path: '/scrollTab', name: 'ScrollTab', component: ScrollTab }
 
 // 组装移动办公APP路由
-const routes = [].concat(goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, questionnaireRoute, scrollTabRoute)
+const routes = [].concat(goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, questionnaireRoute, scrollTabRoute, workRoute)
 
 let router = new Router({
   routes: routes
