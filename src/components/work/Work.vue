@@ -7,7 +7,7 @@
     <!--功能区域-->
     <div class="function-box">
       <div>
-        <grid :cols="4">
+        <grid :cols="4" show-lr-borders="true" show-vertical-dividers="true">
           <grid-item v-for="i in 30" :key="i" label="小程序">
             <img slot="icon" src="@/assets/img/work/funcIcon.png">
           </grid-item>
@@ -47,9 +47,10 @@
     .function-box{
       flex: 1 0 300px;
       overflow: auto;
+      padding-bottom: 53px;
     }
     .tabbar-box{
-      flex: 0 0 53px;
+      flex: none;
     }
   }
 </style>
