@@ -133,10 +133,10 @@
 </template>
 
 <script>
-  import NavHeader from '@/components/NavHeader'
-  import NavFooter from '@/components/NavFooter'
-  import NavBread from '@/components/NavBread'
-  import Modal from './../components/Modal'
+  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
+  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
+  import NavBread from '@/components/app/shopping/assembly/NavBread'
+  import Modal from './assembly/Modal'
   import Httpservice from '@/services/HttpService'
 
   export default {

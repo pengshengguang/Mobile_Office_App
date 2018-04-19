@@ -98,8 +98,8 @@
                 <span>{{subTotal | currency('$')}}</span>
               </li>
               <li>
-                <span>Shipping:</span>
-                <span>{{shipping | currency('$')}}</span>
+                <span>shopping:</span>
+                <span>{{shopping | currency('$')}}</span>
               </li>
               <li>
                 <span>Discount:</span>
@@ -132,10 +132,10 @@
 </template>
 
 <script>
-  import NavHeader from '@/components/NavHeader'
-  import NavFooter from '@/components/NavFooter'
-  import NavBread from '@/components/NavBread'
-  import Modal from './../components/Modal'
+  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
+  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
+  import NavBread from '@/components/app/shopping/assembly/NavBread'
+  import Modal from './assembly/Modal'
   import Httpservice from '@/services/HttpService'
   import {currency} from '@/services/currency'
 
@@ -145,7 +145,7 @@
         msg: 'hello world',
         http: Httpservice.getAxios,
         cartList: [], // 购物车中选中的商品
-        shipping: 100, // 配送费
+        shopping: 100, // 配送费
         discount: 200, // 折扣现金
         tax: 300, // 交税费
         subTotal: 0, // 原始订单总金额
@@ -178,7 +178,7 @@
               }
             })
             // 计算实际应付总金额
-            this.orderTotal = this.subTotal + this.shipping + this.tax - this.discount
+            this.orderTotal = this.subTotal + this.shopping + this.tax - this.discount
           } else {
             console.log('查询购物车数据失败')
           }

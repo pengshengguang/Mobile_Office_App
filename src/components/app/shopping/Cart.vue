@@ -140,12 +140,12 @@
   </div>
 </template>
 <script>
-  import './../assets/css/checkout.css'
-  import NavHeader from '@/components/NavHeader'
-  import NavFooter from '@/components/NavFooter'
-  import NavBread from '@/components/NavBread'
+  import '@/assets/css/checkout.css'
+  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
+  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
+  import NavBread from '@/components/app/shopping/assembly/NavBread'
   import Httpservice from '@/services/HttpService'
-  import Modal from '@/components/Modal'
+  import Modal from './assembly/Modal'
 
   export default {
     components: {

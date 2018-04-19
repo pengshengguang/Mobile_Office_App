@@ -17,7 +17,7 @@
 </template>
 <script>
   import { XHeader } from 'vux'
-  import QuestionnaireItem from '@/components/questionnaire/assembly/QuestionnaireItem'
+  import QuestionnaireItem from '@/components/app/questionnaire/assembly/QuestionnaireItem'
   import axios from 'axios'
 
   export default {
@@ -88,7 +88,7 @@
       -webkit-transition-duration: 5s; /* Safari 和 Chrome */
       -o-transition-duration: 5s; /* Opera */
       .questionnaire-header{
-        background: url('../../assets/img/questionnaire/questionBg.png');
+        background: url('../../../assets/img/questionnaire/questionBg.png');
         background-size: 100% 100%;
         background-color: #f2f4f5;
         display: flex;

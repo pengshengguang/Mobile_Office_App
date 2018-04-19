@@ -63,7 +63,7 @@
   </header>
 </template>
 <script>
-  import './../assets/css/login.css'
+  import '@/assets/css/login.css'
   import Httpservice from '@/services/HttpService'
   import { mapState } from 'vuex'
 

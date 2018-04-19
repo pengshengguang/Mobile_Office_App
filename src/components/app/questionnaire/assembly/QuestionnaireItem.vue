@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-  import QuestionnaireOption from '@/components/questionnaire/assembly/QuestionnaireOption'
+  import QuestionnaireOption from '@/components/app/questionnaire/assembly/QuestionnaireOption'
 
   export default {
     props: ['item', 'questionsNum', 'index', 'isSumbit'],

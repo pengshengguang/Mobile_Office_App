@@ -43,7 +43,7 @@
               </ul>
               <!--加载更多插件-->
               <div class="load-more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-                <img src="./../assets/loading-spinning-bubbles.svg" v-show="loading">
+                <img src="@/assets/loading-spinning-bubbles.svg" v-show="loading">
               </div>
             </div>
           </div>
@@ -75,10 +75,10 @@
   </div>
 </template>
 <script>
-  import NavHeader from '@/components/NavHeader'
-  import NavFooter from '@/components/NavFooter'
-  import NavBread from '@/components/NavBread'
-  import Modal from './../components/Modal'
+  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
+  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
+  import NavBread from '@/components/app/shopping/assembly/NavBread'
+  import Modal from './assembly/Modal'
 //  import axios from 'axios'
   import Httpservice from '@/services/HttpService'
 

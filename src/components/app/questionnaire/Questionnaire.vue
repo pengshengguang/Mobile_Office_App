@@ -4,7 +4,7 @@
   </div>
 </template>
 <script>
-  import QuestionnaireItem from '@/components/questionnaire/assembly/QuestionnaireItem'
+  import QuestionnaireItem from '@/components/app/questionnaire/assembly/QuestionnaireItem'
 
   export default {
     components: {

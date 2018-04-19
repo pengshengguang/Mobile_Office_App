@@ -22,7 +22,7 @@
 </template>
 <script>
   import { XHeader, Confirm } from 'vux'
-  import QuestionnaireItem from '@/components/questionnaire/assembly/QuestionnaireItem'
+  import QuestionnaireItem from '@/components/app/questionnaire/assembly/QuestionnaireItem'
   import axios from 'axios'
 
   export default {
@@ -176,7 +176,7 @@
     .questionnaire-list-wrapper{
       overflow: auto;
       .questionnaire-header{
-        background: url('../../assets/img/questionnaire/questionBg.png');
+        background: url('../../../assets/img/questionnaire/questionBg.png');
         background-size: 100% 100%;
         background-color: #f2f4f5;
         display: flex;
