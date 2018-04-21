@@ -1,11 +1,8 @@
 <template>
-  <div class="home-wrapper">
-    <div class="swiper-box">
-      <Swiper></Swiper>
-    </div>
-    <div class="function-box">
-
-    </div>
+  <div class="home-wrapper cover">
+    <transition name="fade" >
+      <router-view></router-view>
+    </transition>
     <div class="tabbar-box">
       <Tabbar></Tabbar>
     </div>
@@ -25,5 +22,16 @@
 </script >
 
 <style lang="scss">
+  .home-wrapper{
+    height: 100%;
+  }
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity .3s
+  }
 
+  .fade-enter,
+  .fade-leave-active {
+    opacity: 0
+  }
 </style>

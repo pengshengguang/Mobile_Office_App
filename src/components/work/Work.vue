@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">
+  <div class="work-wrapper">
     <!--轮播组件-->
     <div class="swiper-box">
       <Swiper></Swiper>
@@ -7,16 +7,12 @@
     <!--功能区域-->
     <div class="function-box">
       <div>
-        <grid :cols="4" show-lr-borders="true" show-vertical-dividers="true">
+        <grid :cols="4" :show-lr-borders="false">
           <grid-item v-for="i in 30" :key="i" label="小程序">
             <img slot="icon" src="@/assets/img/work/funcIcon.png">
           </grid-item>
         </grid>
       </div>
-    </div>
-    <!--底部标签页-->
-    <div class="tabbar-box">
-      <Tabbar></Tabbar>
     </div>
   </div>
 </template>
@@ -37,7 +33,7 @@
 </script >
 
 <style lang="scss" scoped>
-  .home-wrapper{
+  .work-wrapper{
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -48,9 +44,12 @@
       flex: 1 0 300px;
       overflow: auto;
       padding-bottom: 53px;
-    }
-    .tabbar-box{
-      flex: none;
+      .weui-grid:before{
+        border: 1px solid #D9D9D9!important;
+      }
+      .weui-grid:after{
+        border: 1px solid #D9D9D9!important;
+      }
     }
   }
 </style>

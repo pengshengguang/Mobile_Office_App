@@ -1,5 +1,5 @@
 <template>
-  <div>通讯录</div>
+  <div></div>
 </template>
 
 <script>
