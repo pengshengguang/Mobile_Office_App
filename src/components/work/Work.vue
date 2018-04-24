@@ -1,47 +1,101 @@
 <template>
   <div class="work-wrapper">
     <!--轮播组件-->
-    <div class="swiper-box">
+    <div class="swiper-box" ref="swiper">
       <Swiper></Swiper>
     </div>
     <!--功能区域-->
-    <div class="function-box">
+    <scroll ref="scroll" class="function-box" :data="funcList" style="bottom: 52px">
       <div>
         <grid :cols="4" :show-lr-borders="false">
-          <grid-item v-for="i in 30" :key="i" label="小程序">
-            <img slot="icon" src="@/assets/img/work/funcIcon.png">
+          <grid-item v-for="(func, index) in funcList" :key="index" :link="func.link" :label="func.funcName">
+            <img slot="icon" :src="func.icon">
           </grid-item>
         </grid>
       </div>
-    </div>
+    </scroll>
+    <router-view class="cover"></router-view>
   </div>
 </template>
 
 <script>
   import Swiper from '@/base/swiper/Swiper'
   import Tabbar from '@/base/tabbar/Tabbar'
+  import Scroll from '@/base/scroll/Scroll'
   import { Grid, GridItem } from 'vux'
+
+  const tmpConfig = [
+    { funcName: '调查问卷', link: '/home/work/questionnaire/questionnaireDetails', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') },
+    { funcName: '办公用品', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/funcIcon.png') }
+  ]
 
   export default {
     components: {
       Swiper,
       Tabbar,
+      Scroll,
       Grid,
       GridItem
+    },
+    data () {
+      return {
+        funcList: tmpConfig
+      }
+    },
+    mounted () {
+      setTimeout(() => {
+        this.imageHeight = this.$refs.swiper.clientHeight
+        this.$refs.scroll.$el.style.top = `${this.imageHeight}px`
+      })
+    },
+    methods: {
     }
   }
 </script >
 
 <style lang="scss" scoped>
   .work-wrapper{
-    display: flex;
-    flex-direction: column;
     height: 100%;
     .swiper-box{
-      flex: 0 1 auto;
+      position: relative;
     }
     .function-box{
-      flex: 1 0 300px;
+      position: fixed;
+      /*top: 0px;*/
       overflow: auto;
       padding-bottom: 53px;
       .weui-grid:before{

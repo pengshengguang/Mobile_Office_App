@@ -22,9 +22,10 @@
 //    title: '送你一辆车'
   }, {
     url: 'javascript:',
-    img: 'https://static.vux.li/demo/5.jpg', // 404
+//    img: 'https://static.vux.li/demo/5.jpg', // 404
+    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001lkds22tdk0N.jpg'
 //    title: '送你一次旅行',
-    fallbackImg: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001lkds22tdk0N.jpg'
+//    fallbackImg: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001lkds22tdk0N.jpg'
   }]
 
   const urlList = baseList.map((item, index) => ({
