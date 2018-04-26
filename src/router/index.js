@@ -12,18 +12,23 @@ import Questionnaire from '@/components/app/questionnaire/Questionnaire'
 import QuestionnaireDetails from '@/components/app/questionnaire/QuestionnaireDetails'
 import QuestionnaireResult from '@/components/app/questionnaire/QuestionnaireResult'
 
+import Login from '@/components/login/Login'
 import Home from '@/components/home/Home'
 import Work from '@/components/work/Work'
 import Phonebook from '@/components/phonebook/Phonebook'
 
 Vue.use(Router)
 
+// 登陆
+const loginRoute = { path: '/login', component: Login, name: 'Login' }
+
 // 主页
 const homeRoute = { path: '/home', component: Home, name: 'Home', children: [] }
 
 // 商品页
 // const goodsRoute = { path: '/', component: GoodsList, name: 'GoodsList' }
-const goodsRoute = { path: '/', redirect: 'home/work' }
+// const goodsRoute = { path: '/', redirect: 'home/work' }
+const goodsRoute = { path: '/', redirect: 'login' }
 
 // 购物车也
 const cartRoute = { path: '/cart', component: Cart, name: 'Cart' }
@@ -61,7 +66,7 @@ const scrollTabRoute = { path: '/scrollTab', name: 'ScrollTab', component: Scrol
 // 组装移动办公APP路由
 homeRoute.children = [].concat(workRoute, phonebookRoute)
 
-const routes = [].concat(goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute)
+const routes = [].concat(loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute)
 
 let router = new Router({
   routes: routes
