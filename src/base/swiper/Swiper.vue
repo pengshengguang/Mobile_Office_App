@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="swiper">
     <swiper loop auto :list="demo06_list" :index="img_index" @on-index-change="onIndexChange" dots-position="center" :aspect-ratio="400/800"></swiper>
     <!--<p>current index: {{img_index}}</p>-->
     <div class="home-box">
@@ -16,6 +16,14 @@
     url: 'javascript:',
     img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000002wMSq707he6D.jpg'
 //    title: '送你一朵fua'
+  }, {
+    url: 'javascript:',
+    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001x15B624p7m2.jpg'
+//    title: '送你一辆车'
+  }, {
+    url: 'javascript:',
+    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001x15B624p7m2.jpg'
+//    title: '送你一辆车'
   }, {
     url: 'javascript:',
     img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001x15B624p7m2.jpg'
@@ -56,7 +64,7 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss">
   .text-scroll p{
     font-size: 12px;
     text-align: center;
@@ -65,4 +73,25 @@
   .swiper-demo-img img {
     width: 100%;
   }
+  /*自定义dot的样式*/
+  .swiper{
+    .vux-slider{
+      .vux-indicator{
+        a{
+          margin-left: 0px;
+          .vux-icon-dot{
+            width: 8px!important;
+            height: 8px!important;
+            margin-left: 0;
+            margin: 0 4px;
+            &.active{
+              width: 20px!important;
+              border-radius: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+
 </style>

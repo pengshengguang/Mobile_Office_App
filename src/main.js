@@ -6,6 +6,8 @@ import VueLazyLoad from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll' // 无限滚动插件，用来加载更多功能
 import Vuex from 'vuex'
 
+import VueCordova from 'vue-cordova'
+
 import './assets/css/base.css'
 import './assets/css/checkout.css'
 import './assets/css/login.css'
@@ -20,6 +22,7 @@ Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(infiniteScroll)
 Vue.use(Vuex)
+Vue.use(VueCordova)
 
 Vue.config.productionTip = false
 
