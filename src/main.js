@@ -13,13 +13,14 @@ import './assets/css/checkout.css'
 import './assets/css/login.css'
 import './assets/css/product.css'
 
-import { AlertPlugin, ToastPlugin, ConfirmPlugin } from 'vux'
+import { AlertPlugin, ToastPlugin, ConfirmPlugin, LoadingPlugin } from 'vux'
 
 fastclick.attach(document.body) // 取消300ms的点击延迟
 
 Vue.use(AlertPlugin)
 Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
+Vue.use(LoadingPlugin)
 Vue.use(infiniteScroll)
 Vue.use(Vuex)
 Vue.use(VueCordova)

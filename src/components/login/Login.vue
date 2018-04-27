@@ -1,22 +1,104 @@
 <template>
   <div class="login-wrapper">
     <img src="./../../assets/img/login/logo.png">
-    <div class="login-name">移动办公</div>
+    <div class="login-name">光子工作室</div>
     <div class="login-box">
       <div class="username-box">
-        <input name="username" type="text" placeholder="用户名" class="username-input">
+        <input name="username" type="text" v-model="userName" placeholder="用户名" class="username-input">
       </div>
       <div class="password-box">
-        <input name="password" type="password" placeholder="密码" class="password-input">
+        <input name="password" type="password" v-model="userPwd" placeholder="密码" class="password-input">
       </div>
       <a href="#">忘记密码</a>
-      <button name="login">登 陆</button>
+      <button name="login" @click="login">登 陆</button>
     </div>
   </div>
 </template>
 
 <script>
-  export default {}
+  import Httpservice from '@/services/HttpService'
+  import { mapState } from 'vuex'
+
+  export default {
+    data () {
+      return {
+        msg: '',
+        http: Httpservice.getAxios,
+        userName: '',
+        userPwd: ''
+      }
+    },
+    mounted () {
+      this.checkLogin()
+    },
+    computed: {
+      ...mapState(['nickName'])
+    },
+    methods: {
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
+      // 检查是否登陆
+      checkLogin () {
+        this.http.get('/users/checkLogin').then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            this.$store.commit('updateUserInfo', res.result)
+            // 前往主页面
+            this.$router.push({
+              name: 'work'
+            })
+            this.$vux.toast.show({
+              text: '欢迎回来',
+              type: 'text',
+              time: 1500,
+              position: 'bottom'
+            })
+          } else {
+            this.$vux.toast.show({
+              text: '请登陆',
+              type: 'text',
+              time: 1500,
+              position: 'bottom'
+            })
+          }
+        })
+      },
+      // 登陆
+      login () {
+        if (!this.userName || !this.userPwd) {
+          return
+        }
+        let userConfig = {
+          userName: this.userName,
+          userPwd: this.userPwd
+        }
+        this.loading(true)
+        this.http.post('/users/login', userConfig).then((response) => {
+          let res = response.data
+          this.loading(false)
+          if (res.status === '0') {
+            this.$store.commit('updateUserInfo', res.result.userName)
+            // 前往主页面
+            this.$router.push({
+              name: 'work'
+            })
+          } else {
+            this.$vux.toast.show({
+              text: '登陆失败',
+              type: 'warn',
+              time: 1500
+            })
+            console.log('登陆失败')
+          }
+        })
+      }
+    }
+  }
 </script>
 
 <style scoped lang="scss">

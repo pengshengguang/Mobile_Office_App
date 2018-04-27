@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import GoodsList from '@/components/app/shopping/GoodsList'
+import GoodsList from '@/components/app/shopping/GoodsList'
 import Cart from '@/components/app/shopping/Cart'
 import Address from '@/components/app/shopping/Address'
 import OrderConfirm from '@/components/app/shopping/OrderConfirm'
@@ -26,9 +26,9 @@ const loginRoute = { path: '/login', component: Login, name: 'Login' }
 const homeRoute = { path: '/home', component: Home, name: 'Home', children: [] }
 
 // 商品页
-// const goodsRoute = { path: '/', component: GoodsList, name: 'GoodsList' }
+const goodsRoute = { path: '/', component: GoodsList, name: 'GoodsList' }
 // const goodsRoute = { path: '/', redirect: 'home/work' }
-const goodsRoute = { path: '/', redirect: 'login' }
+// const goodsRoute = { path: '/', redirect: 'login' }
 
 // 购物车也
 const cartRoute = { path: '/cart', component: Cart, name: 'Cart' }
