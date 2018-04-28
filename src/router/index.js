@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import GoodsList from '@/components/app/shopping/GoodsList'
+// import GoodsList from '@/components/app/shopping/GoodsList'
 import Cart from '@/components/app/shopping/Cart'
 import Address from '@/components/app/shopping/Address'
 import OrderConfirm from '@/components/app/shopping/OrderConfirm'
@@ -13,22 +13,38 @@ import QuestionnaireDetails from '@/components/app/questionnaire/QuestionnaireDe
 import QuestionnaireResult from '@/components/app/questionnaire/QuestionnaireResult'
 
 import Login from '@/components/login/Login'
+import Registered from '@/components/login/Registered'
+import Forget from '@/components/login/Forget'
+
 import Home from '@/components/home/Home'
 import Work from '@/components/work/Work'
 import Phonebook from '@/components/phonebook/Phonebook'
 
+import Test from '@/components/test'
+
 Vue.use(Router)
 
+// 测试
+const test = { path: '/test', component: Test, name: 'Test' }
+
 // 登陆
-const loginRoute = { path: '/login', component: Login, name: 'Login' }
+const loginRoute = {
+  path: '/login',
+  component: Login,
+  name: 'login',
+  children: [
+    { path: 'forget', name: 'forget', component: Forget },
+    { path: 'registered', name: 'registered', component: Registered }
+  ]
+}
 
 // 主页
-const homeRoute = { path: '/home', component: Home, name: 'Home', children: [] }
+const homeRoute = { path: '/home', name: 'home', component: Home, children: [] }
 
 // 商品页
-const goodsRoute = { path: '/', component: GoodsList, name: 'GoodsList' }
+// const goodsRoute = { path: '/', component: GoodsList, name: 'GoodsList' }
 // const goodsRoute = { path: '/', redirect: 'home/work' }
-// const goodsRoute = { path: '/', redirect: 'login' }
+const goodsRoute = { path: '/', redirect: 'login' }
 
 // 购物车也
 const cartRoute = { path: '/cart', component: Cart, name: 'Cart' }
@@ -66,7 +82,7 @@ const scrollTabRoute = { path: '/scrollTab', name: 'ScrollTab', component: Scrol
 // 组装移动办公APP路由
 homeRoute.children = [].concat(workRoute, phonebookRoute)
 
-const routes = [].concat(loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute)
+const routes = [].concat(loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute, test)
 
 let router = new Router({
   routes: routes
