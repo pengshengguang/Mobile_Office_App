@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// import GoodsList from '@/components/app/shopping/GoodsList'
+import GoodsList from '@/components/app/shopping/GoodsList'
 import Cart from '@/components/app/shopping/Cart'
 import Address from '@/components/app/shopping/Address'
 import OrderConfirm from '@/components/app/shopping/OrderConfirm'
@@ -42,9 +42,9 @@ const loginRoute = {
 const homeRoute = { path: '/home', name: 'home', component: Home, children: [] }
 
 // 商品页
-// const goodsRoute = { path: '/', component: GoodsList, name: 'GoodsList' }
+const goodsRoute = { path: '/goodsList', component: GoodsList, name: 'GoodsList' }
 // const goodsRoute = { path: '/', redirect: 'home/work' }
-const goodsRoute = { path: '/', redirect: 'login' }
+const redirectRoute = { path: '/', redirect: 'login' }
 
 // 购物车也
 const cartRoute = { path: '/cart', component: Cart, name: 'Cart' }
@@ -82,7 +82,7 @@ const scrollTabRoute = { path: '/scrollTab', name: 'ScrollTab', component: Scrol
 // 组装移动办公APP路由
 homeRoute.children = [].concat(workRoute, phonebookRoute)
 
-const routes = [].concat(loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute, test)
+const routes = [].concat(redirectRoute, loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute, test)
 
 let router = new Router({
   routes: routes
