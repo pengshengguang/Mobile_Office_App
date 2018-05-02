@@ -10,8 +10,8 @@
         <input name="password" type="password" v-model="userPwd" placeholder="密码" class="password-input" @keyup.enter="enter">
       </div>
       <div class="help-box">
-        <a class="forget" href="#" @click="toForgotVive">忘记密码</a>
-        <a class="register" href="#" @click="toRegisterView">用户注册</a>
+        <a class="forget" href="#" @click="toForgotVive"><span class="forgetIcon"></span>忘记密码</a>
+        <a class="register" href="#" @click="toRegisterView"><span class="aaa"></span>用户注册</a>
         <a class="problem" href="#"  @click="showPop = true"><x-switch title="" v-model="showPop" class="problem-switch"></x-switch>遇到问题</a>
       </div>
       <button name="login" @click="login">登 陆</button>
@@ -195,22 +195,22 @@
       font-size: 20px;
       font-weight: bold;
     }
-    .login-box{
+    .login-box {
       width: 100%;
       display: flex;
       flex-direction: column;
       padding-top: 10px;
-      .userIcon{
+      .userIcon {
         width: 26px;
       }
-      input{
+      input {
         height: 30px;
         border-left: none;
         border-right: none;
         border-top: none;
         margin: 20px 20px 0 20px;
         outline-style: none;
-        font-size:14px;
+        font-size: 14px;
         padding-left: 24px;
         width: 90%;
       }
@@ -229,67 +229,66 @@
         margin-right: 20px;
         margin-top: 16px;
         justify-content: space-between;
+        position: relative;
         a {
           text-decoration: none;
           color: grey;
           font-size: 14px;
           position: relative;
-          &.forget{
+          &.forget {
+            position: relative;
             padding-left: 20px;
-            &:before{
-              content: '';
-              position: absolute;
-              bottom: 0;
-              left: 0px;
-              width: 20px;
+            .forgetIcon {
               height: 20px;
+              width: 20px;
+              position: absolute;
+              left: -1px;
               background: url("./../../assets/img/login/problemIcon.png") no-repeat;
               background-size: 100% 100%;
             }
           }
-          &.register{
-            /*padding-left: 20px;*/
-            &:before{
-              content: '';
+          &.register {
+            position: relative;
+            .aaa {
               position: absolute;
-              bottom: 0;
-              left: -22px;
+              left: -20px;
+              /*bottom: 0px;*/  /*这个bottom用加，加了这个家伙，虚拟键盘出来的时候，这货图片位置会向上偏移！！！！*/
               width: 20px;
               height: 20px;
               background: url("./../../assets/img/login/register.png") no-repeat;
               background-size: 100% 100%;
             }
           }
-          &.problem{
+        }
+        &.problem {
+            }
+      }
+        .username-box {
+          position: relative;
+          &:before {
+            width: 20px;
+            height: 20px;
+            content: ' ';
+            left: 20px;
+            bottom: 6px;
+            position: absolute;
+            background: url("./../../assets/img/login/usernameIcon.png") no-repeat;
+            background-size: 100% 100%;
+          }
+        }
+        .password-box {
+          position: relative;
+          &:before {
+            width: 20px;
+            height: 20px;
+            content: ' ';
+            left: 20px;
+            bottom: 6px;
+            position: absolute;
+            background: url("./../../assets/img/login/passwordIcon.png") no-repeat;
+            background-size: 100% 100%;
           }
         }
       }
-      .username-box {
-        position: relative;
-        &:before{
-          width: 20px;
-          height: 20px;
-          content: ' ';
-          left: 20px;
-          bottom: 6px;
-          position: absolute;
-          background: url("./../../assets/img/login/usernameIcon.png") no-repeat;
-          background-size: 100% 100%;
-        }
-      }
-      .password-box {
-        position: relative;
-        &:before{
-          width: 20px;
-          height: 20px;
-          content: ' ';
-          left: 20px;
-          bottom: 6px;
-          position: absolute;
-          background: url("./../../assets/img/login/passwordIcon.png") no-repeat;
-          background-size: 100% 100%;
-        }
-      }
-    }
   }
 </style>

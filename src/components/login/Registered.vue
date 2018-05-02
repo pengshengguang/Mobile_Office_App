@@ -4,8 +4,8 @@
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">用户注册</x-header>
       <scroll class="container">
         <div class="registered-box">
-          <div class="imgage-box">
-            <avatar :showTitle="false" :showFlexbox="false"></avatar>
+          <div class="imgage-box" @click="tAvatarView">
+            <avatar :currentUrl="userConfig.url"></avatar>
           </div>
           <div class="Info-box">
             <div class="username-box">
@@ -26,7 +26,7 @@
                 <x-textarea placeholder="请输入密保答案" :max="100"></x-textarea>
               </div>
             </div>
-            <button name="login">注册</button>
+            <button name="login" @click="registered">注册</button>
             <div v-transfer-dom>
               <popup v-model="showPop" height="210px" is-transparent>
                 <div style="width: 95%;background-color:#fff;height:200px;margin:0 auto;border-radius:5px;padding-top:10px;">
@@ -43,6 +43,9 @@
           </div>
         </div>
       </scroll>
+      <transition name="slide">
+        <ImageUpload v-if="showSelectAvatar" class="cover" @closeAvatar="closeAvatar" @setNewAvatar="setNewAvatar"></ImageUpload>
+      </transition>
     </div>
 
   </transition >
@@ -50,7 +53,8 @@
 
 <script>
   import { TransferDom, XHeader, Popup, XSwitch, Group, Cell, XButton, PopupRadio, XTextarea } from 'vux'
-  import Avatar from '@/base/ImageUpload/ImageUpload'
+  import Avatar from '@/base/ImageUpload/Avatar'
+  import ImageUpload from '@/base/ImageUpload/ImageUpload'
   import Scroll from '@/base/scroll/Scroll'
 
   const tmpConfig = [
@@ -99,6 +103,7 @@
     components: {
       XHeader,
       Avatar,
+      ImageUpload,
       Popup,
       XSwitch,
       Group,
@@ -114,7 +119,8 @@
           userName: '',
           userPwd: '',
           phone: '',
-          avatar: ''
+          avatar: '',
+          url: ''
         },
         showPop: false,
         option2: '',
@@ -125,12 +131,33 @@
           key: 'B',
           value: '你小时候最喜欢的动漫是什么？'
         }],
-        funcList: tmpConfig
+        funcList: tmpConfig,
+        showSelectAvatar: false
       }
     },
     methods: {
       goBack () {
-        this.$router.back()
+        this.$router.back(-1)
+      },
+      registered () {
+        this.$vux.toast.show({
+          text: '注册成功',
+          type: '',
+          width: '12em',
+          time: 3500
+        })
+      },
+      // 头像选择页
+      tAvatarView () {
+        this.showSelectAvatar = !this.showSelectAvatar
+        console.log('切换到头像选择页')
+      },
+      closeAvatar () {
+        this.showSelectAvatar = !this.showSelectAvatar
+      },
+      setNewAvatar (currentUrl) {
+        this.userConfig.url = currentUrl
+        console.log(currentUrl)
       }
     }
   }
@@ -257,6 +284,10 @@
           }
         }
       }
+    }
+    .hah{
+      position: fixed;
+      top: 35%;
     }
   }
 
