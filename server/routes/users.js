@@ -445,4 +445,33 @@ router.get('/getCartCount', (req, res, next) => {
     })
   }
 })
+
+// 根据姓名查询用户
+router.get('/findUserByName', (req, res, next) => {
+  let userName = req.param('userName')
+  User.findOne({userName: userName}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (!userDoc) {
+        res.json({
+          status: '0',
+          msg: '用户不存在',
+          result: false
+        })
+      } else {
+        res.json({
+          status: '0',
+          msg: '用户存在',
+          result: true
+        })
+      }
+    }
+  })
+})
+
 module.exports = router

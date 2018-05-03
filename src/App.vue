@@ -50,6 +50,7 @@ export default {
 
   .vux-header .vux-header-title {
     color: #020F17 !important;
+    width: 100%!important;
   }
 
   .ios-padding-top .vux-header {

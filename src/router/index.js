@@ -20,25 +20,27 @@ import Home from '@/components/home/Home'
 import Work from '@/components/work/Work'
 import Phonebook from '@/components/phonebook/Phonebook'
 
-import Test from '@/base/ImageUpload/ImageUpload'
+import ImageUpload from '@/base/ImageUpload/ImageUpload'
+
+import Test from '@/components/test'
 
 Vue.use(Router)
 
 // 测试
-// const test = { path: '/test', component: Test, name: 'Test' }
+const test = { path: '/test', component: Test, name: 'Test' }
 
 // 登陆
 const loginRoute = {
   path: '/login',
   component: Login,
-  name: 'login',
+  name: 'Login',
   children: [
-    { path: 'forget', name: 'forget', component: Forget },
+    { path: 'forget', name: 'Forget', component: Forget },
     { path: 'registered',
-      name: 'registered',
+      name: 'Registered',
       component: Registered,
       children: [
-        { path: 'test', name: 'Test', component: Test }
+        { path: 'imageUpload', name: 'ImageUpload', component: ImageUpload }
       ]
     }
   ]
@@ -88,7 +90,7 @@ const scrollTabRoute = { path: '/scrollTab', name: 'ScrollTab', component: Scrol
 // 组装移动办公APP路由
 homeRoute.children = [].concat(workRoute, phonebookRoute)
 
-const routes = [].concat(redirectRoute, loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute)
+const routes = [].concat(redirectRoute, loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute, test)
 
 let router = new Router({
   routes: routes

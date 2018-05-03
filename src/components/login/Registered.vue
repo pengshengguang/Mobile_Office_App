@@ -5,25 +5,28 @@
       <scroll class="container">
         <div class="registered-box">
           <div class="imgage-box" @click="tAvatarView">
-            <avatar :currentUrl="userConfig.url"></avatar>
+            <avatar :currentUrl="userConfig.avatar"></avatar>
           </div>
           <div class="Info-box">
             <div class="username-box">
-              <input name="username" type="text" placeholder="用户名" class="username-input">
+              <input name="username" type="text" placeholder="用户名" class="username-input" v-model="userConfig.userName">
             </div>
             <div class="password-box">
-              <input name="password" type="password" placeholder="密码" class="password-input">
+              <input name="password" type="password" placeholder="密码" class="password-input" v-model="userConfig.userPwd">
             </div>
             <div class="password-box">
-              <input name="password" type="password" placeholder="密码确认" class="password-input">
+              <input name="password" type="password" placeholder="密码确认" class="password-input" v-model="userConfig.userPwd2">
+            </div>
+            <div class="password-box">
+              <input name="password" type="password" placeholder="手机号" class="password-input" v-model="userConfig.phone">
             </div>
             <div class="question-box">
               <group class="popupRadio-wrapper">
-                <popup-radio title="请选择密保问题" :options="options2" v-model="option2" placeholder="请选择"></popup-radio>
+                <popup-radio title="请选择密保问题" :options="options2" v-model="option2" placeholder="请选择"  @on-change="selectedEvent"></popup-radio>
               </group>
               <div class="question" v-if="option2">
                 <!--文本框是否可编辑根据 item.questionId 来判断，这是因为统计结果中没有questionId字段，而调查问卷详情中，有questionId字段。-->
-                <x-textarea placeholder="请输入密保答案" :max="100"></x-textarea>
+                <x-textarea placeholder="请输入密保答案" :max="100" v-model="userConfig.answer"></x-textarea>
               </div>
             </div>
             <button name="login" @click="registered">注册</button>
@@ -52,6 +55,7 @@
 </template>
 
 <script>
+  import Httpservice from '@/services/HttpService'
   import { TransferDom, XHeader, Popup, XSwitch, Group, Cell, XButton, PopupRadio, XTextarea } from 'vux'
   import Avatar from '@/base/ImageUpload/Avatar'
   import ImageUpload from '@/base/ImageUpload/ImageUpload'
@@ -115,12 +119,15 @@
     },
     data () {
       return {
+        http: Httpservice.getAxios,
         userConfig: { // 用户注册信息
           userName: '',
           userPwd: '',
+          userPwd2: '',
           phone: '',
-          avatar: '',
-          url: ''
+          question: '',
+          answer: '',
+          avatar: 'https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg'
         },
         showPop: false,
         option2: '',
@@ -132,8 +139,13 @@
           value: '你小时候最喜欢的动漫是什么？'
         }],
         funcList: tmpConfig,
-        showSelectAvatar: false
+        showSelectAvatar: false,
+        userExist: false, // 用户是否存在
+        securityList: [] // 密保题库
       }
+    },
+    created () {
+      this.securityLoad()
     },
     methods: {
       goBack () {
@@ -156,8 +168,36 @@
         this.showSelectAvatar = !this.showSelectAvatar
       },
       setNewAvatar (currentUrl) {
-        this.userConfig.url = currentUrl
+        this.userConfig.avatar = currentUrl
         console.log(currentUrl)
+      },
+      // 加载密保问题
+      securityLoad () {
+        this.http.get('/securitys/getSecurity').then((response) => {
+          let res = response.data
+          if (res.status === '0') {
+            let securityList = res.result
+            if (!securityList) {
+              this.$vux.toast.show({
+                text: '密保题库为空，请联系管理员',
+                type: 'warn',
+                time: 1500
+              })
+            } else {
+              this.securityList = securityList
+              console.log(this.securityList)
+            }
+          } else {
+            this.$vux.toast.show({
+              text: '接口请求异常',
+              type: 'warn',
+              time: 1500
+            })
+          }
+        })
+      },
+      selectedEvent () {
+
       }
     }
   }
