@@ -474,4 +474,41 @@ router.get('/findUserByName', (req, res, next) => {
   })
 })
 
+// 新增用户
+router.post('/register', (req, res, next) => {
+  let userConfig = req.body.userConfig
+  console.log(userConfig)
+  var newUser = new User(userConfig)
+  newUser.save((err, hhh) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: '接口异常',
+        result: ''
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '插入成功',
+        result: hhh
+      })
+    }
+  })
+  // User.insertOne({'userName': 'admin01'}, (err, result) => {
+  //   if (err) {
+  //     res.json({
+  //       status: '1',
+  //       msg: '接口异常',
+  //       result: ''
+  //     })
+  //   } else {
+  //     res.json({
+  //       status: '0',
+  //       msg: '插入成功',
+  //       result: result
+  //     })
+  //   }
+  // })
+})
+
 module.exports = router

@@ -8,17 +8,17 @@
             <avatar :currentUrl="userConfig.avatar"></avatar>
           </div>
           <div class="Info-box">
-            <div class="username-box">
-              <input name="username" type="text" placeholder="用户名" class="username-input" v-model="userConfig.userName">
+            <div class="username-box" :class="{showPass: userPass}">
+              <input name="username" type="text" placeholder="用户名" class="username-input" v-model="userConfig.userName" @blur="blurCheck(0)" >
             </div>
-            <div class="password-box">
-              <input name="password" type="password" placeholder="密码" class="password-input" v-model="userConfig.userPwd">
+            <div class="password-box" :class="{showPass: pwdPass}">
+              <input name="password" type="password" placeholder="密码" class="password-input" v-model="userConfig.userPwd" @blur="blurCheck(1)">
             </div>
-            <div class="password-box">
-              <input name="password" type="password" placeholder="密码确认" class="password-input" v-model="userConfig.userPwd2">
+            <div class="passwordConfirm-box" :class="{showPass: pwd2Pass}">
+              <input name="passwordConfirm" type="password" placeholder="密码确认" class="password-input" v-model="userPwd2" @blur="blurCheck(2)">
             </div>
-            <div class="password-box">
-              <input name="password" type="password" placeholder="手机号" class="password-input" v-model="userConfig.phone">
+            <div class="phone-box" :class="{showPass: phonePass}">
+              <input name="phone" type="text" maxlength="11" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="手机号" class="password-input" v-model="userConfig.phone" @blur="blurCheck(3)">
             </div>
             <div class="question-box">
               <group class="popupRadio-wrapper">
@@ -123,12 +123,12 @@
         userConfig: { // 用户注册信息
           userName: '',
           userPwd: '',
-          userPwd2: '',
           phone: '',
           question: '',
           answer: '',
           avatar: 'https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg'
         },
+        userPwd2: '',
         showPop: false,
         option2: '',
         options2: [{
@@ -141,32 +141,70 @@
         funcList: tmpConfig,
         showSelectAvatar: false,
         userExist: false, // 用户是否存在
-        securityList: [] // 密保题库
+        userPass: false,
+        pwdPass: false,
+        pwd2Pass: false,
+        phonePass: false,
+        allPass: false
       }
     },
     created () {
       this.securityLoad()
     },
     methods: {
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
       goBack () {
         this.$router.back(-1)
       },
       registered () {
-        this.$vux.toast.show({
-          text: '注册成功',
-          type: '',
-          width: '12em',
-          time: 3500
-        })
+        let that = this
+        this.checkInputEvent()
+        if (this.allPass) {
+          this.http.post('/users/register', {userConfig: this.userConfig}).then((response) => {
+            if (response.status === 200) {
+              let res = response.data
+              if (res.status === '0') {
+                this.$vux.alert.show({
+                  title: '提示',
+                  content: '注册成功啦，赶快登陆吧！',
+                  buttonText: '确定',
+                  onHide () {
+                    that.$router.push({
+                      name: 'Login'
+                    })
+                  }
+                })
+                console.log(res.result)
+                console.log('成功，把数据存到store中去呗')
+              } else {
+                console.log('hhh')
+              }
+            } else {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '接口请求异常',
+                buttonText: '确定'
+              })
+            }
+          })
+        }
       },
       // 头像选择页
       tAvatarView () {
         this.showSelectAvatar = !this.showSelectAvatar
         console.log('切换到头像选择页')
       },
+      // 切换头像选择界面
       closeAvatar () {
         this.showSelectAvatar = !this.showSelectAvatar
       },
+      // 子组件-头像选择界面组件触发事件
       setNewAvatar (currentUrl) {
         this.userConfig.avatar = currentUrl
         console.log(currentUrl)
@@ -184,8 +222,7 @@
                 time: 1500
               })
             } else {
-              this.securityList = securityList
-              console.log(this.securityList)
+              this.assemblyOptions(securityList)
             }
           } else {
             this.$vux.toast.show({
@@ -196,8 +233,146 @@
           }
         })
       },
-      selectedEvent () {
-
+      // 组装数据，把原始数据的设置为键值的形式
+      assemblyOptions (oldArray) {
+        let array = []
+        oldArray.forEach(item => {
+          let optionObj = {
+            key: null,
+            value: null
+          }
+          optionObj.key = item.title
+          optionObj.value = item.title
+          array.push(optionObj)
+        })
+        this.options2 = array
+      },
+      // 密保选择
+      selectedEvent (key) {
+        this.userConfig.question = key
+      },
+      // 表单大检查
+      checkInputEvent () {
+        if (!this.userConfig.userName) {
+          this.userPass = false
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请输入用户名',
+            buttonText: '确定'
+          })
+        } else if (!this.userConfig.userPwd) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请输入密码',
+            buttonText: '确定'
+          })
+        } else if (!this.userPwd2) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请输入确认密码',
+            buttonText: '确定'
+          })
+        } else if (!this.userConfig.phone) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请输入手机号码',
+            buttonText: '确定'
+          })
+        } else if (this.userConfig.userPwd !== this.userPwd2) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '两次密码输入不一致，请重新输入',
+            buttonText: '确定'
+          })
+          this.pwd2Pass = false
+        } else if (!this.userConfig.question) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请选择密保问题',
+            buttonText: '确定'
+          })
+        } else if (!this.userConfig.answer) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请输入密保答案',
+            buttonText: '确定'
+          })
+        } else {
+          this.allPass = true
+        }
+      },
+      // onblur事件，表单逐一检查（用户名/密码/确认密码/手机号码）
+      blurCheck (num) {
+        switch (num) {
+          case 0:
+            if (this.userConfig.userName) {
+              this.checkUserExist(1) // 参数为1代表异步时不用弹出load组件
+            } else {
+              this.userPass = false
+            }
+            break
+          case 1:
+            if (this.userConfig.userPwd) {
+              this.pwdPass = true
+            } else {
+              this.pwdPass = false
+            }
+            break
+          case 2:
+            if (this.userPwd2) {
+              if (this.userConfig.userPwd !== this.userPwd2) {
+                this.pwd2Pass = false
+              } else {
+                this.pwd2Pass = true
+              }
+            } else {
+              this.pwd2Pass = false
+            }
+            break
+          case 3:
+            if (this.userConfig.phone) {
+              this.phonePass = true
+            } else {
+              this.phonePass = false
+            }
+            break
+        }
+      },
+      // 检查用户是否存在
+      checkUserExist (removeLoad) {
+        if (!removeLoad) { // 参数为1代表异步时不用弹出load组件，默认弹出
+          this.loading(true)
+        }
+        this.http.get('/users/findUserByName', {
+          params: {
+            userName: this.userConfig.userName
+          }
+        }).then((response) => {
+          if (!removeLoad) {
+            this.loading(true)
+          }
+          let res = response.data
+          if (res.status === '0') {
+            this.userExist = res.result
+            if (this.userExist) {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '该用户名已注册，请重新输入用户名',
+                buttonText: '确定'
+              })
+              this.userPass = false
+              this.userConfig.userName = ''
+            } else {
+              this.userPass = true // 激活showPass样式，显示通过小图标
+            }
+          } else {
+            this.$vux.alert.show({
+              title: '提示',
+              content: '网络异常，请重新提交',
+              buttonText: 'hah'
+            })
+          }
+        })
       }
     }
   }
@@ -272,6 +447,7 @@
             /*margin: 20px 20px 0 20px;*/
             padding-top: 34px;
             padding-bottom: 14px;
+            padding-right: 24px;
             outline-style: none;
             font-size:14px;
             padding-left: 28px;
@@ -299,6 +475,17 @@
               background: url("./../../assets/img/login/usernameIcon.png") no-repeat;
               background-size: 100% 100%;
             }
+            &:after{
+              display: none;
+              width: 20px;
+              height: 20px;
+              content: ' ';
+              right: 3px;
+              bottom: 6px;
+              position: absolute;
+              background: url("./../../assets/img/login/correctIcon.png") no-repeat;
+              background-size: 100% 100%;
+            }
           }
           .password-box {
             position: relative;
@@ -310,6 +497,65 @@
               bottom: 6px;
               position: absolute;
               background: url("./../../assets/img/login/passwordIcon.png") no-repeat;
+              background-size: 100% 100%;
+            }
+            &:after{
+              display: none;
+              width: 20px;
+              height: 20px;
+              content: ' ';
+              right: 3px;
+              bottom: 6px;
+              position: absolute;
+              background: url("./../../assets/img/login/correctIcon.png") no-repeat;
+              background-size: 100% 100%;
+            }
+          }
+          .passwordConfirm-box {
+            position: relative;
+            &:before{
+              width: 30px;
+              height: 30px;
+              content: ' ';
+              left: -2px;
+              bottom: 2px;
+              position: absolute;
+              background: url("./../../assets/img/login/pwdConfirmIcon.png") no-repeat;
+              background-size: 100% 100%;
+            }
+            &:after{
+              display: none;
+              width: 20px;
+              height: 20px;
+              content: ' ';
+              right: 3px;
+              bottom: 6px;
+              position: absolute;
+              background: url("./../../assets/img/login/correctIcon.png") no-repeat;
+              background-size: 100% 100%;
+            }
+          }
+          .phone-box {
+            position: relative;
+            &:before{
+              width: 20px;
+              height: 20px;
+              content: ' ';
+              left: 3px;
+              bottom: 6px;
+              position: absolute;
+              background: url("./../../assets/img/login/phoneIcon.png") no-repeat;
+              background-size: 100% 100%;
+            }
+            &:after{
+              display: none;
+              width: 20px;
+              height: 20px;
+              content: ' ';
+              right: 3px;
+              bottom: 6px;
+              position: absolute;
+              background: url("./../../assets/img/login/correctIcon.png") no-repeat;
               background-size: 100% 100%;
             }
           }
@@ -325,9 +571,10 @@
         }
       }
     }
-    .hah{
-      position: fixed;
-      top: 35%;
+    .showPass{
+      &:after{
+        display: inline-block!important;
+      }
     }
   }
 
