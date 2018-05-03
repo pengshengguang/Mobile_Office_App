@@ -166,7 +166,9 @@
         let that = this
         this.checkInputEvent()
         if (this.allPass) {
+          this.loading(true)
           this.http.post('/users/register', {userConfig: this.userConfig}).then((response) => {
+            this.loading(false)
             if (response.status === 200) {
               let res = response.data
               if (res.status === '0') {

@@ -6,6 +6,7 @@ var userSchema = new mongoose.Schema({
   'phone': String,
   'orderList': Array,
   'question': String,
+  'answer': String,
   'avatar': String,
   'cartList': [
     {

@@ -6,7 +6,7 @@
         <div class="forget-warpper-box">
           <transition name="fade">
             <div class="imgage-box" v-if="userExist">
-              <avatar :currentUrl="userConfig.url"></avatar>
+              <avatar :currentUrl="userConfig.avatar"></avatar>
             </div>
           </transition>
           <div class="Info-box">
@@ -15,24 +15,28 @@
                 <input name="username" type="text" placeholder="请输入用户名" @keyup.enter="findUser" class="username-input" v-model="userConfig.userName">
               </div>
             </transition>
-            <div class="password-box" v-if="false">
-              <input name="password" type="password" placeholder="密码" class="password-input" v-model="userConfig.userPwd">
-            </div>
-            <div class="password-box" v-if="false">
-              <input name="password" type="password" placeholder="密码确认" class="password-input" v-model="userConfig.userPwd2">
-            </div>
             <transition name="fade">
-              <div class="question-box" v-if="userExist">
+              <div class="password-box" v-if="answerPass">
+                <input name="password" type="password" placeholder="密码" class="password-input" v-model="newPwd">
+              </div>
+            </transition>
+            <transition name="fade">
+              <div class="password-box" v-if="answerPass">
+                <input name="password" type="password" placeholder="密码确认" class="password-input" v-model="newPwd2">
+              </div>
+            </transition>
+            <transition name="fade">
+              <div class="question-box" v-if="userExist&&!answerPass">
                 <group class="popupRadio-wrapper">
-                  <popup-radio title="请选择密保问题" :options="options2" v-model="option2" placeholder="请选择"></popup-radio>
+                  <popup-radio title="密保问题" :options="options2" v-model="option2" placeholder="" readonly ></popup-radio>
                 </group>
-                <div class="question" v-if="option2">
+                <div class="question" v-if="option2&&!answerPass">
                   <!--文本框是否可编辑根据 item.questionId 来判断，这是因为统计结果中没有questionId字段，而调查问卷详情中，有questionId字段。-->
-                  <x-textarea placeholder="请输入密保答案" :max="100"></x-textarea>
+                  <x-textarea placeholder="请输入密保答案" :max="100" v-model="currectAnswer"></x-textarea>
                 </div>
               </div>
             </transition>
-            <button name="login" @click="findUser">确认</button>
+            <button name="login" @click="nextEvent">确认</button>
           </div>
         </div>
       </scroll>
@@ -108,9 +112,14 @@
           userName: '',
           userPwd: '',
           userPwd2: '',
+          question: '',
+          answer: '',
           avatar: '',
-          url: ''
+          phone: ''
         },
+        currectAnswer: '', // 用户此时输入的密保答案
+        newPwd: '', // 用户此时输入的新密码
+        newPwd2: '', // 用户此时输入的新确认密码
         option2: '',
         options2: [{
           key: 'A',
@@ -120,7 +129,12 @@
           value: '你小时候最喜欢的动漫是什么？'
         }],
         funcList: tmpConfig,
-        userExist: false
+        userExist: false,
+        answerPass: false,
+        question: {
+          title: '',
+          answer: ''
+        }
       }
     },
     methods: {
@@ -133,6 +147,16 @@
       },
       goBack () {
         this.$router.back(-1)
+      },
+      // 组装密保信息
+      assemblyOptions (obj) {
+        let array = []
+        let optionObj = {
+          key: obj.question,
+          value: obj.question
+        }
+        array.push(optionObj)
+        this.options2 = array
       },
       // 查找用户
       findUser () {
@@ -156,6 +180,7 @@
           if (res.status === '0') {
             if (this.userExist) {
               console.log('用户存在')
+              this.getQuestionByUserName()
             } else {
               this.$vux.alert.show({
                 title: '提示',
@@ -171,6 +196,108 @@
             })
           }
         })
+      },
+      // 根据用户名称获取密保信息
+      getQuestionByUserName () {
+        if (!this.userConfig.userName) {
+          console.log('该用户不存在，无法获取密保信息。')
+          return
+        }
+        this.loading(true)
+        this.http.get('/users/getQuestionByUserName', {
+          params: {
+            userName: this.userConfig.userName
+          }
+        }).then((response) => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.userConfig = res.result
+              this.option2 = this.userConfig.question
+              // 组装密保信息成键值对
+              this.assemblyOptions(this.userConfig)
+            } else {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '查询数据异常',
+                buttonText: '确定'
+              })
+            }
+          } else {
+            this.$vux.alert.show({
+              title: '提示',
+              content: '接口请求出错!',
+              buttonText: '确定'
+            })
+          }
+        })
+      },
+      // 判断密保是否正确
+      checkAnswer () {
+        if (this.currectAnswer) {
+          if (this.currectAnswer === this.userConfig.answer) {
+            this.answerPass = true
+            this.$vux.toast.show({
+              type: 'text',
+              text: '验证成功，请输入新密码。',
+              time: 2000
+            })
+          } else {
+            this.$vux.alert.show({
+              title: '提示',
+              content: '验证不通过，请重新输入',
+              bottonText: '确定'
+            })
+          }
+        } else {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请输入密保答案',
+            bottonText: '确定'
+          })
+        }
+      },
+      // 新密码输入验证
+      checkNewPwd () {
+        let pwdPass = false
+        if (this.newPwd && this.newPwd2) {
+          if (this.userConfig.userPwd !== this.userPwd2) {
+            this.$vux.alert.show({
+              title: '提示',
+              content: '两次密码输入不一致，请重新输入',
+              buttonText: '确定'
+            })
+          } else {
+            pwdPass = true
+          }
+        } else {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '请输入密码/确认密码',
+            buttonText: '确定'
+          })
+        }
+        return pwdPass
+      },
+      // 验证与修改密码
+      modifyPwd () {
+        if (this.checkNewPwd()) {
+          console.log('密码修改成功!')
+        }
+      },
+      // 确定按钮
+      nextEvent () {
+        // 目的： 第一步验证身份，通过之后第二步验证答案，通过之后第三步验证修改密码
+        if (this.answerPass) { // 如果currectAnswer为false，证明用户还没验证密保
+          if (this.userExist) { // 如果userExist为false，证明用户还没确认身份
+            this.findUser()
+          } else {
+            this.checkAnswer()
+          }
+        } else {
+          this.modifyPwd()
+        }
       }
     }
   }

@@ -431,15 +431,23 @@ router.get('/getCartCount', (req, res, next) => {
           result: ''
         })
       } else {
-        let cartList = userDoc.cartList
-        let cartCount = 0
-        cartList.map(item => {
-          cartCount += parseInt(item.productNum)
-        })
+        if (userDoc) {                        // 这里为了配合userId没有的用户，特意这样修改
+          let cartList = userDoc.cartList
+          let cartCount = 0
+          cartList.map(item => {
+            cartCount += parseInt(item.productNum)
+          })
+          res.json({
+            status: '0',
+            msg: '',
+            result: cartCount
+          })
+          return
+        }
         res.json({
           status: '0',
           msg: '',
-          result: cartCount
+          result: 0
         })
       }
     })
@@ -477,7 +485,6 @@ router.get('/findUserByName', (req, res, next) => {
 // 新增用户
 router.post('/register', (req, res, next) => {
   let userConfig = req.body.userConfig
-  console.log(userConfig)
   var newUser = new User(userConfig)
   newUser.save((err, hhh) => {
     if (err) {
@@ -494,21 +501,52 @@ router.post('/register', (req, res, next) => {
       })
     }
   })
-  // User.insertOne({'userName': 'admin01'}, (err, result) => {
-  //   if (err) {
-  //     res.json({
-  //       status: '1',
-  //       msg: '接口异常',
-  //       result: ''
-  //     })
-  //   } else {
-  //     res.json({
-  //       status: '0',
-  //       msg: '插入成功',
-  //       result: result
-  //     })
-  //   }
-  // })
+})
+
+// 根据用户名成获取密保信息
+router.get('/getQuestionByUserName', (req, res, next) => {
+  let userName = req.param('userName')
+  User.findOne({userName: userName}, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (!userDoc) {
+        res.json({
+          status: '0',
+          msg: '用户不存在',
+          result: false
+        })
+      } else {
+        User.findOne({'userName': userName}, (err, userDoc) => {
+          if (err) {
+            res.json({
+              status: '1',
+              msg: err.message,
+              result: ''
+            })
+          } else {
+            if (userDoc) {
+              res.json({
+                status: '0',
+                msg: '密保获取成功',
+                result: userDoc
+              })
+            } else {
+              res.json({
+                status: '1',
+                msg: '该用户不存在',
+                result: ''
+              })
+            }
+          }
+        })
+      }
+    }
+  })
 })
 
 module.exports = router
