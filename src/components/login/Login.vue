@@ -4,10 +4,10 @@
     <div class="login-name">光子工作室</div>
     <div class="login-box">
       <div class="username-box">
-        <input name="username" type="text" v-model="userName" placeholder="用户名" class="username-input">
+        <input name="username" type="text" v-model.trim="userName" placeholder="用户名" class="username-input" onkeyup="this.value=this.value.replace(/\s/g,'')">
       </div>
       <div class="password-box">
-        <input name="password" type="password" v-model="userPwd" placeholder="密码" class="password-input" @keyup.enter="enter">
+        <input name="password" type="password" v-model.trim="userPwd" placeholder="密码" class="password-input" @keyup.enter="enter" onkeyup="this.value=this.value.replace(/\s/g,'')">
       </div>
       <div class="help-box">
         <a class="forget" href="#" @click="toForgotVive"><span class="forgetIcon"></span>忘记密码</a>
@@ -124,9 +124,9 @@
               name: 'work'
             })
           } else {
-            this.$vux.toast.show({
-              text: '您输入的账号/密码无效，请重新输入',
-              type: 'warn',
+            this.$vux.alert.show({
+              content: '您输入的账号/密码无效，请重新输入',
+              type: 'error',
               time: 1500
             })
             console.log('登陆失败')
