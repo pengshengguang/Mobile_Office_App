@@ -9,16 +9,16 @@
           </div>
           <div class="Info-box">
             <div class="username-box" :class="{showPass: userPass}">
-              <input name="username" type="text" placeholder="用户名" class="username-input" v-model="userConfig.userName" @blur="blurCheck(0)" >
+              <input name="username" type="text" placeholder="用户名" class="username-input" v-model.trim="userConfig.userName" @blur="blurCheck(0)" >
             </div>
             <div class="password-box" :class="{showPass: pwdPass}">
-              <input name="password" type="password" placeholder="密码" class="password-input" v-model="userConfig.userPwd" @blur="blurCheck(1)">
+              <input name="password" type="password" placeholder="密码" class="password-input" v-model.trim="userConfig.userPwd" @blur="blurCheck(1)">
             </div>
             <div class="passwordConfirm-box" :class="{showPass: pwd2Pass}">
-              <input name="passwordConfirm" type="password" placeholder="密码确认" class="password-input" v-model="userPwd2" @blur="blurCheck(2)">
+              <input name="passwordConfirm" type="password" placeholder="密码确认" class="password-input" v-model.trim="userPwd2" @blur="blurCheck(2)">
             </div>
             <div class="phone-box" :class="{showPass: phonePass}">
-              <input name="phone" type="text" maxlength="11" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="手机号" class="password-input" v-model="userConfig.phone" @blur="blurCheck(3)">
+              <input name="phone" type="text" maxlength="11" onkeyup="this.value=this.value.replace(/\D/g,'')" placeholder="手机号" class="password-input" v-model.trim="userConfig.phone" @blur="blurCheck(3)">
             </div>
             <div class="question-box">
               <group class="popupRadio-wrapper">
@@ -26,7 +26,7 @@
               </group>
               <div class="question" v-if="option2">
                 <!--文本框是否可编辑根据 item.questionId 来判断，这是因为统计结果中没有questionId字段，而调查问卷详情中，有questionId字段。-->
-                <x-textarea placeholder="请输入密保答案" :max="100" v-model="userConfig.answer"></x-textarea>
+                <x-textarea placeholder="请输入密保答案" :max="100" v-model.trim="userConfig.answer"></x-textarea>
               </div>
             </div>
             <button name="login" @click="registered">注册</button>
@@ -571,6 +571,11 @@
             }
           }
         }
+      }
+    }
+    .showPass{
+      &:after{
+        display: inline-block!important;
       }
     }
   }
