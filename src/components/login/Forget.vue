@@ -12,17 +12,17 @@
           <div class="Info-box">
             <transition name="fade">
               <div class="username-box" v-if="!userExist">
-                <input name="username" type="text" placeholder="请输入用户名" @keyup.enter="findUser" class="username-input" v-model="userConfig.userName">
+                <input name="username" type="text" placeholder="请输入用户名" @keyup.enter="findUser" class="username-input" v-model.trim="userConfig.userName">
               </div>
             </transition>
             <transition name="fade">
               <div class="password-box" v-if="answerPass">
-                <input name="password" type="password" placeholder="密码" class="password-input" v-model="newPwd">
+                <input name="password" type="password" placeholder="密码" class="password-input" v-model.trim="newPwd">
               </div>
             </transition>
             <transition name="fade">
               <div class="password-box" v-if="answerPass">
-                <input name="password" type="password" placeholder="密码确认" class="password-input" v-model="newPwd2">
+                <input name="password" type="password" placeholder="密码确认" class="password-input" v-model.trim="newPwd2">
               </div>
             </transition>
             <transition name="fade">
@@ -32,7 +32,7 @@
                 </group>
                 <div class="question" v-if="option2&&!answerPass">
                   <!--文本框是否可编辑根据 item.questionId 来判断，这是因为统计结果中没有questionId字段，而调查问卷详情中，有questionId字段。-->
-                  <x-textarea placeholder="请输入密保答案" :max="100" v-model="currectAnswer"></x-textarea>
+                  <x-textarea placeholder="请输入密保答案" :max="100" v-model.trim="currectAnswer"></x-textarea>
                 </div>
               </div>
             </transition>
@@ -131,6 +131,7 @@
         funcList: tmpConfig,
         userExist: false,
         answerPass: false,
+        pwdPass: false,
         question: {
           title: '',
           answer: ''
@@ -192,7 +193,7 @@
             this.$vux.alert.show({
               title: '提示',
               content: '网络异常，请重新提交',
-              buttonText: 'hah'
+              buttonText: '确定'
             })
           }
         })
@@ -239,7 +240,6 @@
           if (this.currectAnswer === this.userConfig.answer) {
             this.answerPass = true
             this.$vux.toast.show({
-              type: 'text',
               text: '验证成功，请输入新密码。',
               time: 2000
             })
@@ -262,7 +262,7 @@
       checkNewPwd () {
         let pwdPass = false
         if (this.newPwd && this.newPwd2) {
-          if (this.userConfig.userPwd !== this.userPwd2) {
+          if (this.newPwd2 !== this.newPwd) {
             this.$vux.alert.show({
               title: '提示',
               content: '两次密码输入不一致，请重新输入',
@@ -282,21 +282,58 @@
       },
       // 验证与修改密码
       modifyPwd () {
+        let that = this
         if (this.checkNewPwd()) {
-          console.log('密码修改成功!')
+          this.http.post('/users/modifyPwd', {
+            userPwd: this.newPwd,
+            userName: this.userConfig.userName
+          }).then((response) => {
+            if (response.status === 200) {
+              let res = response.data
+              if (res.status === '1') { // 修改密码成功
+                console.log(res.result)
+                console.log('修改密码成功')
+                this.$vux.alert.show({
+                  title: '提示',
+                  content: '修改密码成功',
+                  buttonText: '去登陆',
+                  onHide () {
+                    that.$router.push({
+                      name: 'Login'
+                    })
+                  }
+                })
+              } else {
+                this.$vux.alert.show({
+                  title: '提示',
+                  content: '查询数据异常',
+                  buttonText: '确定'
+                })
+              }
+            } else {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '接口请求出错!',
+                buttonText: '确定'
+              })
+            }
+          })
         }
       },
       // 确定按钮
       nextEvent () {
-        // 目的： 第一步验证身份，通过之后第二步验证答案，通过之后第三步验证修改密码
-        if (this.answerPass) { // 如果currectAnswer为false，证明用户还没验证密保
-          if (this.userExist) { // 如果userExist为false，证明用户还没确认身份
-            this.findUser()
+        if (this.userExist) { // 验证身份
+          if (this.answerPass) { // 验证答案
+            if (this.pwdPass) { // 验证修改密码
+              console.log('修改密码成功')
+            } else {
+              this.modifyPwd()
+            }
           } else {
             this.checkAnswer()
           }
         } else {
-          this.modifyPwd()
+          this.findUser()
         }
       }
     }
@@ -431,9 +468,10 @@
         }
       }
     }
-    .hah{
-      position: fixed;
-      top: 35%;
+    .showPass{
+      &:after{
+        display: inline-block!important;
+      }
     }
   }
 

@@ -549,4 +549,31 @@ router.get('/getQuestionByUserName', (req, res, next) => {
   })
 })
 
+// 根据用户姓名修改密码
+router.post('/modifyPwd', (req, res, next) => {
+  let userName = req.body.userName
+  let userPwd = req.body.userPwd
+  let conditions = {
+    'userName': userName
+  }
+  let update = {
+    'userPwd': userPwd
+  }
+  User.update(conditions, update, (err, result) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: false
+      })
+    } else {
+      res.json({
+        status: '1',
+        msg: '修改密码成功',
+        result: true
+      })
+    }
+  })
+})
+
 module.exports = router

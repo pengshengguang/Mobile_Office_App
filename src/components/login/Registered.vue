@@ -573,11 +573,6 @@
         }
       }
     }
-    .showPass{
-      &:after{
-        display: inline-block!important;
-      }
-    }
   }
 
 </style>
