@@ -11,7 +11,7 @@
       </tabbar-item>
       <tabbar-item selected link="/component/demo" @click.native="changeIndex(2)">
         <img slot="icon" src="../../assets/img/home/explore.png">
-        <span slot="label">同事圈</span>
+        <span slot="label">资讯圈</span>
       </tabbar-item>
       <tabbar-item badge="2" @click.native="changeIndex(3)">
         <img slot="icon" src="../../assets/img/home/news.png">
@@ -43,6 +43,12 @@
             break
           case 1:
             this.$router.replace({path: '/home/phonebook'})
+            break
+          case 2:
+            this.$router.replace({path: '/home/information'})
+            break
+          case 3:
+            this.$router.replace({path: '/home/personal'})
             break
           default:
             this.$router.replace({path: '/home/work'})

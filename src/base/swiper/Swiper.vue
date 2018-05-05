@@ -14,24 +14,24 @@
 
   const baseList = [{
     url: 'javascript:',
-    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000002wMSq707he6D.jpg'
+    img: require('./../../assets/img/swiper/multilayeredeye.png')
 //    title: '送你一朵fua'
   }, {
     url: 'javascript:',
-    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001x15B624p7m2.jpg'
+    img: require('./../../assets/img/swiper/Untitled-.png')
 //    title: '送你一辆车'
   }, {
     url: 'javascript:',
-    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001x15B624p7m2.jpg'
+    img: require('./../../assets/img/swiper/bond.png')
 //    title: '送你一辆车'
   }, {
     url: 'javascript:',
-    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001x15B624p7m2.jpg'
+    img: require('./../../assets/img/swiper/Take_OFF.png')
 //    title: '送你一辆车'
   }, {
     url: 'javascript:',
 //    img: 'https://static.vux.li/demo/5.jpg', // 404
-    img: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001lkds22tdk0N.jpg'
+    img: require('./../../assets/img/swiper/soaring.png')
 //    title: '送你一次旅行',
 //    fallbackImg: 'http://y.gtimg.cn/music/photo_new/T003R720x288M000001lkds22tdk0N.jpg'
   }]

@@ -1,3 +1,4 @@
+// 命名规则： 组件（name、component）统一用首字母大写，路径（path）统一用首字母小写
 import Vue from 'vue'
 import Router from 'vue-router'
 
@@ -19,6 +20,8 @@ import Forget from '@/components/login/Forget'
 import Home from '@/components/home/Home'
 import Work from '@/components/work/Work'
 import Phonebook from '@/components/phonebook/Phonebook'
+import Information from '@/components/information/Information'
+import Personal from '@/components/personal/Personal'
 
 import ImageUpload from '@/base/ImageUpload/ImageUpload'
 
@@ -51,8 +54,8 @@ const homeRoute = { path: '/home', name: 'home', component: Home, children: [] }
 
 // 商品页
 const goodsRoute = { path: '/goodsList', component: GoodsList, name: 'GoodsList' }
-// const goodsRoute = { path: '/', redirect: 'home/work' }
-const redirectRoute = { path: '/', redirect: 'login' }
+const redirectRoute = { path: '/', redirect: 'home/work' }
+// const redirectRoute = { path: '/', redirect: 'login' }
 
 // 购物车也
 const cartRoute = { path: '/cart', component: Cart, name: 'Cart' }
@@ -79,16 +82,23 @@ const questionnaireRoute = {
 
 // 日常工作
 const workRoute = { path: 'work', name: 'work', component: Work, children: [] }
+
 workRoute.children = [].concat(questionnaireRoute)
 
 // 通讯录
-const phonebookRoute = { path: 'phonebook', name: 'phonebook', component: Phonebook }
+const phonebookRoute = { path: 'phonebook', name: 'Phonebook', component: Phonebook }
+
+// 同事圈
+const informaRoute = { path: 'information', name: 'Information', component: Information }
+
+// 个人页
+const personalRoute = { path: 'personal', name: 'Personal', component: Personal }
 
 // 可滑动的头
 const scrollTabRoute = { path: '/scrollTab', name: 'ScrollTab', component: ScrollTab }
 
 // 组装移动办公APP路由
-homeRoute.children = [].concat(workRoute, phonebookRoute)
+homeRoute.children = [].concat(workRoute, phonebookRoute, informaRoute, personalRoute)
 
 const routes = [].concat(redirectRoute, loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute, test)
 

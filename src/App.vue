@@ -34,6 +34,9 @@ export default {
     z-index: 200 !important;
   }
   /*通用标题栏*/
+   .vux-header{
+     z-index: 201;
+   }
    .vux-header .vux-header-left .left-arrow {
      width: 40px !important;
      height: 40px !important;
@@ -51,6 +54,7 @@ export default {
   .vux-header .vux-header-title {
     color: #020F17 !important;
     width: 100%!important;
+    margin: 0 auto!important;
   }
 
   .ios-padding-top .vux-header {
@@ -61,6 +65,8 @@ export default {
   .ios-padding-top .vux-header .vux-header-right {
     top: 34px !important;
   }
+
+
 
   .ios-padding-top .vux-header .vux-header-left .left-arrow:before {
     top: 9px !important;
@@ -74,7 +80,7 @@ export default {
    }
 
   .whiteBgHeader .vux-header-title {
-    margin: 0 40px !important;
+    /*margin: 0 40px !important;*/
   }
 
   /*透明背景样式名noBgHeader*/

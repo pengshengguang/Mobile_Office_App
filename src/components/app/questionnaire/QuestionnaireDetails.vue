@@ -163,7 +163,7 @@
   .questionnaire-details-wrapper{
     .whiteBgHeader{
       .vux-header-title{
-        margin: 0 60px !important;
+        /*margin: 0 60px !important;*/
       }
     }
   }

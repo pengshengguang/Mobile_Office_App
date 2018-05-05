@@ -1,7 +1,9 @@
 <template>
   <div class="login-wrapper">
-    <img src="./../../assets/img/login/logo.png">
-    <div class="login-name">光子工作室</div>
+    <div class="logo-box">
+      <img src="./../../assets/img/login/logo.png">
+      <div class="login-name">光子工作室</div>
+    </div>
     <div class="login-box">
       <div class="username-box">
         <input name="username" type="text" v-model.trim="userName" placeholder="用户名" class="username-input" onkeyup="this.value=this.value.replace(/\s/g,'')">
@@ -67,7 +69,7 @@
     methods: {
       loading (isShow) {
         if (isShow) {
-          this.$vux.loading.show({ text: '加载中' })
+          this.$vux.loading.show({ text: '登陆中...' })
         } else {
           this.$vux.loading.hide()
         }
@@ -131,6 +133,9 @@
             })
             console.log('登陆失败')
           }
+        }, () => {
+          this.loading(false)
+          this.$vux.toast.show({ text: '登录失败', type: 'cancel' })
         })
       },
       enter (event) {
@@ -177,29 +182,39 @@
     }
   }
 </style>
-
 <style  scoped lang="scss">
   .login-wrapper{
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 60px;
+    /*padding-top: 60px;*/
     height: 100%;
     background-color: #fff;
-    img{
-      width: 83px;
+    .logo-box{
+      background-color: #fff;
+      width: 100%;
+      height: 34%;
+      display: flex;
+      flex-direction: column;
+      flex: none;
       align-items: center;
-    }
-    .login-name{
-      color: #5fb913;
-      font-size: 20px;
-      font-weight: bold;
+      justify-content: center;
+      img{
+        width: 108px;
+        align-items: center;
+        /*border: 1px solid #000;*/
+        /*border-radius: 50%;*/
+      }
+      .login-name{
+        color: #5fb913;
+        font-size: 20px;
+        font-weight: bold;
+      }
     }
     .login-box {
       width: 100%;
       display: flex;
       flex-direction: column;
-      padding-top: 10px;
       .userIcon {
         width: 26px;
       }
