@@ -25,9 +25,9 @@
   import { Grid, GridItem } from 'vux'
 
   const tmpConfig = [
-    { funcName: '办公用品', link: '/home/work/questionnaire/questionnaireDetails', icon: require('./../../assets/img/work/supliesLogo.png') },
-    { funcName: '用车申请', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/carLogo.png') },
-    { funcName: '问卷调查', link: '/home/work/questionnaire/questionnaireDetails', icon: require('./../../assets/img/work/questionnaireIcon.png') },
+    { funcName: '办公用品', link: '/home/0/work/questionnaire/questionnaireDetails', icon: require('./../../assets/img/work/supliesLogo.png') },
+    { funcName: '用车申请', link: '/home/0/work/questionnaire', icon: require('./../../assets/img/work/carLogo.png') },
+    { funcName: '问卷调查', link: '/home/0/work/questionnaire/questionnaireDetails', icon: require('./../../assets/img/work/questionnaireIcon.png') },
     { funcName: '通讯录', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/phoneLogo.png') },
     { funcName: '优惠商店', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/storeLogo.png') },
     { funcName: '资讯', link: '/home/work/questionnaire', icon: require('./../../assets/img/work/newLogo.png') },

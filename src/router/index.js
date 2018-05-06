@@ -21,6 +21,7 @@ import Home from '@/components/home/Home'
 import Work from '@/components/work/Work'
 import Phonebook from '@/components/phonebook/Phonebook'
 import Information from '@/components/information/Information'
+import InformationDetails from '@/components/information/InformationDetails'
 import Personal from '@/components/personal/Personal'
 
 import ImageUpload from '@/base/ImageUpload/ImageUpload'
@@ -50,11 +51,11 @@ const loginRoute = {
 }
 
 // 主页
-const homeRoute = { path: '/home', name: 'home', component: Home, children: [] }
+const homeRoute = { path: '/home/:tabbar', name: 'home', component: Home, children: [] }
 
 // 商品页
 const goodsRoute = { path: '/goodsList', component: GoodsList, name: 'GoodsList' }
-const redirectRoute = { path: '/', redirect: 'home/work' }
+const redirectRoute = { path: '/', redirect: 'home/0/work' }
 // const redirectRoute = { path: '/', redirect: 'login' }
 
 // 购物车也
@@ -89,7 +90,14 @@ workRoute.children = [].concat(questionnaireRoute)
 const phonebookRoute = { path: 'phonebook', name: 'Phonebook', component: Phonebook }
 
 // 同事圈
-const informaRoute = { path: 'information', name: 'Information', component: Information }
+const informaRoute = {
+  path: 'information',
+  name: 'Information',
+  component: Information,
+  children: [
+    { path: 'informationDetails', name: 'InformationDetails', component: InformationDetails }
+  ]
+}
 
 // 个人页
 const personalRoute = { path: 'personal', name: 'Personal', component: Personal }

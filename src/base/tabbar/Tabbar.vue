@@ -39,19 +39,19 @@
         this.currentIndex = index
         switch (this.currentIndex) {
           case 0:
-            this.$router.replace({path: '/home/work'})
+            this.$router.replace({path: '/home/0/work'})
             break
           case 1:
-            this.$router.replace({path: '/home/phonebook'})
+            this.$router.replace({path: '/home/0/phonebook'})
             break
           case 2:
-            this.$router.replace({path: '/home/information'})
+            this.$router.replace({path: '/home/0/information'})
             break
           case 3:
-            this.$router.replace({path: '/home/personal'})
+            this.$router.replace({path: '/home/0/personal'})
             break
           default:
-            this.$router.replace({path: '/home/work'})
+            this.$router.replace({path: '/home/0/work'})
             break
         }
       }

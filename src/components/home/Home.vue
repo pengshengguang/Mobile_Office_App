@@ -3,7 +3,7 @@
     <transition name="fade" >
       <router-view></router-view>
     </transition>
-    <div class="tabbar-box">
+    <div class="tabbar-box" v-if="tabbarShow">
       <Tabbar></Tabbar>
     </div>
   </div>
@@ -17,6 +17,18 @@
     components: {
       Swiper,
       Tabbar
+    },
+    data () {
+      return {
+        tabbarShow: true
+      }
+    },
+    updated () {
+      if (this.$route.params.tabbar === '0') {
+        this.tabbarShow = true
+      } else {
+        this.tabbarShow = false
+      }
     }
   }
 </script >

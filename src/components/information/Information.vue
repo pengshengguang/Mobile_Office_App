@@ -4,7 +4,7 @@
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: false}"><div class="del" slot="left" @click="toggleDel"></div>资讯圈<div class="add" slot="right"></div></x-header>
     </div>
     <div class="container">
-      <div style="margin: 10px;overflow: hidden;" v-for="item in list" :class="{'info-box': isDel}" @click="deleteEvent">
+      <div style="margin: 10px;overflow: hidden;" v-for="item in list" :class="{'info-box': isDel}" @click="clickEvent">
         <masker style="border-radius: 2px;">
           <div class="m-img" :style="{backgroundImage: 'url(' + item.img + ')'}"></div>
           <div slot="content" class="m-title">
@@ -16,7 +16,7 @@
       </div>
       <div style="margin: 10px;overflow: hidden;"  :class="{'info-box': isDel}">
         <masker style="border-radius: 2px;" color="F9C90C" :opacity="0.8">
-          <div class="m-img" style="background-image:url(https://cdn.xiaotaojiang.com/uploads/56/4b3601364b86fdfd234ef11d8712ad/_.jpg)"></div>
+          <div class="m-img" style="background-image:url(https://o3e85j0cv.qnssl.com/hot-chocolate-1068703__340.jpg)"></div>
           <div slot="content" class="m-title">
             VUX
             <br/>
@@ -25,6 +25,9 @@
         </masker>
       </div>
     </div>
+    <transition name="slide">
+      <router-view class="cover"></router-view>
+    </transition>
   </div>
 </template>
 
@@ -54,13 +57,13 @@
           img: 'https://o3e85j0cv.qnssl.com/hot-chocolate-1068703__340.jpg'
         }, {
           title: '远离车内毒气，日本车载空气净化器精选',
-          img: 'https://cdn.xiaotaojiang.com/uploads/56/4b3601364b86fdfd234ef11d8712ad/_.jpg'
+          img: 'https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg'
         }, {
           title: '美容用品 & 日用品（上）',
-          img: 'https://cdn.xiaotaojiang.com/uploads/59/b22e0e62363a4a652f28630b3233b9/_.jpg'
+          img: 'https://o3e85j0cv.qnssl.com/waterway-107810__340.jpg'
         }, {
           title: '远离车内毒气，日本车载空气净化器精选',
-          img: 'https://cdn.xiaotaojiang.com/uploads/56/4b3601364b86fdfd234ef11d8712ad/_.jpg'
+          img: 'https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg'
         }]
       }
     },
@@ -68,10 +71,16 @@
       toggleDel () {
         this.isDel = !this.isDel
       },
-      deleteEvent () {
-        if (!this.isDel) {
-          return
+      // 资讯box点击事件
+      clickEvent () {
+        if (this.isDel) {
+          this.deleteInfo()
+        } else {
+          this.viewInfo()
         }
+      },
+      // 删除资讯
+      deleteInfo () {
         this.$vux.confirm.show({
           content: `该资讯将删除下架，是否删除？`,
           confirmText: '删除',
@@ -89,12 +98,22 @@
             console.log('plugin confirm')
           }
         })
+      },
+      // 进入资讯详情
+      viewInfo () {
+        this.$router.push({
+          path: '/home/1/information/informationDetails'
+        })
       }
+
     }
   }
 </script>
 
 <style lang="scss">
+  .tabbar-box{
+    /*display: none;*/
+  }
   .information-wrapper{
     .title{
       .vux-header{
@@ -169,6 +188,12 @@
       display: inline-block;
       margin-top: 5px;
     }
+  }
+  .slide-enter-active,.slide-leave-active{
+    transition: all 0.8s;// 关于vue自带的动画效果，可看官网
+  }
+  .slide-enter, .slide-leave-to{
+    transform: translate3d(100%, 0, 0)
   }
 </style>
 <style lang="scss" scoped>
