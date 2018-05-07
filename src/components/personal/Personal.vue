@@ -133,7 +133,7 @@
         .label-box{
           .label{
             font-size: 14px;
-            background-color: #989ea5;
+            background-color: rgba(152, 158, 165, 0.6);
             border-radius: 30px;
             padding: 2px 8px;
           }
@@ -143,7 +143,7 @@
         position: absolute;
         top: 50%;
         right: 30px;
-        background-color: #989ea5;
+        background-color: rgba(152, 158, 165, 0.61);
         display: flex;
         padding: 4px 8px;
         border-radius: 6px;
