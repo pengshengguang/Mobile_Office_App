@@ -1,17 +1,19 @@
 <template>
   <div class="apply-item-wrapper">
     <div class="apply-content-box">
-      <div class="more">
-        <div class="showArrow">
-          <div class="right_icon" :style='upArrowRight'></div>
+      <div v-if="showDom">
+        <div class="more">
+          <div class="showArrow">
+            <div class="right_icon" :style='upArrowRight'></div>
+          </div>
+          <div class="showArrow" style="display: none">
+            <div class="right_icon" :style='downArrowRight'></div>
+          </div>
         </div>
-        <div class="showArrow" style="display: none">
-          <div class="right_icon" :style='downArrowRight'></div>
-        </div>
+        <div class="cencel">撤回</div>
+        <div class="applicants-line">开发工程师/彭胜光</div>
+        <div class="type-time-line">2个品类/共2件   05-10</div>
       </div>
-      <div class="cencel">撤回</div>
-      <div class="applicants-line">开发工程师/彭胜光</div>
-      <div class="type-time-line">2个品类/共2件   05-10</div>
       <div class="category-box">
         <div class="category-name">白板附件<span>2个品类/共2件</span></div> <!--大类-->
         <div class="category-content"> <!--大类下的小类商品列表-->
@@ -19,14 +21,16 @@
             <div class="proName">史泰博 白板纸张 56*90cm，80G 白色（卷）</div>
             <div class="proNum">x1</div>
           </div>
+          <div class="proCode-line">1100013846EA</div>
+        </div>
+        <div class="category-content"> <!--大类下的小类商品列表-->
           <div class="proName-line">
             <div class="proName">史泰博 白板纸张 56*90cm，80G 白色（卷）</div>
             <div class="proNum">x1</div>
           </div>
-          <div class="proName-line">
-            <div class="proName">史泰博 白板纸张 56*90cm，80G 白色（卷）</div>
-            <div class="proNum">x1</div>
-          </div>
+          <div class="proCode-line">1100013846EA</div>
+        </div>
+        <div class="category-content"> <!--大类下的小类商品列表-->
           <div class="proName-line">
             <div class="proName">史泰博 白板纸张 56*90cm，80G 白色（卷）</div>
             <div class="proNum">x1</div>
@@ -35,14 +39,23 @@
         </div>
       </div>
     </div>
-    <div class="msg-line">意见：我知道了，请带薪等候。</div>
-    <div class="btn-box">我知道了</div>
+    <div v-if="showDom">
+      <div class="msg-line">意见：我知道了，请带薪等候。</div>
+      <div class="my-msg-line">备注：我知道了，请带薪等候。</div>
+      <div class="btn-box" v-if="showDom">我知道了</div>
+    </div>
     <div class="empty-box"></div>
   </div>
 </template>
 
 <script>
   export default {
+    props: {
+      showDom: { // 是否为购物车界面
+        type: Boolean,
+        default: true
+      }
+    },
     data () {
       return {
         // 收起展开Icon
@@ -133,8 +146,9 @@
             .proNum{
               flex: 0 0 30%;
               align-self: flex-start;
-              padding-left: 30px;
+              padding-left: 60px;
               font-weight: bold;
+              font-size: 16px;
             }
           }
           .proCode-line{
@@ -147,6 +161,13 @@
       padding: 8px 0;
       border-top: 1px solid #eaeaea;
       margin-left: 18px;
+      color: #149c81;
+    }
+    .my-msg-line{
+      padding: 8px 0;
+      border-top: 1px solid #eaeaea;
+      margin-left: 18px;
+      /*color: #149c81;*/
     }
     .btn-box{
       flex: 0 0 44px;

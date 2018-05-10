@@ -1,34 +1,32 @@
 <template>
   <div>
-    <div style="margin: 10px;overflow: hidden;" v-for="item in list">
-      <masker style="border-radius: 2px;">
-        <div class="m-img" :style="{backgroundImage: 'url(' + item.img + ')'}"></div>
-        <div slot="content" class="m-title">
-          {{item.title}}
-          <br/>
-          <span class="m-time">2016-03-18</span>
+    <swipeout class="vux-1px-tb itemBox" :threshold=".2">
+      <swipeout-item transition-mode="reveal">
+        <div slot="right-menu">
+          <swipeout-button type="warn">删除</swipeout-button>
         </div>
-      </masker>
-    </div>
-    <div style="margin: 10px;overflow: hidden;">
-      <masker style="border-radius: 2px;" color="F9C90C" :opacity="0.8">
-        <div class="m-img" style="background-image:url(https://cdn.xiaotaojiang.com/uploads/56/4b3601364b86fdfd234ef11d8712ad/_.jpg)"></div>
-        <div slot="content" class="m-title">
-          VUX
-          <br/>
-          <span class="m-time">2016-03-18</span>
+        <div slot="content"  style="padding:10px;">
+
         </div>
-      </masker>
-    </div>
+      </swipeout-item>
+    </swipeout>
   </div>
 </template>
 
 <script>
-  import { Masker } from 'vux'
+  import { Group, GroupTitle, Swipeout, SwipeoutItem, SwipeoutButton, XButton, XHeader, Datetime, XTextarea } from 'vux'
 
   export default {
     components: {
-      Masker
+      Group,
+      GroupTitle,
+      Swipeout,
+      SwipeoutItem,
+      SwipeoutButton,
+      XButton,
+      XHeader,
+      Datetime,
+      XTextarea
     },
     data () {
       return {
@@ -48,37 +46,22 @@
 </script>
 
 <style lang="less">
-  .m-img {
-    padding-bottom: 33%;
-    display: block;
+  .item_details{
     position: relative;
-    max-width: 100%;
-    background-size: cover;
-    background-position: center center;
-    cursor: pointer;
-    border-radius: 2px;
   }
-
-  .m-title {
-    color: #fff;
-    text-align: center;
-    text-shadow: 0 0 2px rgba(0, 0, 0, .5);
-    font-weight: 500;
+  .item_details .name{
     font-size: 16px;
-    position: absolute;
-    left: 0;
-    right: 0;
-    width: 100%;
-    text-align: center;
-    top: 50%;
-    transform: translateY(-50%);
+    line-height: 1.3;
   }
-
-  .m-time {
-    font-size: 12px;
-    padding-top: 4px;
-    border-top: 1px solid #f0f0f0;
-    display: inline-block;
-    margin-top: 5px;
+  .item_details .code{
+    font-size: 14px;
+    color: #8c9194;
+    margin-top: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .item_details .exist{
+    color: red;
+    font-size: 14px;
   }
 </style>

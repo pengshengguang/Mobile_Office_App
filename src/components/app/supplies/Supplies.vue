@@ -1,11 +1,12 @@
 <template>
   <transition name="slide">
     <div class="supplies-wrapper cover">
-      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品<div class="add" slot="right"></div></x-header>
-      <div class="type-box">
-        <div class="feedback-type" @click="tab_click(0);" :class="{'active':tabnum === 0}">已反馈（10）</div>
+      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品<div class="add" slot="right" @click="toClassifyView"></div></x-header>
+      <div class="tab-box">
+        <div class="feedback-tab" @click="tab_click(0);" :class="{'active':tabnum === 0}">已反馈（10）</div>
         <div class="empty"></div>
-        <div class="no-feedback-type" @click="tab_click(1);" :class="{'active':tabnum === 1}">待审批（20）</div>
+        <div class="no-feedback-tab" @click="tab_click(1);" :class="{'active':tabnum === 1}">待审批（20）</div>
+        <div class="approvaling-tab" @click="tab_click(2);" :class="{'active':tabnum === 2}" style="display: none">审批中（20）</div>
       </div>
       <div class="main-box">
         <div class="approval-apply-list">
@@ -17,13 +18,14 @@
           <supplies-apply-item></supplies-apply-item>
         </div>
       </div>
+      <router-view></router-view>
     </div>
   </transition>
 </template>
 
 <script>
   import { XHeader } from 'vux'
-  import SuppliesApplyItem from './SuppliesApplyItem.vue'
+  import SuppliesApplyItem from './assembly/SuppliesApplyItem.vue'
 
   export default {
     data () {
@@ -42,6 +44,11 @@
       },
       tab_click (num) {
         this.tabnum = num
+      },
+      toClassifyView () {
+        this.$router.push({
+          name: 'SuppliesClassify'
+        })
       }
     }
   }
@@ -70,14 +77,14 @@
     color: #020F17 !important;
     display: flex;
     flex-direction: column;
-    .type-box{
+    .tab-box{
       flex: 0 0 40px;
       display: flex;
       border-bottom: 1px solid #DFE1E3;
       background: #f0f4f7;
       align-items: center;/*让中间的分割线剧中*/
       /*background-color: #009de6;*/
-      .feedback-type{
+      .feedback-tab{
         flex: auto;
         display: flex;
         justify-content: center;
@@ -88,12 +95,19 @@
         background-color: #DFE1E3;
         height: 30px;
       }
-      .no-feedback-type{
+      .no-feedback-tab{
         flex: auto;
         display: flex;
         justify-content: center;
         align-items: center;
       }
+      .approvaling-tab{
+        flex: auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
       .active{
         position: relative;
         color: #149c81;

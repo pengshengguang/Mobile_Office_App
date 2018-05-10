@@ -10,6 +10,8 @@ import OrderSuccess from '@/components/app/shopping/OrderSuccess'
 import ScrollTab from '@/components/app/scrollTab/scrollTab'
 
 import Supplies from '@/components/app/supplies/Supplies'
+import SuppliesClassify from '@/components/app/supplies/SuppliesClassify'
+import SuppliesCart from '@/components/app/supplies/SuppliesCart'
 
 import Questionnaire from '@/components/app/questionnaire/Questionnaire'
 import QuestionnaireDetails from '@/components/app/questionnaire/QuestionnaireDetails'
@@ -73,7 +75,14 @@ const orderRoute = { path: '/orderConfirm', component: OrderConfirm, name: 'Orde
 const orderSuccessRoute = { path: '/orderSuccess', component: OrderSuccess, name: 'OrderSuccess' }
 
 // 办公用品
-const suppliesRoute = { path: 'supplies', component: Supplies, name: 'Supplies' }
+const suppliesRoute = {
+  path: 'supplies',
+  component: Supplies,
+  name: 'Supplies',
+  children: [
+    { path: 'suppliesClassify', name: 'SuppliesClassify', component: SuppliesClassify, children: [{ path: 'suppliesCart', name: 'SuppliesCart', component: SuppliesCart }] }
+  ]
+}
 
 // 问卷调查
 const questionnaireRoute = {
