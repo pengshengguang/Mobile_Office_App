@@ -9,6 +9,8 @@ import OrderConfirm from '@/components/app/shopping/OrderConfirm'
 import OrderSuccess from '@/components/app/shopping/OrderSuccess'
 import ScrollTab from '@/components/app/scrollTab/scrollTab'
 
+import Supplies from '@/components/app/supplies/Supplies'
+
 import Questionnaire from '@/components/app/questionnaire/Questionnaire'
 import QuestionnaireDetails from '@/components/app/questionnaire/QuestionnaireDetails'
 import QuestionnaireResult from '@/components/app/questionnaire/QuestionnaireResult'
@@ -70,6 +72,9 @@ const orderRoute = { path: '/orderConfirm', component: OrderConfirm, name: 'Orde
 // 订单成功页
 const orderSuccessRoute = { path: '/orderSuccess', component: OrderSuccess, name: 'OrderSuccess' }
 
+// 办公用品
+const suppliesRoute = { path: 'supplies', component: Supplies, name: 'Supplies' }
+
 // 问卷调查
 const questionnaireRoute = {
   path: 'questionnaire',
@@ -84,7 +89,7 @@ const questionnaireRoute = {
 // 日常工作
 const workRoute = { path: 'work', name: 'work', component: Work, children: [] }
 
-workRoute.children = [].concat(questionnaireRoute)
+workRoute.children = [].concat(questionnaireRoute, suppliesRoute)
 
 // 通讯录
 const phonebookRoute = { path: 'phonebook', name: 'Phonebook', component: Phonebook }
