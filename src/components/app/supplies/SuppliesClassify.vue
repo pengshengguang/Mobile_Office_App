@@ -1,193 +1,17 @@
 <template>
   <transition name="fade">
-    <div class="supplies-wrapper cover">
+    <div class="supplies-classify-wrapper cover">
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品目录</x-header>
       <div class="content-box">
         <div class="left-box">
           <div class="className active">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具</div>
-          <div class="className">文具</div>
-          <div class="className active">用品</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具/文具/用品/办公</div>
-          <div class="className">办公文具</div>
-          <div class="className">文具</div>
-          <div class="className active">用品</div>
         </div>
         <div class="right-box">
           <div class="class-box">
             <div class="class-name">办公文具</div>
             <div class="class-details">
               <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-            </div>
-          </div>
-          <div class="class-box">
-            <div class="class-name">办公文具</div>
-            <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-            </div>
-          </div>
-          <div class="class-box">
-            <div class="class-name">办公文具</div>
-            <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-            </div>
-          </div>
-          <div class="class-box">
-            <div class="class-name">办公文具</div>
-            <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-            </div>
-          </div>
-          <div class="class-box">
-            <div class="class-name">办公文具</div>
-            <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-            </div>
-          </div>
-          <div class="class-box">
-            <div class="class-name">办公文具</div>
-            <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-            </div>
-          </div>
-          <div class="class-box">
-            <div class="class-name">办公文具</div>
-            <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-            </div>
-          </div>
-          <div class="class-box">
-            <div class="class-name">办公文具</div>
-            <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item">财务档案用品</div>
+                <div class="class-item" @click="toSuppliesDetailListView">财务档案用品</div>
               </div>
               <div class="item-outer">
                 <div class="class-item">抽杆夹</div>
@@ -240,6 +64,12 @@
         this.$router.push({
           name: 'SuppliesCart'
         })
+      },
+      toSuppliesDetailListView () {
+        console.log('去办公用品列表详情页')
+        this.$router.push({
+          name: 'SuppliesDetailList'
+        })
       }
     }
   }
@@ -255,7 +85,7 @@
 </style>
 
 <style lang="scss" scoped>
-  .supplies-wrapper{
+  .supplies-classify-wrapper{
     display: flex;
     flex-direction: column;
     .content-box{

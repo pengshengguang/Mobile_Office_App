@@ -298,6 +298,7 @@
       <div class="btn-box">
         <div class="text">提交</div>
       </div>
+      <router-view></router-view>
     </div>
   </transition>
 </template>

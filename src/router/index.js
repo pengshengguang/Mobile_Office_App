@@ -12,6 +12,7 @@ import ScrollTab from '@/components/app/scrollTab/scrollTab'
 import Supplies from '@/components/app/supplies/Supplies'
 import SuppliesClassify from '@/components/app/supplies/SuppliesClassify'
 import SuppliesCart from '@/components/app/supplies/SuppliesCart'
+import SuppliesDetailList from '@/components/app/supplies/SuppliesDetailList'
 
 import Questionnaire from '@/components/app/questionnaire/Questionnaire'
 import QuestionnaireDetails from '@/components/app/questionnaire/QuestionnaireDetails'
@@ -80,7 +81,19 @@ const suppliesRoute = {
   component: Supplies,
   name: 'Supplies',
   children: [
-    { path: 'suppliesClassify', name: 'SuppliesClassify', component: SuppliesClassify, children: [{ path: 'suppliesCart', name: 'SuppliesCart', component: SuppliesCart }] }
+    { path: 'suppliesClassify',
+      name: 'SuppliesClassify',
+      component: SuppliesClassify,
+      children: [
+        { path: 'suppliesCart',
+          name: 'SuppliesCart',
+          component: SuppliesCart,
+          children: [
+          { path: 'suppliesDetailList', name: 'SuppliesDetailList', component: SuppliesDetailList }
+          ]
+        }
+      ]
+    }
   ]
 }
 
