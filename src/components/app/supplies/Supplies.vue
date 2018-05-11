@@ -40,7 +40,9 @@
     },
     methods: {
       goBack () {
-        this.$router.back(-1)
+        this.$router.push({
+          name: 'work'
+        })
       },
       tab_click (num) {
         this.tabnum = num

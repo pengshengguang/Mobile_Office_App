@@ -8,28 +8,44 @@
         </tab-item>
       </tab>
     </div>
-    <div class="list-box">
+    <div class="list-box" style="padding-bottom: 80px">
       <div class="item-wrapper">
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-        <supplies-pro-Item></supplies-pro-Item>
-
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
+        <supplies-product-Item></supplies-product-Item>
       </div>
     </div>
-    <div class="cart-box"></div>
+    <div class="btn-box">
+      <div class="text" @click="showCart">选择6个品类/共9件</div>
+      <div class="confirm">确认</div>
+    </div>
+    <!--底部弹出div-->
+    <div class="myPopup" v-if="showPop">
+      <div class="mask" @click="closePop"></div>
+      <div class="popupContent">
+        <!--购物车列表详情-->
+        <div class="cartContent">
+          <supplies-product-Item></supplies-product-Item>
+          <supplies-product-Item></supplies-product-Item>
+          <supplies-product-Item></supplies-product-Item>
+          <supplies-product-Item></supplies-product-Item>
+          <supplies-product-Item></supplies-product-Item>
+          <supplies-product-Item></supplies-product-Item>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
   import { Tab, TabItem, XButton, XHeader } from 'vux'
-  import SuppliesProItem from './assembly/SuppliesProItem.vue'
+  import SuppliesProductItem from './assembly/SuppliesProductItem.vue'
 
   export default {
     components: {
@@ -37,13 +53,14 @@
       TabItem,
       XButton,
       XHeader,
-      SuppliesProItem
+      SuppliesProductItem
     },
     data () {
       return {
         // tab标签div长度
         tabWidth: document.body.clientWidth,
-        list: ['打印机', '复印机', '打印纸', '订书机11111111', '打印机2222222222222222', '复印机3333333333333', '打印纸444444444444', '订书机5']
+        list: ['打印机', '复印机', '打印纸', '订书机11111111', '打印机2222222222222222', '复印机3333333333333', '打印纸444444444444', '订书机5'],
+        showPop: false
       }
     },
     mounted () {
@@ -130,6 +147,12 @@
         // 的中心
         let tabConter = (document.body.clientWidth - this.$refs.tabBox.$children[index].$el.offsetWidth) / 2
         this.$refs.tabBoxOuter.scrollLeft = this.$refs.tabBox.$children[index].$el.offsetLeft - tabConter
+      },
+      showCart () {
+        this.showPop = !this.showPop
+      },
+      closePop () {
+        this.showPop = false
       }
     }
   }
@@ -156,6 +179,64 @@
       overflow: auto;
       .item-wrapper{
         overflow: auto;
+      }
+    }
+    .btn-box{
+      border-top: 1px solid #ebebeb;
+      position: fixed;
+      z-index: 1001;
+      bottom: 0;
+      height: 44px;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      background-color: #ffffff;
+      .text{
+        flex: 0 0 70%;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        padding-left: 10px;
+        &:after{
+          content: '';
+          display: inline-block;
+          width: 0;
+          height: 0;
+          border-left: 6px solid transparent;
+          border-right: 6px solid transparent;
+          border-bottom: 8px solid #c5c5c5;
+        }
+      }
+      .confirm{
+        font-size: 18px;
+        color: #ffffff;
+        flex: 0 0 30%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #149c81;
+      }
+    }
+    .myPopup{
+      .mask {
+        top: 0;
+        bottom: 150px;
+        z-index: 1000;
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        background-color: rgba(6, 6, 6, 0.45);
+      }
+      .popupContent{
+        width: 100%;
+        max-height: 70%;
+        background-color: #fff;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        position: fixed;
+        bottom: 0;
+        z-index: 1001;
+        margin-bottom: 44px;
       }
     }
 
