@@ -4,7 +4,7 @@
     <div class="tabBoxOuter" ref="tabBoxOuter" style="width: 100%;overflow:scroll;-webkit-overflow-scrolling:touch;">
       <tab ref="tabBox" style="background-color: #f2f4f5;font-size: 14px" bar-active-color="#149c81" :line-width="4"
            :custom-bar-width="getBarWidth" :style="{width: tabWidth + 'px'}">
-        <tab-item v-for="(item,index) in smallClassList" :key="index" @on-item-click="onItemClick(item.smallClass, index)">{{item.smallClass}}
+        <tab-item v-for="(item,index) in smallClassList" :key="index" @on-item-click="onItemClick(item.smallClass, index, item.smallClassCode)">{{item.smallClass}}
         </tab-item>
       </tab>
     </div>
@@ -75,7 +75,22 @@
           name: 'Supplies'
         })
       },
-      onItemClick (keyword, index) {
+      // 选中tab-item居中显示
+      clickTabItemById (index) {
+        // 模拟点击事件
+        this.$refs.tabBox.$children[index].onItemClick()
+        // 滑动到对应的点击标签页
+        // 这里值得注意的是，为什么tabBoxOut的宽度明明只有屏幕的宽度，而里面的tabBox是超过屏幕的宽度的，所有才
+        // 可以滑动，滑动的是tabBox这个div，而真正滑动的事件却是绑定在tabBoxOut这个div当中。所以，当你使用scrollLeft
+        // 这个属性的时候，是要用在tabBoxOut这个div上，而不是在tabBox这个div上。
+        // ----------------------------------------------------------------
+        // 接下来可以运用offsetLeft计算tab-item在父div tabBox横轴偏移量、scrollLeft滑动到对应的tab-item，然后运用数学公式来把激活的tab-item滚动到tabBoxOuter这个div
+        // 的中心
+        let tabConter = (document.body.clientWidth - this.$refs.tabBox.$children[index].$el.offsetWidth) / 2
+        this.$refs.tabBoxOuter.scrollLeft = this.$refs.tabBox.$children[index].$el.offsetLeft - tabConter
+      },
+      // 底部bar精准跟随，点击tab-item触发事件
+      onItemClick (keyword, index, smallClassCode) {
         console.log('on item click:', index)
         let barLeft = 0
         document.getElementsByClassName('vux-tab-ink-bar')[0].style.right = '100%'
@@ -90,6 +105,12 @@
           i += 1
         }
         document.getElementsByClassName('vux-tab-ink-bar')[0].style.left = (barLeft + 'px')
+        // 根据二级类别code查suppliesList
+        if (smallClassCode) {
+          // 清空分页数据
+          this.page = 1 // 每一次点击tab-item，都需要初始化页码
+          this.getSuppliesList(smallClassCode)
+        }
       },
       // 函数控制tab-bar的宽度,如果tab标签页数量为1，则隐藏tab-bar
       getBarWidth () {
@@ -98,6 +119,7 @@
         }
         return '45px'
       },
+      // 控制可滑动的tab的宽度
       setTabWidth () {
         // 页面完成刷新之后
         this.$nextTick(() => {
@@ -129,19 +151,6 @@
           }
         }, 1000)
       },
-      clickTabItemById (index) {
-        // 模拟点击事件
-        this.$refs.tabBox.$children[index].onItemClick()
-        // 滑动到对应的点击标签页
-        // 这里值得注意的是，为什么tabBoxOut的宽度明明只有屏幕的宽度，而里面的tabBox是超过屏幕的宽度的，所有才
-        // 可以滑动，滑动的是tabBox这个div，而真正滑动的事件却是绑定在tabBoxOut这个div当中。所以，当你使用scrollLeft
-        // 这个属性的时候，是要用在tabBoxOut这个div上，而不是在tabBox这个div上。
-        // ----------------------------------------------------------------
-        // 接下来可以运用offsetLeft计算tab-item在父div tabBox横轴偏移量、scrollLeft滑动到对应的tab-item，然后运用数学公式来把激活的tab-item滚动到tabBoxOuter这个div
-        // 的中心
-        let tabConter = (document.body.clientWidth - this.$refs.tabBox.$children[index].$el.offsetWidth) / 2
-        this.$refs.tabBoxOuter.scrollLeft = this.$refs.tabBox.$children[index].$el.offsetLeft - tabConter
-      },
       showCart () {
         this.showPop = !this.showPop
       },
@@ -154,15 +163,15 @@
         // 从store状态读数据
         this.smallClassList = this.$store.state.supplies.smallClassList // 一级index
         this.smallClassIndex = this.$store.state.supplies.smallClassIndex // 二级index
-        let smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级Code
-        this.getSuppliesList(smallClassCode)
+//        let smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级Code
+//        this.getSuppliesList(smallClassCode)
         setTimeout(() => { // 居中显示当前点击二级类别名称
           that.clickTabItemById(this.smallClassIndex)  //  尼玛，这里不能用this！！！！！
         }, 20)
         this.smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级code
       },
       // 根据二级smallClassCode获取办公用品list
-      getSuppliesList (smallClassCode, flag) {
+      getSuppliesList (smallClassCode, flag) {  // flag为true，证明第二次加载数据
         this.smallClassCode = smallClassCode
         let param = {
           smallClassCode: smallClassCode,
@@ -175,7 +184,7 @@
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              if (flag) {
+              if (flag) { // 第二次加载数据
                 this.suppliesList = this.suppliesList.concat(res.result.list)
                 if (res.result.count === 0) {
                   this.busy = true
@@ -186,9 +195,16 @@
                 } else {
                   this.busy = false
                 }
-              } else {
+              } else { // 第一次加载数据
                 this.suppliesList = res.result.list // 办公用品列表
                 this.busy = false
+                if (res.result.count === 0) {
+                  this.$vux.toast.show({
+                    text: '该分类下无数据',
+                    type: 'text'
+                  })
+                  this.busy = true
+                }
               }
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
