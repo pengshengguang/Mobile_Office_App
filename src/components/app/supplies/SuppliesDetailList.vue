@@ -4,7 +4,7 @@
     <div class="tabBoxOuter" ref="tabBoxOuter" style="width: 100%;overflow:scroll;-webkit-overflow-scrolling:touch;">
       <tab ref="tabBox" style="background-color: #f2f4f5;font-size: 14px" bar-active-color="#149c81" :line-width="4"
            :custom-bar-width="getBarWidth" :style="{width: tabWidth + 'px'}">
-        <tab-item v-for="(item,index) in list" :key="index" @on-item-click="onItemClick(item, index)">{{item}}
+        <tab-item v-for="(item,index) in smallClassList" :key="index" @on-item-click="onItemClick(item.smallClass, index)">{{item.smallClass}}
         </tab-item>
       </tab>
     </div>
@@ -89,7 +89,7 @@
         console.log('on item click:', index)
         let barLeft = 0
         document.getElementsByClassName('vux-tab-ink-bar')[0].style.right = '100%'
-        for (let i = 0; i < this.list.length;) {
+        for (let i = 0; i < this.smallClassList.length;) {
           if (document.getElementsByClassName('vux-tab-item')[i].innerText === keyword) {
             console.log('document.getElementsByClassName(\'vux-tab-item\')[' + index + '].offsetWidth = ' + document.getElementsByClassName('vux-tab-item')[i].offsetWidth)
             barLeft += document.getElementsByClassName('vux-tab-item')[i].offsetWidth / 2
