@@ -46,6 +46,7 @@
 <script>
   import { Tab, TabItem, XButton, XHeader } from 'vux'
   import SuppliesProductItem from './assembly/SuppliesProductItem.vue'
+  import Httpservice from '@/services/HttpService'
 
   export default {
     components: {
@@ -57,15 +58,23 @@
     },
     data () {
       return {
+        http: Httpservice.getAxios,
         // tab标签div长度
         tabWidth: document.body.clientWidth,
         list: ['打印机', '复印机', '打印纸', '订书机11111111', '打印机2222222222222222', '复印机3333333333333', '打印纸444444444444', '订书机5'],
-        showPop: false
+        showPop: false,
+        smallClassList: [], // 二级目录列表
+        smallClassIndex: '0', // 点击的二级目录下标
+        smallClassCode: '', // 点击的二级目录代码
+        suppliesList: [], // 办公用品列表
+        page: 1,
+        pageSize: 8,
+        busy: true
       }
     },
     mounted () {
       this.setTabWidth()
-      this.clickFirstItem()
+      this.getSuppliesStore()
     },
     methods: {
       goBack () {
@@ -130,11 +139,6 @@
           }
         }, 1000)
       },
-      clickFirstItem () {
-        setTimeout(() => {
-          this.$refs.tabBox.$children[0].onItemClick()
-        }, 200)
-      },
       clickTabItemById (index) {
         // 模拟点击事件
         this.$refs.tabBox.$children[index].onItemClick()
@@ -153,6 +157,40 @@
       },
       closePop () {
         this.showPop = false
+      },
+      // 获取初始状态信息
+      getSuppliesStore () {
+        let that = this
+        // 从store状态读数据
+        this.smallClassList = this.$store.state.supplies.smallClassList // 一级index
+        this.smallClassIndex = this.$store.state.supplies.smallClassIndex // 二级index
+        let smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级Code
+        this.getSuppliesList(smallClassCode)
+        setTimeout(() => { // 居中显示当前点击二级类别名称
+          that.clickTabItemById(this.smallClassIndex)  //  尼玛，这里不能用this！！！！！
+        }, 20)
+        this.smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级code
+      },
+      // 根据二级smallClassCode获取办公用品list
+      getSuppliesList (smallClassCode) {
+        this.smallClassCode = smallClassCode
+        let param = {
+          smallClassCode: smallClassCode,
+          page: this.page,
+          pageSize: this.pageSize
+        }
+        this.http.get('/supplies/getSuppliesList', {params: param}).then(response => { // axios 传参，前平面一定要加params套进去，不然是不对的
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.suppliesList = res.result // 办公用品列表
+            } else {
+              this.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }

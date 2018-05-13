@@ -5,8 +5,8 @@
         <div class="item-pick y_pick"></div>
       </div>
       <div class="right-box">
-        <div class="describe-line titleLong">3M 683-9CF 九色指标标签 12*44mm（10张*9色）红，橙，梅红，黄，浅绿，绿，浅蓝，蓝，紫（包）</div>
-        <div class="code">1100152585EA <span>收起</span></div>
+        <div class="describe-line titleLong">12123123121212123123121321231</div>
+        <div class="code">asdfdfdfdf231321<span>收起</span></div>
         <div>
           <i class="add" :style="backgroundAdd"></i>
           <input ref="input" class="number-input" v-model="Item.quantity"
@@ -20,6 +20,12 @@
 
 <script>
   export default {
+//    props: {
+//      item: {
+//        type: Object,
+//        default: {}
+//      }
+//    },
     components: {
     },
     data () {
@@ -61,7 +67,7 @@
       display: flex;
       border-bottom: 1px solid #edeeef;
       .left-box{
-        flex: 1 1 22%;
+        flex: 1 1 12%;
         display: flex;
         justify-content: flex-start;
         align-items: center;
@@ -119,6 +125,7 @@
               border-left: 6px solid transparent;
               border-right: 6px solid transparent;
               border-bottom: 8px solid #c5c5c5;
+              margin-bottom: 2px;
             }
           }
         }
@@ -136,13 +143,13 @@
           width: 20px;
           height: 20px;
           bottom: 0px;
-          right: 74px;
+          right: 66px;
           position: absolute;
           background-size: 100%;
         }
         .number-input{
           bottom: 0px;
-          right: 32px;
+          right: 26px;
           width: 40px;
           position: absolute;
           height: 20px;

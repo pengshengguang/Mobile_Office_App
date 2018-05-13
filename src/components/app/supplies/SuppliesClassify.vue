@@ -1,74 +1,123 @@
 <template>
-  <transition name="fade">
+  <div>
     <div class="supplies-classify-wrapper cover">
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品目录</x-header>
       <div class="content-box">
         <div class="left-box">
-          <div class="className active">办公文具/文具/用品/办公</div>
+          <div class="className" :class="{active: index === largeClassIndex}" v-for="(item, index) in largeClassList" :key="index" @click="getSmallClass(item.largeClassCode, index)">{{item.largeClass}}</div>
         </div>
         <div class="right-box">
           <div class="class-box">
             <div class="class-name">办公文具</div>
             <div class="class-details">
-              <div class="item-outer">
-                <div class="class-item" @click="toSuppliesDetailListView">财务档案用品</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">抽杆夹</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板附件</div>
-              </div>
-              <div class="item-outer">
-                <div class="class-item">白板</div>
+              <div class="item-outer" v-for="(item,index) in smallClassList" @click="toSuppliesDetailListView(index)">
+                <div class="class-item" @click="">{{item.smallClass}}</div>
               </div>
             </div>
           </div>
         </div>
-        <div class="cart-icon" :style="backgroundSelected" @click="toSuppliesCartView"></div>
+        <div class="cart-icon" :style="backgroundSelected" @click="toSuppliesConfirmView"></div>
       </div>
       <router-view></router-view>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script>
   import { XHeader } from 'vux'
+  import Httpservice from '@/services/HttpService'
 
   export default {
     data () {
       return {
+        http: Httpservice.getAxios,
         backgroundSelected: {
           backgroundImage: 'url(' + require('@/assets/img/supplies/icon-selected.png') + ')'
         },
         // selected-lucency
         backgroundSelectedLucency: {
           backgroundImage: 'url(' + require('@/assets/img/supplies/icon-selected-lucency.png') + ')'
-        }
+        },
+        // 一级目录
+        largeClassList: [],
+        // 二级目录
+        smallClassList: [],
+        // 一级目录选择标识
+        largeClassIndex: '0'
       }
     },
     components: {
       XHeader
     },
+    mounted () {
+      this.init()
+    },
     methods: {
       goBack () {
         this.$router.back(-1)
+        this.$store.commit('setSupplies', [])
       },
-      toSuppliesCartView () {
+      toSuppliesConfirmView () {
         this.$router.push({
-          name: 'SuppliesCart'
+          name: 'SuppliesConfirm'
         })
       },
-      toSuppliesDetailListView () {
-        console.log('去办公用品列表详情页')
+      toSuppliesDetailListView (index) {
+        // 把二级目录列表与点击的index加入到store里面
+        let supplies = {
+          largeClassIndex: this.largeClassIndex, //  当前点击的一级类别index
+          smallClassList: this.smallClassList, // 二级目录列表
+          smallClassIndex: index  // 当前点击的二级类别index
+        }
+        this.$store.commit('setSupplies', supplies)
         this.$router.push({
           name: 'SuppliesDetailList'
+        })
+      },
+      init () {
+        this.getLargeClass()
+      },
+      // 获取一级目录
+      getLargeClass () {
+        this.http.get('/supplies/getLargeClass').then((response) => {
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.largeClassList = res.result
+              // 先从store里面读取
+              if (this.$store.state.supplies.largeClassIndex) {
+                this.largeClassIndex = this.$store.state.supplies.largeClassIndex
+                this.getSmallClass(this.largeClassList[this.largeClassIndex].largeClassCode, this.largeClassIndex)
+              } else {
+                // 默认进入一级目录第一个
+                this.getSmallClass(this.largeClassList[0].largeClassCode, 0)
+              }
+            } else {
+              this.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
+      },
+      // 获取二级目录
+      getSmallClass (largeClassCode, index) {
+        this.largeClassIndex = index
+        this.$store.commit('setLargeClassIndex', index)
+        let param = {
+          largeClassCode: largeClassCode
+        }
+        this.http.get('/supplies/getSmallClass', {params: param}).then((response) => {
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.smallClassList = res.result
+            } else {
+              this.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
         })
       }
     }
@@ -103,6 +152,7 @@
           display: flex; /*为了使绿条居中*/
           justify-content: center;
           align-items: center;
+          font-size: 16px;
         }
         .active{
           position: relative;

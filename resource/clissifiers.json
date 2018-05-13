@@ -1,0 +1,65 @@
+{
+	"largeClass":
+	"办公文具",
+	"largeClassCode":"001",
+	"smallClassList":[
+		{"smallClass":"白板附件","smallClassCode":"001001"},
+		{"smallClass":"办公刀具","smallClassCode":"001002"},
+		{"smallClass":"笔记本","smallClassCode":"001003"},
+		{"smallClass":"白板笔","smallClassCode":"001004"},
+		{"smallClass":"便纸条","smallClassCode":"001005"},
+		{"smallClass":"白板","smallClassCode":"001006"},
+		{"smallClass":"白板架","smallClassCode":"001007"},
+		{"smallClass":"笔筒","smallClassCode":"001008"}
+	]
+}
+{
+	"largeClass":"办公设备",
+	"largeClassCode":"002",
+	"smallClassList":[
+		{"smallClass":"打印纸","smallClassCode":"002001"},
+		{"smallClass":"接线板","smallClassCode":"002002"},
+		{"smallClass":"电话机","smallClassCode":"002003"},
+		{"smallClass":"记号笔","smallClassCode":"002004"},
+		{"smallClass":"复印纸","smallClassCode":"002005"},
+		{"smallClass":"胶带","smallClassCode":"002006"},
+		{"smallClass":"单页夹","smallClassCode":"002007"},
+		{"smallClass":"订书钉","smallClassCode":"002008"},
+		{"smallClass":"干电池","smallClassCode":"002009"},
+		{"smallClass":"计算器","smallClassCode":"002010"},
+		{"smallClass":"钢笔","smallClassCode":"002011"},
+		{"smallClass":"传真机","smallClassCode":"002012"},
+		{"smallClass":"告示贴","smallClassCode":"002013"},
+		{"smallClass":"磁扣","smallClassCode":"002014"},
+		{"smallClass":"储存卡","smallClassCode":"002015"},
+		{"smallClass":"档案盒","smallClassCode":"002016"},
+		{"smallClass":"订书机","smallClassCode":"002017"},
+		{"smallClass":"刚古纸","smallClassCode":"002018"},
+		{"smallClass":"垫板","smallClassCode":"002019"},
+		{"smallClass":"剪刀","smallClassCode":"002020"},
+		{"smallClass":"干手器","smallClassCode":"002021"},
+		{"smallClass":"胶水/浆糊","smallClassCode":"002022"},
+		{"smallClass":"胶棒","smallClassCode":"002023"},
+		{"smallClass":"传真机","smallClassCode":"002024"},
+		{"smallClass":"大头针","smallClassCode":"002025"}
+	]
+
+}
+{
+	"largeClass":"办公耗材",
+	"largeClassCode":"003",
+	"smallClassList":[
+		{"smallClass":"墨盒","smallClassCode":"003001"},
+		{"smallClass":"签字笔","smallClassCode":"003002"},
+		{"smallClass":"曲别针","smallClassCode":"003003"},
+		{"smallClass":"铅笔","smallClassCode":"003004"},
+		{"smallClass":"墨水","smallClassCode":"003005"},
+		{"smallClass":"牛皮档案袋","smallClassCode":"003006"},
+		{"smallClass":"卷笔刀","smallClassCode":"003007"},
+		{"smallClass":"尼龙粘扣袋,20MM,3M","smallClassCode":"003008"},
+		{"smallClass":"皮筋","smallClassCode":"003009"},
+		{"smallClass":"起钉器","smallClassCode":"003010"},
+		{"smallClass":"蜡纸/版纸","smallClassCode":"003011"},
+		{"smallClass":"毛笔","smallClassCode":"003012"}
+	]
+}
