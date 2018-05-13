@@ -5,8 +5,8 @@
         <div class="item-pick y_pick"></div>
       </div>
       <div class="right-box">
-        <div class="describe-line titleLong">12123123121212123123121321231</div>
-        <div class="code">asdfdfdfdf231321<span>收起</span></div>
+        <div class="describe-line titleLong">{{item.describe}}</div>
+        <div class="code">{{item.code}}<span>收起</span></div>
         <div>
           <i class="add" :style="backgroundAdd"></i>
           <input ref="input" class="number-input" v-model="Item.quantity"
@@ -20,12 +20,12 @@
 
 <script>
   export default {
-//    props: {
-//      item: {
-//        type: Object,
-//        default: {}
-//      }
-//    },
+    props: {
+      item: {
+        type: Object,
+        default: {}
+      }
+    },
     components: {
     },
     data () {

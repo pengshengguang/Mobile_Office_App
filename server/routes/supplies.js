@@ -84,6 +84,10 @@ router.get('/getSmallClass', (req, res, next) => {
 router.get('/getSuppliesList', (req, res, next) => {
   // 获取二级类别代码
   let smallClassCode = req.param('smallClassCode')
+  // 获取分页参数
+  let page = parseInt(req.param('page'))
+  let pageSize = parseInt(req.param('pageSize'))
+  let skip = (page - 1) * pageSize
   if (!smallClassCode) {
     res.json({
       status: '1',
@@ -94,7 +98,8 @@ router.get('/getSuppliesList', (req, res, next) => {
   let queryParams = {
     smallClassCode: smallClassCode
   }
-  Supplies.find(queryParams, (err, suppliesListDoc) => {
+  let suppliesModel = Supplies.find(queryParams).skip(skip).limit(pageSize)
+  suppliesModel.exec((err, doc) => {
     if (err) {
       res.json({
         status: '1',
@@ -102,11 +107,14 @@ router.get('/getSuppliesList', (req, res, next) => {
         result: ''
       })
     } else {
-      if (suppliesListDoc) {
+      if (doc) {
         res.json({
           status: '0',
           msg: '',
-          result: suppliesListDoc
+          result: {
+            count: doc.length,
+            list: doc
+          }
         })
       } else {
         res.json({

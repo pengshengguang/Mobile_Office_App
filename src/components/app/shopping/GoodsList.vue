@@ -165,16 +165,16 @@
             // flag === true，证明是第二次或第二次以上加载数据了
             if (flag) {
               this.goodsList = this.goodsList.concat(res.result.list) // 数据追加
-              this.busy = false // 无线滚动禁止 取消，意思就是开启无限滚动监听
+              this.busy = false // 无限滚动禁止 取消，意思就是开启无限滚动监听
               if (res.result.list.length === 0) {
-                this.busy = true // 无线滚动禁止 启动
+                this.busy = true // 无限滚动禁止 启动
               } else {
-                this.busy = false // 无线滚动禁止 取消
+                this.busy = false // 无限滚动禁止 取消
               }
             } else { // 第一次加载数据
               this.page = 1
               this.goodsList = res.result.list
-              this.busy = false // 无线滚动禁止 取消
+              this.busy = false // 无限滚动禁止 取消
             }
           } else { // 接口调用异常
             this.goodsList = []

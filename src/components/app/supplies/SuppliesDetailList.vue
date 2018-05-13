@@ -9,16 +9,11 @@
       </tab>
     </div>
     <div class="list-box" style="padding-bottom: 80px">
-      <div class="item-wrapper">
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
-        <supplies-product-Item></supplies-product-Item>
+      <div class="item-wrapper" v-for="item in suppliesList">
+        <supplies-product-Item :item="item"></supplies-product-Item>
+      </div>
+      <div style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+        <img src="@/assets/loading-spinning-bubbles.svg" v-show="loading" width="50px">
       </div>
     </div>
     <div class="btn-box">
@@ -31,11 +26,6 @@
       <div class="popupContent">
         <!--购物车列表详情-->
         <div class="cartContent">
-          <supplies-product-Item></supplies-product-Item>
-          <supplies-product-Item></supplies-product-Item>
-          <supplies-product-Item></supplies-product-Item>
-          <supplies-product-Item></supplies-product-Item>
-          <supplies-product-Item></supplies-product-Item>
           <supplies-product-Item></supplies-product-Item>
         </div>
       </div>
@@ -61,7 +51,6 @@
         http: Httpservice.getAxios,
         // tab标签div长度
         tabWidth: document.body.clientWidth,
-        list: ['打印机', '复印机', '打印纸', '订书机11111111', '打印机2222222222222222', '复印机3333333333333', '打印纸444444444444', '订书机5'],
         showPop: false,
         smallClassList: [], // 二级目录列表
         smallClassIndex: '0', // 点击的二级目录下标
@@ -69,7 +58,8 @@
         suppliesList: [], // 办公用品列表
         page: 1,
         pageSize: 8,
-        busy: true
+        busy: true,
+        loading: false
       }
     },
     mounted () {
@@ -172,18 +162,34 @@
         this.smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级code
       },
       // 根据二级smallClassCode获取办公用品list
-      getSuppliesList (smallClassCode) {
+      getSuppliesList (smallClassCode, flag) {
         this.smallClassCode = smallClassCode
         let param = {
           smallClassCode: smallClassCode,
           page: this.page,
           pageSize: this.pageSize
         }
+        this.loading = true
         this.http.get('/supplies/getSuppliesList', {params: param}).then(response => { // axios 传参，前平面一定要加params套进去，不然是不对的
+          this.loading = false
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              this.suppliesList = res.result // 办公用品列表
+              if (flag) {
+                this.suppliesList = this.suppliesList.concat(res.result.list)
+                if (res.result.count === 0) {
+                  this.busy = true
+                  this.$vux.toast.show({
+                    text: '没有更多',
+                    type: 'text'
+                  })
+                } else {
+                  this.busy = false
+                }
+              } else {
+                this.suppliesList = res.result.list // 办公用品列表
+                this.busy = false
+              }
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -191,6 +197,14 @@
             this.$vux.toast.show({ text: '接口异常', type: 'text' })
           }
         })
+      },
+      // 加载更多
+      loadMore () {
+        this.busy = true
+        setTimeout(() => {
+          this.page++
+          this.getSuppliesList(this.smallClassCode, true)
+        }, 500)
       }
     }
   }
