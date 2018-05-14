@@ -183,6 +183,7 @@
             if (res.status === '0') {
               if (flag) { // 第二次加载数据
                 let newList = this.addAttribute(res.result.list)
+                newList = this.assemblyToolListData(newList)
                 this.suppliesList = this.suppliesList.concat(newList)
                 if (res.result.count === 0) {
                   this.busy = true
@@ -195,6 +196,7 @@
                 }
               } else { // 第一次加载数据
                 let newList = this.addAttribute(res.result.list)
+                newList = this.assemblyToolListData(newList)
                 this.suppliesList = newList // 办公用品列表
                 console.log(this.suppliesList)
                 this.busy = false
@@ -243,11 +245,17 @@
         })
       },
       // 检查加载办公用品是否存在于购物车中，是的话就把购物车对应的物品赋值给其中
-      checkSuppliesInCart (item) {
-        if (!item) {
-          return
+      assemblyToolListData (newList) {
+        let self = this
+        for (let i = 0; i < newList.length; i++) {
+          for (let j = 0; j < self.suppliesCart.length; j++) {
+            // 在相同id下，如果newList中的办公用品中与购物车的办公用品不相等，就将newList中的商品改动为购物车中的对应商品
+            if (newList[i].code === self.suppliesCart[j].code && newList[i] !== self.suppliesCart[j]) {
+              newList[i] = self.suppliesCart[j]
+            }
+          }
         }
-        console.log('hhh')
+        return newList
       },
       // 为数据库中查询出来的办公用品添加数量字段
       addAttribute (list) {
