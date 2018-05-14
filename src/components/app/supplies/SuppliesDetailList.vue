@@ -10,7 +10,7 @@
     </div>
     <div class="list-box" style="padding-bottom: 80px">
       <div class="item-wrapper" v-for="item in suppliesList">
-        <supplies-product-Item :item="item"></supplies-product-Item>
+        <supplies-product-Item :item="item" :isShopping="isShopping"></supplies-product-Item>
       </div>
       <div style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
         <img src="@/assets/loading-spinning-bubbles.svg" v-show="loading" width="50px">
@@ -25,8 +25,8 @@
       <div class="mask" @click="closePop"></div>
       <div class="popupContent">
         <!--购物车列表详情-->
-        <div class="cartContent">
-          <supplies-product-Item></supplies-product-Item>
+        <div class="cartContent" v-for="item in suppliesCart">
+          <supplies-product-Item :item="item" :isShopping="isShopping" :bottomCart="true"></supplies-product-Item>
         </div>
       </div>
     </div>
@@ -55,12 +55,12 @@
         smallClassList: [], // 二级目录列表
         smallClassIndex: '0', // 点击的二级目录下标
         smallClassCode: '', // 点击的二级目录代码
-        suppliesList: [], // 办公用品列表
+        suppliesList: null, // 办公用品列表
         page: 1,
         pageSize: 8,
         busy: true,
         loading: false,
-        supppliesCart: [] // 购物车
+        suppliesCart: [] // 购物车
       }
     },
     mounted () {
@@ -161,14 +161,10 @@
       },
       // 获取初始状态信息
       getSuppliesStore () {
-        let that = this
         // 从store状态读数据
         this.smallClassList = this.$store.state.supplies.smallClassList // 一级index
         this.smallClassIndex = this.$store.state.supplies.smallClassIndex // 二级index
         this.supppliesCart = this.$store.state.supplies.suppliesCart // 购物车列表
-        setTimeout(() => { // 居中显示当前点击二级类别名称
-          that.clickTabItemById(this.smallClassIndex)  //  尼玛，这里不能用this！！！！！
-        }, 20)
         this.smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级code
       },
       // 根据二级smallClassCode获取办公用品list
@@ -186,7 +182,8 @@
             let res = response.data
             if (res.status === '0') {
               if (flag) { // 第二次加载数据
-                this.suppliesList = this.suppliesList.concat(res.result.list)
+                let newList = this.addAttribute(res.result.list)
+                this.suppliesList = this.suppliesList.concat(newList)
                 if (res.result.count === 0) {
                   this.busy = true
                   this.$vux.toast.show({
@@ -197,7 +194,9 @@
                   this.busy = false
                 }
               } else { // 第一次加载数据
-                this.suppliesList = res.result.list // 办公用品列表
+                let newList = this.addAttribute(res.result.list)
+                this.suppliesList = newList // 办公用品列表
+                console.log(this.suppliesList)
                 this.busy = false
                 if (res.result.count === 0) {
                   this.$vux.toast.show({
@@ -225,12 +224,16 @@
       },
       // 获取历史购物车列表
       getSuppliesCart () {
+        let that = this
         this.http.get('/supplies/getSuppliesCart').then((response) => {
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
               this.supppliesCart = res.result || []
               console.log(this.supppliesCart)
+              setTimeout(() => { // 居中显示当前点击二级类别名称    此接口同时 加载办公用品列表
+                that.clickTabItemById(that.smallClassIndex)
+              }, 20)
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -238,6 +241,33 @@
             this.$vux.toast.show({ text: '接口异常', type: 'text' })
           }
         })
+      },
+      // 检查加载办公用品是否存在于购物车中，是的话就把购物车对应的物品赋值给其中
+      checkSuppliesInCart (item) {
+        if (!item) {
+          return
+        }
+        console.log('hhh')
+      },
+      // 为数据库中查询出来的办公用品添加数量字段
+      addAttribute (list) {
+        list.forEach(item => {
+          item.quantity = 1
+        })
+        return list
+      },
+      // 办公用品处理
+      isShopping (item, shoppingType) {
+        // 获取下标
+        let listNumber = this.suppliesCart.indexOf(item)
+        // 添加清单操作
+        if (shoppingType === 'add') {
+          listNumber !== -1 ? this.suppliesCart[listNumber] = item : this.suppliesCart.push(item)
+        }
+        // 删除清单操作
+        if (shoppingType === 'remove' && listNumber !== -1) {
+          this.suppliesCart.splice(listNumber, 1)
+        }
       }
     }
   }
