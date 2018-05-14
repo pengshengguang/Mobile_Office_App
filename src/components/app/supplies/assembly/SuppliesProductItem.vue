@@ -10,7 +10,11 @@
         <div>
           <i class="add" :style="backgroundAdd" @click="addItem"></i>
           <input ref="input" class="number-input" v-model="item.quantity"
-                 onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')};this.value=this.value.replace(/\D/g,'');" onafterpaste="this.value=this.value.replace(/\D/g,'')" maxlength="3">
+                 @focus="checkByfocus(item)"
+                 @blur="checkByBlur(item)"
+                 onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')};this.value=this.value.replace(/\D/g,'');"
+                 onafterpaste="this.value=this.value.replace(/\D/g,'')"
+                 maxlength="3">
           <i class="reduce" :style="backgroundReduce" @click="reduce"></i>
         </div>
       </div>
@@ -81,6 +85,26 @@
         this.isShopping(this.item, this.item.isSelected ? 'add' : 'remove')
         // 刷新页面数据
         this.$forceUpdate()
+      },
+      // 聚焦
+      checkByfocus (item) {
+        console.log(item)
+      },
+      // 失焦
+      checkByBlur () {
+        if (!this.item.quantity || this.item.quantity === '') {
+          this.item.quantity = 1
+        }
+        // 当用户使用拼音输入法输入字母成功时
+        if (isNaN(this.item.quantity)) {
+          this.item.quantity = 1
+        }
+        // 当用户输入数字开头为0时
+        if (this.item.quantity.length > 0 && this.item.quantity.substring(0, 1) === '0') {
+          this.item.quantity = 1
+        }
+//        this.isShopping(this.Item, this.Item.isSelected ? 'Add' : 'remover', this.ItemBottom);
+//        this.$forceUpdate()
       }
     }
   }
