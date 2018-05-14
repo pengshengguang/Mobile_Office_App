@@ -59,12 +59,14 @@
         page: 1,
         pageSize: 8,
         busy: true,
-        loading: false
+        loading: false,
+        supppliesCart: [] // 购物车
       }
     },
     mounted () {
       this.setTabWidth()
       this.getSuppliesStore()
+      this.getSuppliesCart()
     },
     methods: {
       goBack () {
@@ -163,8 +165,7 @@
         // 从store状态读数据
         this.smallClassList = this.$store.state.supplies.smallClassList // 一级index
         this.smallClassIndex = this.$store.state.supplies.smallClassIndex // 二级index
-//        let smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级Code
-//        this.getSuppliesList(smallClassCode)
+        this.supppliesCart = this.$store.state.supplies.suppliesCart // 购物车列表
         setTimeout(() => { // 居中显示当前点击二级类别名称
           that.clickTabItemById(this.smallClassIndex)  //  尼玛，这里不能用this！！！！！
         }, 20)
@@ -221,6 +222,22 @@
           this.page++
           this.getSuppliesList(this.smallClassCode, true)
         }, 500)
+      },
+      // 获取历史购物车列表
+      getSuppliesCart () {
+        this.http.get('/supplies/getSuppliesCart').then((response) => {
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.supppliesCart = res.result || []
+              console.log(this.supppliesCart)
+            } else {
+              this.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }

@@ -3,6 +3,7 @@ var router = express.Router()
 
 var Classifiers = require('./../models/classifiers')
 var Supplies = require('./../models/supplies')
+var User = require('./../models/user')
 
 router.get('/', function (req, res, next) {
   res.send('response with a resource')
@@ -120,6 +121,36 @@ router.get('/getSuppliesList', (req, res, next) => {
         res.json({
           status: '1',
           msg: '二级类别代码为：' + smallClassCode + '下的办公用品不存在',
+          result: ''
+        })
+      }
+    }
+  })
+})
+
+/* 根据用户名获取办公用品购物车列表 */
+router.get('/getSuppliesCart', (req, res, next) => {
+  let queryParams = {
+    userName: req.cookies.userName
+  }
+  User.findOne(queryParams, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (doc) {
+        res.json({
+          status: '0',
+          msg: '',
+          result: doc.suppliesCart
+        })
+      } else {
+        res.json({
+          status: '1',
+          msg: '办公用品购物车为空',
           result: ''
         })
       }

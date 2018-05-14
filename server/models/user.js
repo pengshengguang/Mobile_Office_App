@@ -27,6 +27,14 @@ var userSchema = new mongoose.Schema({
       'tel': String,
       'isDefault': Boolean
     }
+  ],
+  'suppliesCart': [
+    {
+      describe: String,
+      code: String,
+      quantity: String,
+      isSelected: Boolean
+    }
   ]
 })
 
