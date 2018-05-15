@@ -81,14 +81,9 @@ const suppliesRoute = {
   component: Supplies,
   name: 'Supplies',
   children: [
-    { path: 'suppliesClassify',
-      name: 'SuppliesClassify',
-      component: SuppliesClassify,
-      children: [
-        { path: 'suppliesConfirm', name: 'SuppliesConfirm', component: SuppliesConfirm },
-        { path: 'suppliesDetailList', name: 'SuppliesDetailList', component: SuppliesDetailList }
-      ]
-    }
+    { path: 'suppliesClassify', name: 'SuppliesClassify', component: SuppliesClassify },
+    { path: 'suppliesConfirm', name: 'SuppliesConfirm', component: SuppliesConfirm },
+    { path: 'suppliesDetailList', name: 'SuppliesDetailList', component: SuppliesDetailList }
   ]
 }
 

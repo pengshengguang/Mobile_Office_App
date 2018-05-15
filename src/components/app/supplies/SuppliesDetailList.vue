@@ -66,14 +66,9 @@
     mounted () {
       this.setTabWidth()
       this.getSuppliesStore()
-      if (this.$store.state.isGetSuppliesCart === 0) {
-        this.getSuppliesCart()
-      } else {
-        let that = this
-        setTimeout(() => {
-          that.clickTabItemById(that.smallClassIndex)
-        }, 20)
-      }
+      setTimeout(() => {
+        this.$refs.tabBox.$children[this.smallClassIndex].onItemClick()
+      }, 20)
     },
     methods: {
       goBack () {
@@ -229,26 +224,6 @@
           this.page++
           this.getSuppliesList(this.smallClassCode, true)
         }, 500)
-      },
-      // 获取历史购物车列表
-      getSuppliesCart () {
-        let that = this
-        that.$store.commit('setIsGetSuppliesCart', 1)
-        this.http.get('/supplies/getSuppliesCart').then((response) => {
-          if (response.status === 200) {
-            let res = response.data
-            if (res.status === '0') {
-              this.suppliesCart = res.result || []
-              setTimeout(() => { // 居中显示当前点击二级类别名称    此接口同时 加载办公用品列表
-                that.clickTabItemById(that.smallClassIndex)
-              }, 20)
-            } else {
-              this.$vux.toast.show({ text: '请求失败', type: 'text' })
-            }
-          } else {
-            this.$vux.toast.show({ text: '接口异常', type: 'text' })
-          }
-        })
       },
       // 检查加载办公用品是否存在于购物车中，是的话就把购物车对应的物品赋值给其中
       assemblyToolListData (newList) {

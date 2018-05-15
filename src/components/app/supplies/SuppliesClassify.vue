@@ -4,21 +4,20 @@
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品目录</x-header>
       <div class="content-box">
         <div class="left-box">
-          <div class="className" :class="{active: index === largeClassIndex}" v-for="(item, index) in largeClassList" :key="index" @click="getSmallClass(item.largeClassCode, index)">{{item.largeClass}}</div>
+          <div class="className" :class="{active: index === parseInt(suppliesStore.largeClassIndex, 10)}" v-for="(item, index) in largeClassList" :key="index" @click="getSmallClass(item.largeClassCode, index)">{{item.largeClass}}</div>
         </div>
         <div class="right-box">
           <div class="class-box">
             <div class="class-name">办公文具</div>
             <div class="class-details">
               <div class="item-outer" v-for="(item,index) in smallClassList" @click="toSuppliesDetailListView(index)">
-                <div class="class-item" @click="">{{item.smallClass}}</div>
+                <div class="class-item" @click="">{{item.smallClass}}<i v-if="item.num!==0">{{item.num}}</i></div>
               </div>
             </div>
           </div>
         </div>
-        <div class="cart-icon" :style="backgroundSelected" @click="toSuppliesConfirmView"></div>
+        <div class="cart-icon" :style="backgroundSelected" @click="toSuppliesConfirmView"><i v-if="sum!=0">{{sum}}</i></div>
       </div>
-      <router-view></router-view>
     </div>
   </div>
 </template>
@@ -44,7 +43,8 @@
         smallClassList: [],
         // 一级目录选择标识
         largeClassIndex: '0',
-        suppliesStore: {}
+        suppliesStore: {},
+        sum: 0// 购物车总数量
       }
     },
     components: {
@@ -56,8 +56,8 @@
     methods: {
       goBack () {
         this.$router.back(-1)
-        this.$store.commit('setSupplies', [])
-        this.$store.commit('setIsGetSuppliesCart', 0)
+        this.$store.commit('setSupplies', []) // 数据还原
+        this.$store.commit('setIsGetSuppliesCart', 0) // 数据还原
       },
       toSuppliesConfirmView () {
         this.$router.push({
@@ -70,7 +70,8 @@
           largeClassIndex: this.largeClassIndex, //  当前点击的一级类别index
           smallClassList: this.smallClassList, // 二级目录列表
           smallClassIndex: index, // 当前点击的二级类别index
-          suppliesCart: this.$store.state.supplies.suppliesCart
+          suppliesCart: this.suppliesStore.suppliesCart
+//          suppliesCart: this.$store.state.supplies.suppliesCart
         }
         this.$store.commit('setSupplies', suppliesNewStore)
         this.$router.push({
@@ -80,27 +81,53 @@
       init () {
         this.getInitStore()
         this.getLargeClass()
+        this.getCartNum()
       },
-      // 获取一级目录
-      getLargeClass () {
-        this.http.get('/supplies/getLargeClass').then((response) => {
+      // 读取状态
+      getInitStore () {
+        this.suppliesStore = this.$store.state.supplies
+        if (this.$store.state.isGetSuppliesCart === 0) {
+          this.getSuppliesCart()
+        }
+      },
+      // 获取历史购物车列表
+      getSuppliesCart () {
+        let that = this
+        that.$store.commit('setIsGetSuppliesCart', 1)
+        this.http.get('/supplies/getSuppliesCart').then((response) => {
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              this.largeClassList = res.result
-              // 先从store里面读取
-              if (this.suppliesStore.largeClassIndex) {
-                this.largeClassIndex = this.$store.suppliesStore.largeClassIndex
-                this.getSmallClass(this.largeClassList[this.largeClassIndex].largeClassCode, this.largeClassIndex)
-              } else {
-                // 默认进入一级目录第一个
-                this.getSmallClass(this.largeClassList[0].largeClassCode, 0)
-              }
+              let suppliesCart = res.result || []
+              this.suppliesStore.suppliesCart = suppliesCart
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
           } else {
             this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
+      },
+      // 获取一级目录
+      getLargeClass () {
+        let that = this
+        that.http.get('/supplies/getLargeClass').then((response) => {
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              that.largeClassList = res.result
+              // 先从store里面读取
+              if (that.suppliesStore.largeClassIndex !== undefined) {
+                that.getSmallClass(that.largeClassList[that.suppliesStore.largeClassIndex].largeClassCode, that.suppliesStore.largeClassIndex)
+              } else {
+                // 默认进入一级目录第一个
+                that.getSmallClass(that.largeClassList[0].largeClassCode, 0)
+              }
+            } else {
+              that.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            that.$vux.toast.show({ text: '接口异常', type: 'text' })
           }
         })
       },
@@ -116,6 +143,7 @@
             let res = response.data
             if (res.status === '0') {
               this.smallClassList = res.result
+              this.getItemNumber()
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -124,9 +152,29 @@
           }
         })
       },
-      // 读取状态
-      getInitStore () {
-        this.suppliesStore = this.$store.state.supplies
+      // 给二级目录添加红点数量
+      getItemNumber () {
+        let num = 0
+        for (let i = 0; this.smallClassList.length > i; i++) {
+          for (let j = 0; this.suppliesStore.suppliesCart.length > j; j++) {
+            if (this.smallClassList[i].smallClassCode === this.suppliesStore.suppliesCart[j].smallClassCode) {
+              num += this.suppliesStore.suppliesCart[j].quantity
+            }
+          }
+          this.smallClassList[i].num = num
+          num = 0
+        }
+      },
+      // 计算购物车总数量
+      getCartNum () {
+        if (this.suppliesStore.suppliesCart === undefined) {
+          return
+        }
+        let sum = 0
+        for (let i = 0; i < this.suppliesStore.suppliesCart.length; i++) {
+          sum += this.suppliesStore.suppliesCart[i].quantity
+        }
+        this.sum = sum
       }
     }
   }
@@ -190,10 +238,27 @@
             flex-wrap: wrap;
             .item-outer{
               padding: 10px 6px 0 5px;
+              position: relative;
               .class-item{
                 border: 1px solid #b5bbc1;
                 border-radius: 10px;
                 padding: 4px 6px;
+                position: relative;
+                i{
+                  position: absolute;
+                  width: 19px;
+                  height: 19px;
+                  background: red;
+                  top: -9px;
+                  right: -9px;
+                  content: '1';
+                  border-radius: 100%;
+                  color: #fff;
+                  line-height: 18px;
+                  text-align: center;
+                  font-style: normal;
+                  font-size: 12px;
+                }
               }
             }
           }
@@ -208,6 +273,21 @@
         border-radius: 50%;
         border: 1px solid #d7d7d7;
         background-size: 100% 100%;
+        i{
+          position: absolute;
+          width: 19px;
+          height: 19px;
+          background: red;
+          top: -6px;
+          right: -4px;
+          content: '1';
+          border-radius: 100%;
+          color: #fff;
+          line-height: 18px;
+          text-align: center;
+          font-style: normal;
+          font-size: 12px;
+        }
       }
     }
   }
