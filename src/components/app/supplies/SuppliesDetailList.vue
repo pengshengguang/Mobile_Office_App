@@ -64,102 +64,16 @@
       }
     },
     mounted () {
-      this.setTabWidth()
-      this.getSuppliesStore()
-      setTimeout(() => {
-        this.$refs.tabBox.$children[this.smallClassIndex].onItemClick()
-      }, 20)
+      this.init()
     },
     methods: {
-      goBack () {
-        this.$store.commit('setSuppliesCart', this.suppliesCart)
-        this.$router.back(-1)
-      },
-      toSuppliesView () {
-        this.$router.push({
-          name: 'Supplies'
-        })
-      },
-      // 选中tab-item居中显示
-      clickTabItemById (index) {
-        // 模拟点击事件
-        this.$refs.tabBox.$children[index].onItemClick()
-        // 滑动到对应的点击标签页
-        // 这里值得注意的是，为什么tabBoxOut的宽度明明只有屏幕的宽度，而里面的tabBox是超过屏幕的宽度的，所有才
-        // 可以滑动，滑动的是tabBox这个div，而真正滑动的事件却是绑定在tabBoxOut这个div当中。所以，当你使用scrollLeft
-        // 这个属性的时候，是要用在tabBoxOut这个div上，而不是在tabBox这个div上。
-        // ----------------------------------------------------------------
-        // 接下来可以运用offsetLeft计算tab-item在父div tabBox横轴偏移量、scrollLeft滑动到对应的tab-item，然后运用数学公式来把激活的tab-item滚动到tabBoxOuter这个div
-        // 的中心
-        let tabConter = (document.body.clientWidth - this.$refs.tabBox.$children[index].$el.offsetWidth) / 2
-        this.$refs.tabBoxOuter.scrollLeft = this.$refs.tabBox.$children[index].$el.offsetLeft - tabConter
-      },
-      // 底部bar精准跟随，点击tab-item触发事件
-      onItemClick (keyword, index, smallClassCode) {
-        let barLeft = 0
-        document.getElementsByClassName('vux-tab-ink-bar')[0].style.right = '100%'
-        for (let i = 0; i < this.smallClassList.length;) {
-          if (document.getElementsByClassName('vux-tab-item')[i].innerText === keyword) {
-//            console.log('document.getElementsByClassName(\'vux-tab-item\')[' + index + '].offsetWidth = ' + document.getElementsByClassName('vux-tab-item')[i].offsetWidth)
-            barLeft += document.getElementsByClassName('vux-tab-item')[i].offsetWidth / 2
-            barLeft -= 22.5
-            break
-          }
-          barLeft += document.getElementsByClassName('vux-tab-item')[i].offsetWidth
-          i += 1
-        }
-        document.getElementsByClassName('vux-tab-ink-bar')[0].style.left = (barLeft + 'px')
-        // 根据二级类别code查suppliesList
-        if (smallClassCode) {
-          // 清空分页数据
-          this.page = 1 // 每一次点击tab-item，都需要初始化页码
-          this.getSuppliesList(smallClassCode)
-        }
-      },
-      // 函数控制tab-bar的宽度,如果tab标签页数量为1，则隐藏tab-bar
-      getBarWidth () {
-        if (this.list && this.list.length === 1) {
-          return '0px'
-        }
-        return '45px'
-      },
-      // 控制可滑动的tab的宽度
-      setTabWidth () {
-        // 页面完成刷新之后
-        this.$nextTick(() => {
-          let ofwidth = 0
-          let efwidth = 0
-          // efwidth为每一个tab-item的长度总和,因为tab-item的父级为flex布局,而tab-item的flex: none，所以初始化的时候，tab-item会根据自己的字体长度，自动扩张宽度。
-          for (let i = 0; i < this.$refs.tabBox.$children.length;) {
-            efwidth += this.$refs.tabBox.$children[i].$el.offsetWidth
-            i += 1
-          }
-          // 同样是计算初始化的时候，每一个tab-item的总宽度，但当tab-item总长度大于tab的总长度时，立马退出程序
-          for (let i = 0; i < this.$refs.tabBox.$children.length;) {
-            ofwidth += this.$refs.tabBox.$children[i].$el.offsetWidth
-            if (ofwidth > (document.body.clientWidth)) {
-              break
-            }
-            i += 1
-          }
-          // 假如tab-item的总宽度小于显示tabwidth，则评分tab的剩余空间，加到每一个tab-item中
-          if (ofwidth < (document.body.clientWidth)) {
-            for (let i = 0; i < this.$refs.tabBox.$children.length;) {
-              this.$refs.tabBox.$children[i].$el.style.width = (this.$refs.tabBox.$children[i].$el.clientWidth + (((document.body.clientWidth) - ofwidth) / this.$refs.tabBox.$children.length)) + 'px'
-//              console.log(((((document.body.clientWidth) - ofwidth) / this.$refs.tabBox.$children.length)) + 'px')
-              i += 1
-            }
-            this.tabWidth = (document.body.clientWidth)
-          } else {
-            this.tabWidth = efwidth
-          }
-        }, 1000)
-      },
-      showCart () {
-        this.showPop = !this.showPop
-      },
-      closePop () {
-        this.showPop = false
+      // 初始化
+      init () {
+        this.setTabWidth()
+        this.getSuppliesStore()
+        setTimeout(() => {
+          this.clickTabItemById(this.smallClassIndex)
+        }, 20)
       },
       // 获取初始状态信息
       getSuppliesStore () {
@@ -256,6 +170,96 @@
         if (shoppingType === 'remove' && listNumber !== -1) {
           this.suppliesCart.splice(listNumber, 1)
         }
+      },
+      goBack () {
+        this.$store.commit('setSuppliesCart', this.suppliesCart)
+        this.$router.back(-1)
+      },
+      toSuppliesView () {
+        this.$router.push({
+          name: 'Supplies'
+        })
+      },
+      // 选中tab-item居中显示
+      clickTabItemById (index) {
+        // 模拟点击事件
+        this.$refs.tabBox.$children[index].onItemClick()
+        // 滑动到对应的点击标签页
+        // 这里值得注意的是，为什么tabBoxOut的宽度明明只有屏幕的宽度，而里面的tabBox是超过屏幕的宽度的，所有才
+        // 可以滑动，滑动的是tabBox这个div，而真正滑动的事件却是绑定在tabBoxOut这个div当中。所以，当你使用scrollLeft
+        // 这个属性的时候，是要用在tabBoxOut这个div上，而不是在tabBox这个div上。
+        // ----------------------------------------------------------------
+        // 接下来可以运用offsetLeft计算tab-item在父div tabBox横轴偏移量、scrollLeft滑动到对应的tab-item，然后运用数学公式来把激活的tab-item滚动到tabBoxOuter这个div
+        // 的中心
+        let tabConter = (document.body.clientWidth - this.$refs.tabBox.$children[index].$el.offsetWidth) / 2
+        this.$refs.tabBoxOuter.scrollLeft = this.$refs.tabBox.$children[index].$el.offsetLeft - tabConter
+      },
+      // 底部bar精准跟随，点击tab-item触发事件
+      onItemClick (keyword, index, smallClassCode) {
+        let barLeft = 0
+        document.getElementsByClassName('vux-tab-ink-bar')[0].style.right = '100%'
+        for (let i = 0; i < this.smallClassList.length;) {
+          if (document.getElementsByClassName('vux-tab-item')[i].innerText === keyword) {
+//            console.log('document.getElementsByClassName(\'vux-tab-item\')[' + index + '].offsetWidth = ' + document.getElementsByClassName('vux-tab-item')[i].offsetWidth)
+            barLeft += document.getElementsByClassName('vux-tab-item')[i].offsetWidth / 2
+            barLeft -= 22.5
+            break
+          }
+          barLeft += document.getElementsByClassName('vux-tab-item')[i].offsetWidth
+          i += 1
+        }
+        document.getElementsByClassName('vux-tab-ink-bar')[0].style.left = (barLeft + 'px')
+        // 根据二级类别code查suppliesList
+        if (smallClassCode) {
+          // 清空分页数据
+          this.page = 1 // 每一次点击tab-item，都需要初始化页码
+          this.getSuppliesList(smallClassCode)
+        }
+      },
+      // 函数控制tab-bar的宽度,如果tab标签页数量为1，则隐藏tab-bar
+      getBarWidth () {
+        if (this.list && this.list.length === 1) {
+          return '0px'
+        }
+        return '45px'
+      },
+      // 控制可滑动的tab的宽度
+      setTabWidth () {
+        // 页面完成刷新之后
+        this.$nextTick(() => {
+          let ofwidth = 0
+          let efwidth = 0
+          // efwidth为每一个tab-item的长度总和,因为tab-item的父级为flex布局,而tab-item的flex: none，所以初始化的时候，tab-item会根据自己的字体长度，自动扩张宽度。
+          for (let i = 0; i < this.$refs.tabBox.$children.length;) {
+            efwidth += this.$refs.tabBox.$children[i].$el.offsetWidth
+            i += 1
+          }
+          // 同样是计算初始化的时候，每一个tab-item的总宽度，但当tab-item总长度大于tab的总长度时，立马退出程序
+          for (let i = 0; i < this.$refs.tabBox.$children.length;) {
+            ofwidth += this.$refs.tabBox.$children[i].$el.offsetWidth
+            if (ofwidth > (document.body.clientWidth)) {
+              break
+            }
+            i += 1
+          }
+          // 假如tab-item的总宽度小于显示tabwidth，则评分tab的剩余空间，加到每一个tab-item中
+          if (ofwidth < (document.body.clientWidth)) {
+            for (let i = 0; i < this.$refs.tabBox.$children.length;) {
+              this.$refs.tabBox.$children[i].$el.style.width = (this.$refs.tabBox.$children[i].$el.clientWidth + (((document.body.clientWidth) - ofwidth) / this.$refs.tabBox.$children.length)) + 'px'
+//              console.log(((((document.body.clientWidth) - ofwidth) / this.$refs.tabBox.$children.length)) + 'px')
+              i += 1
+            }
+            this.tabWidth = (document.body.clientWidth)
+          } else {
+            this.tabWidth = efwidth
+          }
+        }, 1000)
+      },
+      showCart () {
+        this.showPop = !this.showPop
+      },
+      closePop () {
+        this.showPop = false
       }
     }
   }
