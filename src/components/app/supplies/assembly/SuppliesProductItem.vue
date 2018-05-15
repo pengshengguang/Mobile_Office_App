@@ -15,7 +15,7 @@
                  onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')};this.value=this.value.replace(/\D/g,'');"
                  onafterpaste="this.value=this.value.replace(/\D/g,'')"
                  maxlength="3">
-          <i class="reduce" :style="backgroundReduce" @click="reduce"></i>
+          <i class="reduce" :style="backgroundReduce" @click="reduce" v-if="!(bottomCart===undefined&&item.quantity===1)"></i>
         </div>
       </div>
     </div>
@@ -103,8 +103,6 @@
         if (this.item.quantity.length > 0 && this.item.quantity.substring(0, 1) === '0') {
           this.item.quantity = 1
         }
-//        this.isShopping(this.Item, this.Item.isSelected ? 'Add' : 'remover', this.ItemBottom);
-//        this.$forceUpdate()
       }
     }
   }

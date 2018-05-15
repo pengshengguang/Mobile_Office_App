@@ -66,10 +66,18 @@
     mounted () {
       this.setTabWidth()
       this.getSuppliesStore()
-      this.getSuppliesCart()
+      if (this.$store.state.isGetSuppliesCart === 0) {
+        this.getSuppliesCart()
+      } else {
+        let that = this
+        setTimeout(() => {
+          that.clickTabItemById(that.smallClassIndex)
+        }, 20)
+      }
     },
     methods: {
       goBack () {
+        this.$store.commit('setSuppliesCart', this.suppliesCart)
         this.$router.back(-1)
       },
       toSuppliesView () {
@@ -93,12 +101,11 @@
       },
       // 底部bar精准跟随，点击tab-item触发事件
       onItemClick (keyword, index, smallClassCode) {
-        console.log('on item click:', index)
         let barLeft = 0
         document.getElementsByClassName('vux-tab-ink-bar')[0].style.right = '100%'
         for (let i = 0; i < this.smallClassList.length;) {
           if (document.getElementsByClassName('vux-tab-item')[i].innerText === keyword) {
-            console.log('document.getElementsByClassName(\'vux-tab-item\')[' + index + '].offsetWidth = ' + document.getElementsByClassName('vux-tab-item')[i].offsetWidth)
+//            console.log('document.getElementsByClassName(\'vux-tab-item\')[' + index + '].offsetWidth = ' + document.getElementsByClassName('vux-tab-item')[i].offsetWidth)
             barLeft += document.getElementsByClassName('vux-tab-item')[i].offsetWidth / 2
             barLeft -= 22.5
             break
@@ -144,7 +151,7 @@
           if (ofwidth < (document.body.clientWidth)) {
             for (let i = 0; i < this.$refs.tabBox.$children.length;) {
               this.$refs.tabBox.$children[i].$el.style.width = (this.$refs.tabBox.$children[i].$el.clientWidth + (((document.body.clientWidth) - ofwidth) / this.$refs.tabBox.$children.length)) + 'px'
-              console.log(((((document.body.clientWidth) - ofwidth) / this.$refs.tabBox.$children.length)) + 'px')
+//              console.log(((((document.body.clientWidth) - ofwidth) / this.$refs.tabBox.$children.length)) + 'px')
               i += 1
             }
             this.tabWidth = (document.body.clientWidth)
@@ -164,7 +171,7 @@
         // 从store状态读数据
         this.smallClassList = this.$store.state.supplies.smallClassList // 一级index
         this.smallClassIndex = this.$store.state.supplies.smallClassIndex // 二级index
-        this.supppliesCart = this.$store.state.supplies.suppliesCart // 购物车列表
+        this.suppliesCart = this.$store.state.supplies.suppliesCart // 购物车列表
         this.smallClassCode = this.smallClassList[this.smallClassIndex].smallClassCode // 二级code
       },
       // 根据二级smallClassCode获取办公用品list
@@ -198,7 +205,6 @@
                 let newList = this.addAttribute(res.result.list)
                 newList = this.assemblyToolListData(newList)
                 this.suppliesList = newList // 办公用品列表
-                console.log(this.suppliesList)
                 this.busy = false
                 if (res.result.count === 0) {
                   this.$vux.toast.show({
@@ -227,12 +233,12 @@
       // 获取历史购物车列表
       getSuppliesCart () {
         let that = this
+        that.$store.commit('setIsGetSuppliesCart', 1)
         this.http.get('/supplies/getSuppliesCart').then((response) => {
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              this.supppliesCart = res.result || []
-              console.log(this.supppliesCart)
+              this.suppliesCart = res.result || []
               setTimeout(() => { // 居中显示当前点击二级类别名称    此接口同时 加载办公用品列表
                 that.clickTabItemById(that.smallClassIndex)
               }, 20)
@@ -246,12 +252,11 @@
       },
       // 检查加载办公用品是否存在于购物车中，是的话就把购物车对应的物品赋值给其中
       assemblyToolListData (newList) {
-        let self = this
         for (let i = 0; i < newList.length; i++) {
-          for (let j = 0; j < self.suppliesCart.length; j++) {
+          for (let j = 0; j < this.suppliesCart.length; j++) {
             // 在相同id下，如果newList中的办公用品中与购物车的办公用品不相等，就将newList中的商品改动为购物车中的对应商品
-            if (newList[i].code === self.suppliesCart[j].code && newList[i] !== self.suppliesCart[j]) {
-              newList[i] = self.suppliesCart[j]
+            if (newList[i].code === this.suppliesCart[j].code && newList[i] !== this.suppliesCart[j]) {
+              newList[i] = this.suppliesCart[j]
             }
           }
         }

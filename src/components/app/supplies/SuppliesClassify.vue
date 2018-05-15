@@ -43,7 +43,8 @@
         // 二级目录
         smallClassList: [],
         // 一级目录选择标识
-        largeClassIndex: '0'
+        largeClassIndex: '0',
+        suppliesStore: {}
       }
     },
     components: {
@@ -56,6 +57,7 @@
       goBack () {
         this.$router.back(-1)
         this.$store.commit('setSupplies', [])
+        this.$store.commit('setIsGetSuppliesCart', 0)
       },
       toSuppliesConfirmView () {
         this.$router.push({
@@ -64,17 +66,19 @@
       },
       toSuppliesDetailListView (index) {
         // 把二级目录列表与点击的index加入到store里面
-        let supplies = {
+        let suppliesNewStore = {
           largeClassIndex: this.largeClassIndex, //  当前点击的一级类别index
           smallClassList: this.smallClassList, // 二级目录列表
-          smallClassIndex: index  // 当前点击的二级类别index
+          smallClassIndex: index, // 当前点击的二级类别index
+          suppliesCart: this.$store.state.supplies.suppliesCart
         }
-        this.$store.commit('setSupplies', supplies)
+        this.$store.commit('setSupplies', suppliesNewStore)
         this.$router.push({
           name: 'SuppliesDetailList'
         })
       },
       init () {
+        this.getInitStore()
         this.getLargeClass()
       },
       // 获取一级目录
@@ -85,8 +89,8 @@
             if (res.status === '0') {
               this.largeClassList = res.result
               // 先从store里面读取
-              if (this.$store.state.supplies.largeClassIndex) {
-                this.largeClassIndex = this.$store.state.supplies.largeClassIndex
+              if (this.suppliesStore.largeClassIndex) {
+                this.largeClassIndex = this.$store.suppliesStore.largeClassIndex
                 this.getSmallClass(this.largeClassList[this.largeClassIndex].largeClassCode, this.largeClassIndex)
               } else {
                 // 默认进入一级目录第一个
@@ -119,6 +123,10 @@
             this.$vux.toast.show({ text: '接口异常', type: 'text' })
           }
         })
+      },
+      // 读取状态
+      getInitStore () {
+        this.suppliesStore = this.$store.state.supplies
       }
     }
   }

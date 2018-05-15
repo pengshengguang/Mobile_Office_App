@@ -7,7 +7,8 @@ const store = new Vuex.Store({
   state: {
     nickName: '',
     cartCount: 0,
-    supplies: {}
+    supplies: {},
+    isGetSuppliesCart: 0
   },
   mutations: {
     updateUserInfo (state, nickName) {
@@ -24,6 +25,12 @@ const store = new Vuex.Store({
     },
     setLargeClassIndex (state, largeClassIndex) {
       state.supplies.largeClassIndex = largeClassIndex
+    },
+    setSuppliesCart (state, suppliesCart) {
+      state.supplies.suppliesCart = suppliesCart
+    },
+    setIsGetSuppliesCart (state, isGetSuppliesCart) {
+      state.isGetSuppliesCart = isGetSuppliesCart
     }
   }
 })
