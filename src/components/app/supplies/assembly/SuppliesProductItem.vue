@@ -69,6 +69,8 @@
         // 当前项目数据增加
         this.item.quantity = parseInt(this.item.quantity, 10) + 1
         // 购物车联动
+        this.isShopping(this.item, this.item.isSelected ? 'add' : 'remove')
+        // 刷新页面数据
         this.$forceUpdate()
       },
       // 减少操作
@@ -103,6 +105,10 @@
         if (this.item.quantity.length > 0 && this.item.quantity.substring(0, 1) === '0') {
           this.item.quantity = 1
         }
+        // 购物车联动
+        this.isShopping(this.item, this.item.isSelected ? 'add' : 'remove')
+        // 刷新页面数据
+        this.$forceUpdate()
       }
     }
   }

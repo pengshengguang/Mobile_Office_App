@@ -17,7 +17,7 @@
       </div>
     </div>
     <div class="btn-box">
-      <div class="text" @click="showCart">选择6个品类/共9件</div>
+      <div class="text" @click="showCart">选择{{suppliesCart.length}}个品类/共{{count}}件</div>
       <div class="confirm">确认</div>
     </div>
     <!--底部弹出div-->
@@ -60,7 +60,8 @@
         pageSize: 8,
         busy: true,
         loading: false,
-        suppliesCart: [] // 购物车
+        suppliesCart: [], // 购物车
+        count: 0 // 购物车物品数量
       }
     },
     mounted () {
@@ -74,6 +75,7 @@
         setTimeout(() => {
           this.clickTabItemById(this.smallClassIndex)
         }, 20)
+        this.totalCount()
       },
       // 获取初始状态信息
       getSuppliesStore () {
@@ -170,7 +172,17 @@
         if (shoppingType === 'remove' && listNumber !== -1) {
           this.suppliesCart.splice(listNumber, 1)
         }
+        this.totalCount()
       },
+      // 计算总数
+      totalCount () {
+        let count = 0
+        this.suppliesCart.forEach((item) => {
+          count += parseInt(item.quantity, 10)
+        })
+        this.count = count
+      },
+      /* ------------------------------------------------------------------------ */
       goBack () {
         this.$store.commit('setSuppliesCart', this.suppliesCart)
         this.$router.back(-1)
