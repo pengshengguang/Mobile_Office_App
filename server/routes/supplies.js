@@ -205,4 +205,29 @@ router.post('/saveSuppliesCart', (req, res, next) => {
   })
 })
 
+/* 获取所有二级目录 */
+router.get('/getAllSmallClass', (req, res, next) => {
+  Classifiers.find({}, (err, classifiersDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (classifiersDoc) {
+        let smallClassList = []
+        classifiersDoc.forEach((item) => {
+          smallClassList = smallClassList.concat(item.smallClassList)
+        })
+        res.json({
+          status: '0',
+          msg: '',
+          result: smallClassList
+        })
+      }
+    }
+  })
+})
+
 module.exports = router

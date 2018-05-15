@@ -104,6 +104,7 @@
             if (res.status === '0') {
               let suppliesCart = res.result || []
               this.suppliesStore.suppliesCart = suppliesCart
+              this.$store.commit('setSuppliesCart', that.suppliesStore.suppliesCart)
               this.getCartNum()
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
@@ -187,6 +188,7 @@
       },
       // 确认事件
       confirm () {
+        console.log(this.$store.state.supplies)
         // 把suppliesCart提交至数据库
         let userConfig = {
           suppliesCart: this.suppliesStore.suppliesCart
