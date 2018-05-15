@@ -3,13 +3,13 @@
     <div class="supplies-wrapper cover">
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">提交</x-header>
       <div class="content-box">
-        <div class="category-box" v-for="item in mapSupplisList">
-          <div class="category-name">{{item.smallClass}}/{{item.supplisList.length}}个品类/共{{item.count}}件</div> <!--大类-->
+        <div class="category-box" v-for="item in mapSuppliesList">
+          <div class="category-name">{{item.smallClass}}/{{item.suppliesList.length}}个品类/共{{item.count}}件</div> <!--大类-->
           <div class="category-content"> <!--大类下的小类商品列表-->
-            <swipeout class="vux-1px-tb itemBox" :threshold=".2" v-for="(obj, index) in item.supplisList" :key="index">
+            <swipeout class="vux-1px-tb itemBox" :threshold=".2" v-for="(obj, index) in item.suppliesList" :key="index">
               <swipeout-item transition-mode="reveal">
                 <div slot="right-menu">
-                  <swipeout-button type="warn">删除</swipeout-button>
+                  <swipeout-button type="warn" @click.native="onButtonClick(obj)">删除</swipeout-button>
                 </div>
                 <div slot="content">
                   <div class="proName-line">
@@ -58,7 +58,7 @@
         // 历史购物车
         suppliesCart: [],
         // map化后的suppliesCart
-        mapSupplisList: [],
+        mapSuppliesList: [],
         // 类别
         classList: []
       }
@@ -149,10 +149,10 @@
           let val = {}
           val.smallClass = key
           val.count = map[key].count
-          val.supplisList = map[key].suppliesList
+          val.suppliesList = map[key].suppliesList
           newlist.push(val)
         }
-        this.mapSupplisList = newlist
+        this.mapSuppliesList = newlist
       },
       // 匹配二级分类
       matchSmallClass (smallClassCode) {
@@ -161,6 +161,53 @@
             return this.classList[i].smallClass
           }
         }
+      },
+      // 删除清单项
+      onButtonClick (item) {
+        // 删除数据库购物车项
+        let congfig = {
+          code: item.code
+        }
+        this.loading(true)
+        this.http.post('/supplies/removeSupplies/', congfig).then((response) => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              console.log('删除数据库商品成功！')
+              this.updateStore(item.code)
+            } else {
+              this.$vux.toast.show({ text: '删除失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
+      },
+      // 更新数据
+      updateStore (code) {
+        // 更新store状态
+        let suppliesStore = this.$store.state.supplies
+        suppliesStore.suppliesCart.forEach((item, index) => {
+          if (item.code === code) {
+            suppliesStore.suppliesCart.splice(index, 1)
+          }
+        })
+        this.$store.commit('setSupplies', suppliesStore)
+        // 更新mapSuppliesList
+        for (let i = 0; i < this.mapSuppliesList.length; i++) {
+          for (let j = 0; j < this.mapSuppliesList[i].suppliesList.length; j++) {
+            if (this.mapSuppliesList[i].suppliesList[j].code === code) { // 删除用品代码为code的用品
+              this.mapSuppliesList[i].count -= this.mapSuppliesList[i].suppliesList[j].quantity // 该smallClass类的总用品数量更新
+              this.mapSuppliesList[i].suppliesList.splice(j, 1) // 删除该用品
+              if (this.mapSuppliesList[i].count === 0) { // 如果该smallClass类的总数量为0，则把该smallClass对象整个去除
+                this.mapSuppliesList.splice(i, 1)
+              }
+              break
+            }
+          }
+        }
+        console.log(this.mapSuppliesList)
       }
     }
   }

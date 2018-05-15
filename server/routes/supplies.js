@@ -230,4 +230,50 @@ router.get('/getAllSmallClass', (req, res, next) => {
   })
 })
 
+/* 根据商品编号删除购物车商品 */
+router.post('/removeSupplies', (req, res, next) => {
+  let code = req.body.code
+  let queryParams = {
+    userName: req.cookies.userName
+  }
+  User.findOne(queryParams, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (userDoc) {
+        userDoc.suppliesCart.forEach((item, index) => {
+          if (item.code === code) {
+            userDoc.suppliesCart.splice(index, 1)
+          }
+        })
+        // 保存
+        userDoc.save((err1, doc1) => {
+          if (err1) {
+            res.json({
+              status: '1',
+              msg: err1.message
+            })
+          } else {
+            res.json({
+              status: '0',
+              msg: '购物车商品编码为:' + code + '删除成功',
+              result: 'suc'
+            })
+          }
+        })
+      } else {
+        res.json({
+          status: '1',
+          msg: '办公用品购物车为空',
+          result: ''
+        })
+      }
+    }
+  })
+})
+
 module.exports = router
