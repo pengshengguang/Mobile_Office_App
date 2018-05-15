@@ -417,7 +417,7 @@
     .btn-box{
       position: fixed;
       bottom: 0;
-      height: 53px;
+      height: 44px;
       width: 100%;
       display: flex;
       justify-content: flex-end;

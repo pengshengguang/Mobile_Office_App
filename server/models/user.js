@@ -32,7 +32,8 @@ var userSchema = new mongoose.Schema({
     {
       describe: String,
       code: String,
-      quantity: String,
+      quantity: Number,
+      smallClassCode: String,
       isSelected: Boolean
     }
   ]

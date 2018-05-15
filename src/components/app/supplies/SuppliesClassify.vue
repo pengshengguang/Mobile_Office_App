@@ -16,7 +16,7 @@
             </div>
           </div>
         </div>
-        <div class="cart-icon" :style="backgroundSelected" @click="toSuppliesConfirmView"><i v-if="sum!=0">{{sum}}</i></div>
+        <div class="cart-icon" :style="backgroundSelected" @click="confirm"><i v-if="sum!=0">{{sum}}</i></div>
       </div>
     </div>
   </div>
@@ -54,15 +54,17 @@
       this.init()
     },
     methods: {
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
       goBack () {
         this.$router.back(-1)
         this.$store.commit('setSupplies', []) // 数据还原
         this.$store.commit('setIsGetSuppliesCart', 0) // 数据还原
-      },
-      toSuppliesConfirmView () {
-        this.$router.push({
-          name: 'SuppliesConfirm'
-        })
       },
       toSuppliesDetailListView (index) {
         // 把二级目录列表与点击的index加入到store里面
@@ -94,12 +96,15 @@
       getSuppliesCart () {
         let that = this
         that.$store.commit('setIsGetSuppliesCart', 1)
+        this.loading(true)
         this.http.get('/supplies/getSuppliesCart').then((response) => {
+          this.loading(false)
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
               let suppliesCart = res.result || []
               this.suppliesStore.suppliesCart = suppliesCart
+              this.getCartNum()
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -111,7 +116,9 @@
       // 获取一级目录
       getLargeClass () {
         let that = this
+        this.loading(true)
         that.http.get('/supplies/getLargeClass').then((response) => {
+          this.loading(false)
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
@@ -138,7 +145,9 @@
         let param = {
           largeClassCode: largeClassCode
         }
+        this.loading(true)
         this.http.get('/supplies/getSmallClass', {params: param}).then((response) => {
+          this.loading(false)
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
@@ -175,6 +184,27 @@
           sum += this.suppliesStore.suppliesCart[i].quantity
         }
         this.sum = sum
+      },
+      // 确认事件
+      confirm () {
+        // 把suppliesCart提交至数据库
+        let userConfig = {
+          suppliesCart: this.suppliesStore.suppliesCart
+        }
+        this.http.post('/supplies/saveSuppliesCart', userConfig).then((response) => {
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.$router.push({
+                name: 'SuppliesConfirm'
+              })
+            } else {
+              this.$vux.toast.show({ text: '数据保存失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }

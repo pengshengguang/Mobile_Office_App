@@ -18,7 +18,7 @@
     </div>
     <div class="btn-box">
       <div class="text" @click="showCart">选择{{suppliesCart.length}}个品类/共{{count}}件</div>
-      <div class="confirm">确认</div>
+      <div class="confirm" @click="confirm">确认</div>
     </div>
     <!--底部弹出div-->
     <div class="myPopup" v-if="showPop">
@@ -181,6 +181,29 @@
           count += parseInt(item.quantity, 10)
         })
         this.count = count
+      },
+      // 确认事件
+      confirm () {
+        // 把suppliesCart提交至状态
+        this.$store.commit('setSuppliesCart', this.suppliesCart)
+        // 把suppliesCart提交至数据库
+        let userConfig = {
+          suppliesCart: this.suppliesCart
+        }
+        this.http.post('/supplies/saveSuppliesCart', userConfig).then((response) => {
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.$router.push({
+                name: 'SuppliesConfirm'
+              })
+            } else {
+              this.$vux.toast.show({ text: '数据保存失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       },
       /* ------------------------------------------------------------------------ */
       goBack () {

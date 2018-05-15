@@ -158,4 +158,51 @@ router.get('/getSuppliesCart', (req, res, next) => {
   })
 })
 
+/* 保存购物车 */
+router.post('/saveSuppliesCart', (req, res, next) => {
+  // 获取前端传过来的购物车suppliesCart
+  let suppliesCart = req.body.suppliesCart
+  // 获取当前用户
+  let queryParams = {
+    userName: req.cookies.userName
+  }
+  User.findOne(queryParams, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (userDoc) {
+        // 清空原来购物车
+        userDoc.suppliesCart = []
+        // 购物车赋值
+        userDoc.suppliesCart = suppliesCart
+        // 保存
+        userDoc.save((err1, doc1) => {
+          if (err1) {
+            res.json({
+              status: '1',
+              msg: err1.message
+            })
+          } else {
+            res.json({
+              status: '0',
+              msg: '',
+              result: 'suc'
+            })
+          }
+        })
+      } else {
+        res.json({
+          status: '1',
+          msg: '办公用品购物车为空',
+          result: ''
+        })
+      }
+    }
+  })
+})
+
 module.exports = router
