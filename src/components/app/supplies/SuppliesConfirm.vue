@@ -244,6 +244,7 @@
             let res = response.data
             if (res.status === '0') {
               console.log('订单成功生成！')
+              this.clearData()
             } else {
               this.$vux.toast.show({ text: '订单生成失败', type: 'text' })
             }
@@ -251,6 +252,12 @@
             this.$vux.toast.show({ text: '接口异常', type: 'text' })
           }
         })
+      },
+      // 清空数据
+      clearData () {
+        this.mapSuppliesList = []
+        this.orderNeeds = ''
+        this.$store.commit('setSuppliesCart', [])
       }
     }
   }

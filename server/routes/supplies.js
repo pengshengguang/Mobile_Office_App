@@ -313,11 +313,66 @@ router.post('/suppliesApply', (req, res, next) => {
         result: ''
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '订单插入成功',
-        result: hhh
+      // 订单生成成功，清理购物车
+      User.findOne({userName: applicant}, (err, userDoc) => {
+        if (err) {
+          res.json({
+            status: '1',
+            msg: err.message,
+            result: ''
+          })
+        } else {
+          if (userDoc) {
+            userDoc.suppliesCart = []
+            userDoc.save((err1, haha) => {
+              if (err1) {
+                res.json({
+                  status: '1',
+                  msg: '用户购物车保存异常',
+                  result: ''
+                })
+              } else {
+                res.json({
+                  status: '0',
+                  msg: '用户订单成功生成，用户购物车清空成功',
+                  result: ''
+                })
+              }
+            })
+          } else {
+            res.json({
+              status: '1',
+              msg: '该用户不存在，无法清空购物车',
+              result: ''
+            })
+          }
+        }
       })
+    }
+  })
+})
+
+/* 根据 当前用户+订单标识 获取订单 */
+router.get('/getOrderByState', (req, res, next) => {
+  let queryParams = {
+    userName: this.cookies.userName,
+    state: parseInt(req.body.state, 10) // 订单状态
+  }
+  SuppliesOrder.findOne(queryParams, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (doc) {
+        res.json({
+          status: '0',
+          msg: '用户订单查询成功',
+          result: doc
+        })
+      }
     }
   })
 })
