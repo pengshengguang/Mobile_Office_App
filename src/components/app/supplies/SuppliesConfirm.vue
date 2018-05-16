@@ -24,8 +24,8 @@
         </div>
         <div class="textarea-box">
           <group style="width: 100%">
-            <x-textarea :rows="2" placeholder="可输入列表中没有的办公用品"
-                        class="require-item-x-input"
+            <x-textarea class="require-item-x-input" placeholder="可输入列表中没有的办公用品"  v-model="orderNeeds"
+                        :rows="2"
                         :show-counter="true" :max="100" :autosize='true'>
             </x-textarea>
           </group>
@@ -33,7 +33,7 @@
         <div style="height: 83px;flex: none;"></div>
       </div>
       <div class="btn-box">
-        <div class="text">提交</div>
+        <div class="text" @click="applyEvent">提交</div>
       </div>
       <router-view></router-view>
     </div>
@@ -60,7 +60,9 @@
         // map化后的suppliesCart
         mapSuppliesList: [],
         // 类别
-        classList: []
+        classList: [],
+        // 其他申请需求
+        orderNeeds: ''
       }
     },
     components: {
@@ -207,7 +209,48 @@
             }
           }
         }
-        console.log(this.mapSuppliesList)
+      },
+      // 提交按钮
+      applyEvent () {
+        let that = this
+        this.$vux.confirm.show({
+          content: `是否确认申请购物清单内的办公用品？`,
+          confirmText: '确认申请',
+          cancelText: '继续挑选',
+          onShow () {
+            console.log('plugin show')
+          },
+          onHide () {
+            console.log('plugin hide')
+          },
+          onCancel () {
+            console.log('plugin hide')
+          },
+          onConfirm () {
+            that.onConfirm()
+          }
+        })
+      },
+      // 确认申请
+      onConfirm () {
+        let config = {
+          orderNeeds: this.orderNeeds,
+          supplies: this.mapSuppliesList
+        }
+        this.loading(true)
+        this.http.post('/supplies/suppliesApply', config).then((response) => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              console.log('订单成功生成！')
+            } else {
+              this.$vux.toast.show({ text: '订单生成失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }
