@@ -3,10 +3,10 @@
     <div class="supplies-wrapper cover">
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品<div class="add" slot="right" @click="toClassifyView"></div></x-header>
       <div class="tab-box">
-        <div class="feedback-tab" @click="tab_click(1);" :class="{'active':tabnum === 1}">已反馈（{{tabState.checkedCount}}）</div>
+        <div class="feedback-tab" @click="tab_click(1);" :class="{'active':tabnum === 1}">已反馈（{{tabState.checkedCount}}）<i :style="{top: tabnum === 1 ? 12 + 'px' : 0}" v-if="tabState.checkedNoRead"></i></div>
         <div class="empty"></div>
-        <div class="no-feedback-tab" ref="inApprovalDiv" @click="tab_click(0);" :class="{'active':tabnum === 0}" v-if="isApproval">待审批（{{tabState.inApprovalCount}})</div>
-        <div class="approvaling-tab" ref="inApprovalDiv" @click="tab_click(0);" :class="{'active':tabnum === 0}" v-else>审批中（{{tabState.inApprovalCount}}）</div>
+        <div class="no-feedback-tab" ref="inApprovalDiv" @click="tab_click(0);" :class="{'active':tabnum === 0}" v-if="isApproval">待审批（{{tabState.inApprovalCount}})<i :style="{top: tabnum === 0 ? 12 + 'px' : 0}" v-if="tabState.inApprovalNoRead"></i></div>
+        <div class="approvaling-tab" ref="inApprovalDiv" @click="tab_click(0);" :class="{'active':tabnum === 0}" v-else>审批中（{{tabState.inApprovalCount}}）<i :style="{top: tabnum === 0 ? 12 + 'px' : 0}" v-if="tabState.inApprovalNoRead"></i></div>
       </div>
       <div class="main-box">
         <div class="approval-apply-list">
@@ -150,6 +150,16 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
+        i{
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: red;
+          top: 0px;
+          right: 45px;
+        }
       }
       .empty{
         flex: 0 0 1px;
@@ -161,12 +171,32 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
+        i{
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: red;
+          top: 0px;
+          right: 45px;
+        }
       }
       .approvaling-tab{
         flex: auto;
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
+        i{
+          position: absolute;
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: red;
+          top: 0px;
+          right: 45px;
+        }
       }
 
       .active{
