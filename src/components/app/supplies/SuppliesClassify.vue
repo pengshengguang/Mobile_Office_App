@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="supplies-classify-wrapper cover">
-      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品目录</x-header>
+      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品目录<div class="add" slot="right" @click="toSuppliesView"></div></x-header>
       <div class="content-box">
         <div class="left-box">
           <div class="className" :class="{active: index === parseInt(suppliesStore.largeClassIndex, 10)}" v-for="(item, index) in largeClassList" :key="index" @click="getSmallClass(item.largeClassCode, index)">{{item.largeClass}}</div>
@@ -65,6 +65,9 @@
         this.$router.back(-1)
         this.$store.commit('setSupplies', []) // 数据还原
         this.$store.commit('setIsGetSuppliesCart', 0) // 数据还原
+        this.$router.push({
+          name: 'work'
+        })
       },
       toSuppliesDetailListView (index) {
         // 把二级目录列表与点击的index加入到store里面
@@ -78,6 +81,11 @@
         this.$store.commit('setSupplies', suppliesNewStore)
         this.$router.push({
           name: 'SuppliesDetailList'
+        })
+      },
+      toSuppliesView () {
+        this.$router.push({
+          name: 'Supplies'
         })
       },
       init () {
@@ -218,6 +226,17 @@
   }
   .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
     opacity: 0;
+  }
+  .supplies-classify-wrapper{
+    .whiteBgHeader{
+      .add{
+        width: 22px;
+        height: 22px;
+        display: inline-block;
+        background: url("./../../../assets/img/supplies/icon-application.png") no-repeat;
+        background-size: 100% 100%;
+      }
+    }
   }
 </style>
 

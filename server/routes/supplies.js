@@ -6,6 +6,7 @@ var Classifiers = require('./../models/classifiers')
 var Supplies = require('./../models/supplies')
 var User = require('./../models/user')
 var SuppliesOrder = require('./../models/suppliesOrder')
+var Message = require('./../models/messages')
 
 router.get('/', function (req, res, next) {
   res.send('response with a resource')
@@ -354,11 +355,19 @@ router.post('/suppliesApply', (req, res, next) => {
 
 /* 根据 当前用户+订单标识 获取订单 */
 router.get('/getOrderByState', (req, res, next) => {
-  let queryParams = {
-    userName: this.cookies.userName,
-    state: parseInt(req.body.state, 10) // 订单状态
+  let userName = req.cookies.userName
+  let queryParams = {}
+  if (userName === 'admin') {
+    queryParams = {
+      state: parseInt(req.param('state')) // 订单状态
+    }
+  } else {
+    queryParams = {
+      applicant: req.cookies.userName,
+      state: parseInt(req.param('state')) // 订单状态
+    }
   }
-  SuppliesOrder.findOne(queryParams, (err, doc) => {
+  SuppliesOrder.find(queryParams, (err, doc) => {
     if (err) {
       res.json({
         status: '1',
@@ -366,13 +375,119 @@ router.get('/getOrderByState', (req, res, next) => {
         result: ''
       })
     } else {
-      if (doc) {
-        res.json({
-          status: '0',
-          msg: '用户订单查询成功',
-          result: doc
-        })
-      }
+      res.json({
+        status: '0',
+        msg: '用户订单查询成功',
+        result: doc
+      })
+    }
+  })
+})
+
+/* 获取当前用户已审批+审批中的记录条数 */
+router.get('/getTabState', (req, res, next) => {
+  let userName = req.cookies.userName
+  let queryParams = {}
+  if (userName !== 'admin') {
+    queryParams.applicant = userName
+  }
+  SuppliesOrder.find(queryParams, (err, orderListDoc) => { // 第一步，获取当前用户所有的申请记录
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      let oldCheckedCount = 0
+      let oldInApprovalCount = 0
+      // 查询消息表，获取当前已读未读状态
+      Message.find({userName: userName}, (err1, messageDoc) => {  // 第二步， 获取当前用户所有已读未读信息
+        if (err1) {
+          res.json({
+            status: '1',
+            msg: err1.message,
+            result: ''
+          })
+        } else {
+          if (messageDoc.length === 0) {   // 如果messageDoc的长度为0，表示当前用户尚未拥有已读未读记录，需要新建已读未读记录 message
+            let messageConfig = {
+              userName: userName,
+              supplies: {
+                checkedCount: 0,
+                inApprovalCount: 0
+              }
+            }
+            var newMessage = new Message(messageConfig)
+            newMessage.save((err2, newMessageDoc) => {
+              if (err2) {
+                res.json({
+                  status: '1',
+                  msg: 'message新建数据保存异常',
+                  result: ''
+                })
+              }
+            })
+          } else {
+            oldCheckedCount = messageDoc[0].supplies.checkedCount   // 如果系统已经存在已读未读记录，则把已读未读记录赋值给old值
+            oldInApprovalCount = messageDoc[0].supplies.inApprovalCount
+          }
+          let checkedCount = 0 // 已审批数
+          let inApprovalCount = 0 // 待审批数/审批中数
+          orderListDoc.forEach(item => {                    // 第三步，统计不同状态的（审批中0、已审批1）已读未读记录总数
+            if (item.state === 0) {
+              inApprovalCount++
+            }
+            if (item.state === 1) {
+              checkedCount++
+            }
+          })
+          let ckeckedNoRead = false // 是否已审批中有未读
+          let inApprovalNoRead = false // 是否待审批中有未读
+          // 判断是否有未读
+          if (checkedCount !== oldCheckedCount) {    // 第四部， 通过新旧值对比，得出已读未读标识
+            ckeckedNoRead = true
+          }
+          if (inApprovalCount !== oldInApprovalCount) {
+            inApprovalNoRead = true
+          }
+          // 封装数据返回给前端
+          let tabState = {
+            ckeckedNoRead: ckeckedNoRead,
+            inApprovalNoRead: inApprovalNoRead,
+            checkedCount: checkedCount,
+            inApprovalCount: inApprovalCount
+          }    // 第五步，到这里，数据已经完全可以传递给前端，但是为了确保massage得到成功的更新，就需等message更新完后再传值给前端
+          // 更新message中的supplies
+          Message.find({userName: userName}, (err1, updateDoc) => {
+            if (err1) {
+              res.json({
+                status: '1',
+                msg: err1.message,
+                result: '更新message中的supplies失败'
+              })
+            } else {
+              updateDoc[0].supplies.checkedCount = checkedCount
+              updateDoc[0].supplies.inApprovalCount = inApprovalCount
+              updateDoc[0].save((err3, newestDoc) => {
+                if (err) {
+                  res.json({
+                    status: '1',
+                    msg: err3.messages,
+                    result: '最终更新message中的supplies失败'
+                  })
+                } else {
+                  res.json({
+                    status: '0',
+                    msg: '',
+                    result: tabState  // 第六步，值给前端
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
     }
   })
 })

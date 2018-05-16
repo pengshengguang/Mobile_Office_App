@@ -1,55 +1,120 @@
 <template>
-  <transition name="slide">
+  <div>
     <div class="supplies-wrapper cover">
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品<div class="add" slot="right" @click="toClassifyView"></div></x-header>
       <div class="tab-box">
-        <div class="feedback-tab" @click="tab_click(0);" :class="{'active':tabnum === 0}">已反馈（10）</div>
+        <div class="feedback-tab" @click="tab_click(1);" :class="{'active':tabnum === 1}">已反馈（{{tabState.checkedCount}}）</div>
         <div class="empty"></div>
-        <div class="no-feedback-tab" @click="tab_click(1);" :class="{'active':tabnum === 1}">待审批（20）</div>
-        <div class="approvaling-tab" @click="tab_click(2);" :class="{'active':tabnum === 2}" style="display: none">审批中（20）</div>
+        <div class="no-feedback-tab" ref="inApprovalDiv" @click="tab_click(0);" :class="{'active':tabnum === 0}" v-if="isApproval">待审批（{{tabState.inApprovalCount}})</div>
+        <div class="approvaling-tab" ref="inApprovalDiv" @click="tab_click(0);" :class="{'active':tabnum === 0}" v-else>审批中（{{tabState.inApprovalCount}}）</div>
       </div>
       <div class="main-box">
         <div class="approval-apply-list">
-          <supplies-apply-item></supplies-apply-item>
-          <supplies-apply-item></supplies-apply-item>
-          <supplies-apply-item></supplies-apply-item>
-          <supplies-apply-item></supplies-apply-item>
-          <supplies-apply-item></supplies-apply-item>
-          <supplies-apply-item></supplies-apply-item>
+          <supplies-apply-item  v-for="(applyItem, index) in applyList" :key="index" :applyItem="applyItem" :tabnum="tabnum" :isApproval="isApproval"></supplies-apply-item>
         </div>
       </div>
-      <router-view></router-view>
     </div>
-  </transition>
+  </div>
 </template>
 
 <script>
   import { XHeader } from 'vux'
   import SuppliesApplyItem from './assembly/SuppliesApplyItem.vue'
+  import HttpService from '@/services/HttpService'
 
   export default {
     data () {
       return {
-        // tab页签
-        tabnum: 0
+        http: HttpService.getAxios,
+        tabnum: 0, // tab页签
+        applyList: [], // 申请列表
+        userName: '',
+        isApproval: false,
+        tabState: {} // tab标签页数据
       }
     },
     components: {
       XHeader,
       SuppliesApplyItem
     },
+    mounted () {
+      this.init()
+    },
     methods: {
+      init () {
+        this.checkIdentity()
+        this.tab_click(0)
+      },
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
       goBack () {
-        this.$router.push({
-          name: 'work'
-        })
+        this.$router.back()
+      },
+      // 检查当前用户是否审批人
+      checkIdentity () {
+        this.userName = this.$store.state.nickName
+        if (this.userName === 'admin') {
+          this.isApproval = true
+        } else {
+          this.isApproval = false
+        }
       },
       tab_click (num) {
+        this.applyList = []
         this.tabnum = num
+        this.getApplyByTabnum()
+        this.getTabState()// 刷新tab状态值
       },
       toClassifyView () {
         this.$router.push({
           name: 'SuppliesClassify'
+        })
+      },
+      // 根据tabnum获取申请信息
+      getApplyByTabnum () {
+        let that = this
+        this.loading(true)
+        let param = {
+          state: this.tabnum
+        }
+        this.http.get('/supplies/getOrderByState', {
+          params: param
+        }).then(response => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              console.log(res.result)
+              this.applyList = res.result
+            } else {
+              that.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            that.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
+      },
+      // 获取tab头部状态值，已读未读，总条数等信息
+      getTabState () {
+        this.loading(true)
+        this.http.get('/supplies/getTabState').then((response) => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.tabState = res.result
+              console.log(this.tabState)
+            } else {
+              this.$vux.toast.show({ text: '接口异常,Tab状态值获取失败1', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常,Tab状态值获取失败2', type: 'text' })
+          }
         })
       }
     }
@@ -57,12 +122,6 @@
 </script>
 
 <style lang="scss">
-  .slide-enter-active,.slide-leave-active{
-    transition: all 0.8s;// 关于vue自带的动画效果，可看官网
-  }
-  .slide-enter, .slide-leave-to{
-    transform: translate3d(100%, 0, 0)
-  }
   .supplies-wrapper{
     .add{
       width: 22px;

@@ -9,6 +9,7 @@ import OrderConfirm from '@/components/app/shopping/OrderConfirm'
 import OrderSuccess from '@/components/app/shopping/OrderSuccess'
 import ScrollTab from '@/components/app/scrollTab/scrollTab'
 
+import SuppliesHome from '@/components/app/supplies/SuppliesHome'
 import Supplies from '@/components/app/supplies/Supplies'
 import SuppliesClassify from '@/components/app/supplies/SuppliesClassify'
 import SuppliesConfirm from '@/components/app/supplies/SuppliesConfirm'
@@ -76,14 +77,25 @@ const orderRoute = { path: '/orderConfirm', component: OrderConfirm, name: 'Orde
 const orderSuccessRoute = { path: '/orderSuccess', component: OrderSuccess, name: 'OrderSuccess' }
 
 // 办公用品
+// const suppliesRoute = {
+//   path: 'supplies',
+//   component: Supplies,
+//   name: 'Supplies',
+//   children: [
+//     { path: 'suppliesClassify', name: 'SuppliesClassify', component: SuppliesClassify },
+//     { path: 'suppliesConfirm', name: 'SuppliesConfirm', component: SuppliesConfirm },
+//     { path: 'suppliesDetailList', name: 'SuppliesDetailList', component: SuppliesDetailList }
+//   ]
+// }
 const suppliesRoute = {
-  path: 'supplies',
-  component: Supplies,
-  name: 'Supplies',
+  path: 'suppliesHome',
+  component: SuppliesHome,
+  name: 'SuppliesHome',
   children: [
+    { path: 'supplies', name: 'Supplies', component: Supplies },
     { path: 'suppliesClassify', name: 'SuppliesClassify', component: SuppliesClassify },
-    { path: 'suppliesConfirm', name: 'SuppliesConfirm', component: SuppliesConfirm },
-    { path: 'suppliesDetailList', name: 'SuppliesDetailList', component: SuppliesDetailList }
+    { path: 'suppliesDetailList', name: 'SuppliesDetailList', component: SuppliesDetailList },
+    { path: 'suppliesConfirm', name: 'SuppliesConfirm', component: SuppliesConfirm }
   ]
 }
 

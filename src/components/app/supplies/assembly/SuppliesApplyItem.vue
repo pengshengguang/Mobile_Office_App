@@ -1,49 +1,31 @@
 <template>
   <div class="apply-item-wrapper">
     <div class="apply-content-box">
-      <div v-if="showDom">
-        <div class="more">
-          <div class="showArrow">
-            <div class="right_icon" :style='upArrowRight'></div>
-          </div>
-          <div class="showArrow" style="display: none">
-            <div class="right_icon" :style='downArrowRight'></div>
-          </div>
+      <div class="more">
+        <div class="showArrow" v-if="isShowMore&&applyItem.supplies.length>0" @click="isMore">
+          <div class="right_icon" :style='downArrowRight'></div>
         </div>
-        <div class="cencel">撤回</div>
-        <div class="applicants-line">开发工程师/彭胜光</div>
-        <div class="type-time-line">2个品类/共2件   05-10</div>
+        <div class="showArrow" v-if="!isShowMore&&applyItem.supplies.length>0" @click="isMore">
+          <div class="right_icon" :style='upArrowRight'></div>
+        </div>
       </div>
-      <div class="category-box">
-        <div class="category-name">白板附件<span>2个品类/共2件</span></div> <!--大类-->
-        <div class="category-content"> <!--大类下的小类商品列表-->
+      <div class="cencel" v-if="tabnum === 0">撤回</div>
+      <div class="applicants-line"><span v-if="isApproval">管理员</span><span v-else>开发工程师</span>/{{applyItem.applicant}}</div>
+      <div class="type-time-line">{{totalClass}}个品类/共{{totalCount}}件/   {{applyItem.startTime}}</div>
+      <div class="category-box" v-if="isShowMore" v-for="suppliesClass in applyItem.supplies">
+        <div class="category-name">{{suppliesClass.smallClass}}<span>{{suppliesClass.suppliesList.length}}个品类/共{{suppliesClass.count}}件</span></div> <!--大类-->
+        <div class="category-content" v-for="item in suppliesClass.suppliesList"> <!--大类下的小类商品列表-->
           <div class="proName-line">
-            <div class="proName">史泰博 白板纸张 56*90cm，80G 白色（卷）</div>
-            <div class="proNum">x1</div>
+            <div class="proName">{{item.describe}}</div>
+            <div class="proNum">x{{item.quantity}}</div>
           </div>
-          <div class="proCode-line">1100013846EA</div>
-        </div>
-        <div class="category-content"> <!--大类下的小类商品列表-->
-          <div class="proName-line">
-            <div class="proName">史泰博 白板纸张 56*90cm，80G 白色（卷）</div>
-            <div class="proNum">x1</div>
-          </div>
-          <div class="proCode-line">1100013846EA</div>
-        </div>
-        <div class="category-content"> <!--大类下的小类商品列表-->
-          <div class="proName-line">
-            <div class="proName">史泰博 白板纸张 56*90cm，80G 白色（卷）</div>
-            <div class="proNum">x1</div>
-          </div>
-          <div class="proCode-line">1100013846EA</div>
+          <div class="proCode-line">{{item.code}}</div>
         </div>
       </div>
     </div>
-    <div v-if="showDom">
-      <div class="msg-line">意见：我知道了，请带薪等候。</div>
-      <div class="my-msg-line">备注：我知道了，请带薪等候。</div>
-      <div class="btn-box" v-if="showDom">我知道了</div>
-    </div>
+    <div class="my-msg-line" v-if="applyItem.orderNeeds">备注：{{applyItem.orderNeeds}}</div>
+    <div class="msg-line">意见：我知道了，请带薪等候。</div>
+    <div class="btn-box" v-if="tabnum === 0&&isApproval">我知道了</div>
     <div class="empty-box"></div>
   </div>
 </template>
@@ -51,25 +33,67 @@
 <script>
   export default {
     props: {
-      showDom: { // 是否为购物车界面
+      applyItem: {
+        type: Object,
+        default: []
+      },
+      tabnum: {
+        type: Number,
+        default: 0
+      },
+      isApproval: {
         type: Boolean,
-        default: true
+        default: false
       }
     },
     data () {
       return {
+        isShowMore: false, // 是否显示更多
         // 收起展开Icon
         upArrowRight: {
           backgroundImage: 'url(' + require('@/assets/img/supplies/J82-icon-shrink.png') + ')'
         },
         downArrowRight: {
           backgroundImage: 'url(' + require('@/assets/img/supplies/J82-icon-unflod.png') + ')'
-        }
+        },
+        totalClass: 0,
+        totalCount: 0
+      }
+    },
+    mounted () {
+      this.init()
+    },
+    methods: {
+      init () {
+        this.getTotal()
+      },
+      isMore () {
+        this.isShowMore = !this.isShowMore
+      },
+      getTotal () {
+        let totalClass = 0
+        let totalCount = 0
+        this.applyItem.supplies.forEach(item => {
+          totalClass += item.suppliesList.length
+          totalCount += item.count
+        })
+        this.totalClass = totalClass
+        this.totalCount = totalCount
       }
     }
   }
 </script>
+<style>
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: opacity .1s
+  }
 
+  .fade-enter,
+  .fade-leave-active {
+    opacity: 0
+  }
+</style>
 <style lang="scss" scoped>
   .apply-item-wrapper{
     display: flex;
@@ -122,6 +146,7 @@
         border-bottom: 1px solid #eaeaea;
       }
       .category-box{
+        border-top: 1px solid #eaeaea;
         .category-name{
           font-size: 16px;
           font-weight: bold;
