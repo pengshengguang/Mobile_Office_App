@@ -9,7 +9,7 @@
           <div class="right_icon" :style='upArrowRight'></div>
         </div>
       </div>
-      <div class="cencel" v-if="tabnum === 0">撤回</div>
+      <div class="cencel" v-if="tabnum === 0" @click="cancel(applyItem.orderId)">撤回</div>
       <div class="applicants-line"><span v-if="isApproval">管理员</span><span v-else>开发工程师</span>/{{applyItem.applicant}}</div>
       <div class="type-time-line">{{totalClass}}个品类/共{{totalCount}}件/   {{applyItem.startTime}}</div>
       <div class="category-box" v-if="isShowMore" v-for="suppliesClass in applyItem.supplies">
@@ -25,12 +25,14 @@
     </div>
     <div class="my-msg-line" v-if="applyItem.orderNeeds">备注：{{applyItem.orderNeeds}}</div>
     <div class="msg-line">意见：我知道了，请带薪等候。</div>
-    <div class="btn-box" v-if="tabnum === 0&&isApproval">我知道了</div>
+    <div class="btn-box" v-if="tabnum === 0&&isApproval" @click="iKnow(applyItem.orderId)">我知道了</div>
     <div class="empty-box"></div>
   </div>
 </template>
 
 <script>
+  import HttpService from '@/services/HttpService'
+
   export default {
     props: {
       applyItem: {
@@ -44,10 +46,14 @@
       isApproval: {
         type: Boolean,
         default: false
+      },
+      initialize: {
+        type: Function
       }
     },
     data () {
       return {
+        http: HttpService.getAxios,
         isShowMore: false, // 是否显示更多
         // 收起展开Icon
         upArrowRight: {
@@ -67,6 +73,13 @@
       init () {
         this.getTotal()
       },
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
       isMore () {
         this.isShowMore = !this.isShowMore
       },
@@ -79,6 +92,74 @@
         })
         this.totalClass = totalClass
         this.totalCount = totalCount
+      },
+      cancel (orderId) {
+        let that = this
+        this.$vux.confirm.show({
+          content: `您好，撤回后需重新提交申请，是否撤回？`,
+          confirmText: '是',
+          cancelText: '否',
+          onCancel () {
+            that.initialize() // 重新加载申请列表界面
+          },
+          onConfirm () {
+            that.cancelEvent(orderId)
+          }
+        })
+      },
+      cancelEvent (orderId) {
+        let config = {
+          orderId: orderId
+        }
+        this.loading(true)
+        this.http.post('/supplies/cancelByOrderId', config).then(response => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.initialize() // 重新加载申请列表界面
+            } else {
+              this.$vux.toast({ text: '撤回失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast({ text: '接口异常', type: 'text' })
+          }
+        })
+      },
+      iKnow (orderId) {
+        const _this = this
+        this.$vux.confirm.prompt('123', {
+          title: '温馨提示',
+          onShow () {
+            _this.$vux.confirm.setInputValue('我知道了，再耐心等等就可以领取了')
+          },
+          onCancel () {
+            _this.initialize() // 调用父组件的initialize方法刷新页面
+          },
+          onConfirm (msg) {
+            _this.approvalEvent(orderId, msg)
+          }
+        })
+      },
+      approvalEvent (orderId, msg) {
+        let config = {
+          orderId: orderId,
+          orderNeeds: msg
+        }
+        this.loading(true)
+        this.http.post('/supplies/approval', config).then(response => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.initialize() // 重新加载申请列表界面
+            } else {
+              this.$vux.toast({ text: '撤回失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }

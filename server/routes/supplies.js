@@ -432,7 +432,7 @@ router.get('/getTabState', (req, res, next) => {
             oldCheckedCount = messageDoc[0].supplies.checkedCount   // 如果系统已经存在已读未读记录，则把已读未读记录赋值给old值
             oldInApprovalCount = messageDoc[0].supplies.inApprovalCount
           }
-          let checkedCount = 0 // 已审批数
+          let checkedCount = 0 // 已审批数                       // // 计算当前最新的记录
           let inApprovalCount = 0 // 待审批数/审批中数
           orderListDoc.forEach(item => {                    // 第三步，统计不同状态的（审批中0、已审批1）已读未读记录总数
             if (item.state === 0) {
@@ -442,18 +442,18 @@ router.get('/getTabState', (req, res, next) => {
               checkedCount++
             }
           })
-          let ckeckedNoRead = false // 是否已审批中有未读
+          let checkedNoRead = false // 是否已审批中有未读
           let inApprovalNoRead = false // 是否待审批中有未读
           // 判断是否有未读
-          if (checkedCount !== oldCheckedCount) {    // 第四部， 通过新旧值对比，得出已读未读标识
-            ckeckedNoRead = true
+          if (checkedCount > oldCheckedCount) {    // 第四步， 通过新旧值对比，得出已读未读标识 (只有记录条数增，才能显示未读，因为撤回是待审批记录数减少！)
+            checkedNoRead = true
           }
-          if (inApprovalCount !== oldInApprovalCount) {
+          if (inApprovalCount > oldInApprovalCount) {
             inApprovalNoRead = true
           }
           // 封装数据返回给前端
           let tabState = {
-            ckeckedNoRead: ckeckedNoRead,
+            checkedNoRead: checkedNoRead,
             inApprovalNoRead: inApprovalNoRead,
             checkedCount: checkedCount,
             inApprovalCount: inApprovalCount
@@ -487,6 +487,61 @@ router.get('/getTabState', (req, res, next) => {
             }
           })
         }
+      })
+    }
+  })
+})
+
+/* 撤回申请操作 */
+router.post('/cancelByOrderId', (req, res, next) => {
+  let orderId = req.body.orderId
+  let conditions = {
+    orderId: orderId
+  }
+  let update = {
+    'state': -1
+  }
+  SuppliesOrder.update(conditions, update, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '订单状态已改为-1，已撤回',
+        result: doc
+      })
+    }
+  })
+})
+
+/* 审批操作 */
+router.post('/approval', (req, res, next) => {
+  let orderId = req.body.orderId
+  let orderNeeds = req.body.orderNeeds
+  let conditions = {
+    orderId: orderId
+  }
+  let update = {
+    'state': 1,
+    'orderNeeds': orderNeeds,
+    'endTime': new Date().Format('yyyy-MM-dd hh:mm:ss')
+  }
+  SuppliesOrder.update(conditions, update, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '订单状态已修改成功，已审批',
+        result: doc
       })
     }
   })

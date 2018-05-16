@@ -12,7 +12,7 @@
           <div class="Info-box">
             <transition name="fade">
               <div class="username-box" v-if="!userExist">
-                <input name="username" type="text" placeholder="请输入用户名" @keyup.enter="findUser" class="username-input" v-model.trim="userConfig.userName" onkeyup="this.value=this.value.replace(/\D/g,'')">
+                <input name="username" type="text" placeholder="请输入用户名" @keyup.enter="findUser" class="username-input" v-model.trim="userConfig.userName">
               </div>
             </transition>
             <transition name="fade">

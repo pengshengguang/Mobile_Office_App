@@ -10,7 +10,7 @@
       </div>
       <div class="main-box">
         <div class="approval-apply-list">
-          <supplies-apply-item  v-for="(applyItem, index) in applyList" :key="index" :applyItem="applyItem" :tabnum="tabnum" :isApproval="isApproval"></supplies-apply-item>
+          <supplies-apply-item  v-for="(applyItem, index) in applyList" :key="index" :applyItem="applyItem" :tabnum="tabnum" :isApproval="isApproval" :initialize="initialize"></supplies-apply-item>
         </div>
       </div>
     </div>
@@ -38,10 +38,10 @@
       SuppliesApplyItem
     },
     mounted () {
-      this.init()
+      this.initialize()
     },
     methods: {
-      init () {
+      initialize () {
         this.checkIdentity()
         this.tab_click(0)
       },

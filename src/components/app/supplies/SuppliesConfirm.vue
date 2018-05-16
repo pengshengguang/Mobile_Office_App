@@ -258,6 +258,9 @@
         this.mapSuppliesList = []
         this.orderNeeds = ''
         this.$store.commit('setSuppliesCart', [])
+        this.$router.push({
+          name: 'Supplies'
+        })
       }
     }
   }

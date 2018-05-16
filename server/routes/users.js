@@ -568,7 +568,7 @@ router.post('/modifyPwd', (req, res, next) => {
       })
     } else {
       res.json({
-        status: '1',
+        status: '0',
         msg: '修改密码成功',
         result: true
       })

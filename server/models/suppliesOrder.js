@@ -8,7 +8,7 @@ var suppliesOrderSchema = new Schema({
   'startTime': String, // 申请时间
   'endTime': String, // 审批时间 / 撤回时间
   'feedback': String, // 审批语
-  'state': Number, // 订单状态，0：审批中；1：已审批；2：已撤回
+  'state': Number, // 订单状态，0：审批中；1：已审批；-1：已撤回
   'orderNeeds': String, // 其他需求
   'supplies': [
     {
