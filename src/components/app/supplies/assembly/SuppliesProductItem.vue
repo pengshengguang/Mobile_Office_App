@@ -5,8 +5,11 @@
         <div class="item-pick" :class="item.isSelected? 'y_pick':''"></div>
       </div>
       <div class="right-box">
-        <div class="describe-line titleLong">{{item.describe}}</div>
-        <div class="code">{{item.code}}<span v-if="!bottomCart">收起</span></div>
+        <div class="describe-line" ref="describe" :class="{'titleLong': !showMore}">{{item.describe}}</div>
+        <div class="code">{{item.code}}
+          <span v-if="!bottomCart&&textOver&&!showMore" @click="more">展开<i class="triangle-down"></i></span>
+          <span v-if="!bottomCart&&textOver&&showMore" @click="more">收起<i class="triangle-up"></i></span>
+        </div>
         <div>
           <i class="add" :style="backgroundAdd" @click="addItem"></i>
           <input ref="input" class="number-input" v-model="item.quantity"
@@ -17,6 +20,8 @@
                  maxlength="3">
           <i class="reduce" :style="backgroundReduce" @click="reduce" v-if="!(bottomCart===undefined&&item.quantity===1)"></i>
         </div>
+        <!-- 此div用作增大展开/收起的触碰面积 -->
+        <div v-if="!bottomCart&&textOver" style="position: absolute;left: 0;top: 0;width: 60%;height: 96%" @click="more"></div>
       </div>
     </div>
   </div>
@@ -43,7 +48,9 @@
         // 减少
         backgroundReduce: {
           backgroundImage: 'url(' + require('@/assets/img/supplies/icon-reduce.png') + ')'
-        }
+        },
+        textOver: false, // 该用品描述文字是出现溢出
+        showMore: true // 控制文字是否显示全
       }
     },
     mounted () {
@@ -58,6 +65,7 @@
         if (this.item.isSelected === undefined) {
           this.item.isSelected = false
         }
+        this.isOverflow()
       },
       pickChange () {
         this.item.isSelected = !this.item.isSelected
@@ -109,6 +117,17 @@
         this.isShopping(this.item, this.item.isSelected ? 'add' : 'remove')
         // 刷新页面数据
         this.$forceUpdate()
+      },
+      // 判断公共用品描述div内的文字是否超过比例
+      isOverflow () {
+        if (this.$refs.describe.clientHeight > 40) {
+          this.textOver = true
+          this.showMore = false
+        }
+      },
+      // 收起、展开切换
+      more () {
+        this.showMore = !this.showMore
       }
     }
   }
@@ -155,7 +174,7 @@
         }
       }
       .right-box{
-        flex: auto;
+        flex: 1 1 88%;
         position: relative;
         .describe-line{
           font-size: 16px;
@@ -170,21 +189,35 @@
           text-overflow: ellipsis;
         }
         .code{
+          position: relative;
           font-size: 14px;
           color: #989c9f;
           padding-top: 10px;
           span{
+            position: absolute;
+            top: 8px;
+            right: 116px;
             margin-left: 20px;
             font-size: 15px;
-            &:after{
-              content: '';
-              display: inline-block;
+            .triangle-up{
               width: 0;
               height: 0;
               border-left: 6px solid transparent;
               border-right: 6px solid transparent;
               border-bottom: 8px solid #c5c5c5;
-              margin-bottom: 2px;
+              position: absolute;
+              top: 7px;
+              right: -14px;
+            }
+            .triangle-down{
+              width: 0;
+              height: 0;
+              border-left: 6px solid transparent;
+              border-right: 6px solid transparent;
+              border-top: 8px solid #c5c5c5;
+              position: absolute;
+              top: 7px;
+              right: -14px;
             }
           }
         }

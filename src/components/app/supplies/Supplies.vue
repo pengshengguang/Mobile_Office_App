@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="supplies-wrapper cover">
-      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品<div class="add" slot="right" @click="toClassifyView"></div></x-header>
+      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品</x-header>
       <div class="tab-box">
         <div class="feedback-tab" @click="tab_click(1);" :class="{'active':tabnum === 1}">已反馈（{{tabState.checkedCount}}）<i :style="{top: tabnum === 1 ? 12 + 'px' : 0}" v-if="tabState.checkedNoRead"></i></div>
         <div class="empty"></div>
@@ -17,7 +17,7 @@
         </div>
         <div class="empty-tips-wrapper" v-if="applyList.length === 0">
           <div class="empty-tips-box" v-if="tabnum === 0">
-            <i class="add-approval-icon" :style="backgroundNoDate"></i>
+            <i class="add-approval-icon" :style="backgroundNoDate" @click="toClassifyView"></i>
             <div class="line-1">你好，暂无审批内容</div>
             <div class="line-2">快来新建一个吧</div>
             <i class="spring-arrow-icon" :style="backgroundArrow"></i>
@@ -184,13 +184,6 @@
 
 <style lang="scss">
   .supplies-wrapper{
-    .add{
-      width: 22px;
-      height: 22px;
-      display: inline-block;
-      background: url("./../../../assets/img/information/addIcon.png") no-repeat;
-      background-size: 100% 100%;
-    }
   }
 </style>
 

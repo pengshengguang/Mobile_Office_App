@@ -62,7 +62,6 @@
         }
       },
       goBack () {
-        this.$router.back(-1)
         this.$store.commit('setSupplies', []) // 数据还原
         this.$store.commit('setIsGetSuppliesCart', 0) // 数据还原
         this.$router.push({
