@@ -24,7 +24,7 @@
       </div>
     </div>
     <div class="my-msg-line" v-if="applyItem.orderNeeds">备注：{{applyItem.orderNeeds}}</div>
-    <div class="msg-line">意见：我知道了，请带薪等候。</div>
+    <div class="msg-line" v-if="applyItem.feedback">意见：{{applyItem.feedback}}</div>
     <div class="btn-box" v-if="tabnum === 0&&isApproval" @click="iKnow(applyItem.orderId)">我知道了</div>
     <div class="empty-box"></div>
   </div>

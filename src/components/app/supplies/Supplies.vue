@@ -12,6 +12,20 @@
         <div class="approval-apply-list">
           <supplies-apply-item  v-for="(applyItem, index) in applyList" :key="index" :applyItem="applyItem" :tabnum="tabnum" :isApproval="isApproval" :initialize="initialize"></supplies-apply-item>
         </div>
+        <div style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+          <img src="@/assets/loading-spinning-bubbles.svg" v-show="isLoading" width="50px">
+        </div>
+        <div class="empty-tips-wrapper" v-if="applyList.length === 0">
+          <div class="empty-tips-box" v-if="tabnum === 0">
+            <i class="add-approval-icon" :style="backgroundNoDate"></i>
+            <div class="line-1">你好，暂无审批内容</div>
+            <div class="line-2">快来新建一个吧</div>
+            <i class="spring-arrow-icon" :style="backgroundArrow"></i>
+          </div>
+          <div class="empty-tips-box" v-if="tabnum === 1">
+            <div class="line-1">你好，暂无已审批内容</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -25,12 +39,25 @@
   export default {
     data () {
       return {
+        // 图片引用-新增图标
+        backgroundNoDate: {
+          backgroundImage: 'url(' + require('@/assets/img/noData/icon_null_new.png') + ')'
+        },
+        // 图片引用-弹簧箭头图标
+        backgroundArrow: {
+          backgroundImage: 'url(' + require('@/assets/img/noData/null_arrow.jpg') + ')'
+        },
         http: HttpService.getAxios,
         tabnum: 0, // tab页签
         applyList: [], // 申请列表
         userName: '',
         isApproval: false,
-        tabState: {} // tab标签页数据
+        tabState: {}, // tab标签页数据
+        // 分页查询参数
+        page: 1,
+        pageSize: 8,
+        busy: true,
+        isLoading: false
       }
     },
     components: {
@@ -42,6 +69,7 @@
     },
     methods: {
       initialize () {
+        this.page = 1
         this.checkIdentity()
         this.tab_click(0)
       },
@@ -65,9 +93,10 @@
         }
       },
       tab_click (num) {
+        this.page = 1
         this.applyList = []
         this.tabnum = num
-        this.getApplyByTabnum()
+        this.getApplyByTabnum() // 无参数 代表第一次加载数据
         this.getTabState()// 刷新tab状态值
       },
       toClassifyView () {
@@ -76,11 +105,13 @@
         })
       },
       // 根据tabnum获取申请信息
-      getApplyByTabnum () {
+      getApplyByTabnum (flag) {
         let that = this
         this.loading(true)
         let param = {
-          state: this.tabnum
+          state: this.tabnum,
+          page: this.page,
+          pageSize: this.pageSize
         }
         this.http.get('/supplies/getOrderByState', {
           params: param
@@ -89,8 +120,30 @@
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              console.log(res.result)
-              this.applyList = res.result
+              if (flag) { // flag === true，证明是第二次或第二次以上加载数据了
+                this.applyList = this.applyList.concat(res.result.list) // 数据追加
+                this.busy = false // 无限滚动禁止 取消，意思就是开启无限滚动监听
+                if (res.result.count === 0) {
+                  this.busy = true // 无限滚动禁止 启动
+                  this.$vux.toast.show({
+                    text: '没有更多',
+                    type: 'text'
+                  })
+                } else {
+                  this.busy = false // 无限滚动禁止 取消
+                }
+              } else { // 第一次加载数据
+                this.page = 1
+                this.applyList = res.result.list
+                this.busy = false // 无限滚动禁止 取消
+                if (res.result.count === 0) {
+                  this.$vux.toast.show({
+                    text: '无数据',
+                    type: 'text'
+                  })
+                  this.busy = true
+                }
+              }
             } else {
               that.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -98,6 +151,14 @@
             that.$vux.toast.show({ text: '接口异常', type: 'text' })
           }
         })
+      },
+      // 加载更多
+      loadMore () {
+        this.busy = true
+        setTimeout(() => {
+          this.page++
+          this.getApplyByTabnum(true)
+        }, 500)
       },
       // 获取tab头部状态值，已读未读，总条数等信息
       getTabState () {
@@ -221,7 +282,43 @@
       display: flex;
       flex-direction: column;
       overflow: auto;
-      .approval-apply-list{
+      .approval-apply-list{}
+      .empty-tips-wrapper{
+        flex: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 50px;
+        .empty-tips-box{
+          flex: none;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 200px;
+          height: 200px;
+          font-size: 16px;
+          position: relative;
+          .add-approval-icon{
+            width: 50px;
+            height: 50px;
+            background-size: 100% 100%;
+          }
+          .line-1{
+            padding-top: 10px;
+          }
+          .line-2{
+          }
+          .spring-arrow-icon{
+            width: 100px;
+            height: 100px;
+            background-size: 100% 100%;
+            position: absolute;
+            z-index: -1;
+            top: 44px;
+            right: -25px;
+          }
+        }
       }
     }
   }

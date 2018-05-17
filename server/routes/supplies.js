@@ -353,9 +353,12 @@ router.post('/suppliesApply', (req, res, next) => {
   })
 })
 
-/* 根据 当前用户+订单标识 获取订单 */
+/* 根据 当前用户+订单标识 获取订单 (分页加载) */
 router.get('/getOrderByState', (req, res, next) => {
   let userName = req.cookies.userName
+  let page = parseInt(req.param('page'))
+  let pageSize = parseInt(req.param('pageSize'))
+  let skip = (page - 1) * pageSize
   let queryParams = {}
   if (userName === 'admin') {
     queryParams = {
@@ -367,7 +370,10 @@ router.get('/getOrderByState', (req, res, next) => {
       state: parseInt(req.param('state')) // 订单状态
     }
   }
-  SuppliesOrder.find(queryParams, (err, doc) => {
+  let suppliesOrderModel = SuppliesOrder.find(queryParams).skip(skip).limit(pageSize)
+  // mongodb提供的api
+  suppliesOrderModel.sort({'startTime': -1}) // 降序排序
+  suppliesOrderModel.exec((err, doc) => {
     if (err) {
       res.json({
         status: '1',
@@ -378,7 +384,10 @@ router.get('/getOrderByState', (req, res, next) => {
       res.json({
         status: '0',
         msg: '用户订单查询成功',
-        result: doc
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   })
