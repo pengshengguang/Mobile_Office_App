@@ -50,7 +50,7 @@
           backgroundImage: 'url(' + require('@/assets/img/supplies/icon-reduce.png') + ')'
         },
         textOver: false, // 该用品描述文字是出现溢出
-        showMore: true // 控制文字是否显示全
+        showMore: true // 控制文字是否显示全。（PS：为什么默认为true？因为开始加载时，还没判断文字高度，需要把文字全部显示出来，才能判断是否有溢出）
       }
     },
     mounted () {

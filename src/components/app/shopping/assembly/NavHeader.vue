@@ -129,7 +129,6 @@
           if (res.status === '0') {
             // this.nickName = ''
             // 把登陆状态传给父组件
-            // this.$emit('isLogin', '')
             this.$store.commit('updateUserInfo', '')
             // 把store里面的购物车数量更新为0个
             this.$store.commit('initCartCount', 0)

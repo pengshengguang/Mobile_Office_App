@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="cover">
     <nav-header></nav-header>
     <nav-bread>
       <span slot="two">Order Confirm</span>

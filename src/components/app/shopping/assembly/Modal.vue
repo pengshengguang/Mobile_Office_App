@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="my-modal-wrapper-hah">
       <div class="md-modal modal-msg md-modal-transition" v-bind:class="{'md-show':mdShow}">
         <div class="md-modal-inner">
           <div class="md-top">

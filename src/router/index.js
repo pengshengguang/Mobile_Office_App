@@ -2,8 +2,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import Shopping from '@/components/app/shopping/ShoppingHome'
 import GoodsList from '@/components/app/shopping/GoodsList'
 import Cart from '@/components/app/shopping/Cart'
+import ShoppingCart from '@/components/app/shopping/ShoppingCart'
 import Address from '@/components/app/shopping/Address'
 import OrderConfirm from '@/components/app/shopping/OrderConfirm'
 import OrderSuccess from '@/components/app/shopping/OrderSuccess'
@@ -60,33 +62,11 @@ const loginRoute = {
 const homeRoute = { path: '/home/:tabbar', name: 'home', component: Home, children: [] }
 
 // 商品页
-const goodsRoute = { path: '/goodsList', component: GoodsList, name: 'GoodsList' }
+// const goodsRoute = { path: '/goodsList', component: GoodsList, name: 'GoodsList' }
 const redirectRoute = { path: '/', redirect: 'home/0/work' }
 // const redirectRoute = { path: '/', redirect: 'login' }
 
-// 购物车也
-const cartRoute = { path: '/cart', component: Cart, name: 'Cart' }
-
-// 地址页
-const addressRoute = { path: '/address', component: Address, name: 'Address' }
-
-// 订单确认页
-const orderRoute = { path: '/orderConfirm', component: OrderConfirm, name: 'OrderConfirm' }
-
-// 订单成功页
-const orderSuccessRoute = { path: '/orderSuccess', component: OrderSuccess, name: 'OrderSuccess' }
-
 // 办公用品
-// const suppliesRoute = {
-//   path: 'supplies',
-//   component: Supplies,
-//   name: 'Supplies',
-//   children: [
-//     { path: 'suppliesClassify', name: 'SuppliesClassify', component: SuppliesClassify },
-//     { path: 'suppliesConfirm', name: 'SuppliesConfirm', component: SuppliesConfirm },
-//     { path: 'suppliesDetailList', name: 'SuppliesDetailList', component: SuppliesDetailList }
-//   ]
-// }
 const suppliesRoute = {
   path: 'suppliesHome',
   component: SuppliesHome,
@@ -110,10 +90,25 @@ const questionnaireRoute = {
   ]
 }
 
+// 优惠商店
+const shoppingRoute = {
+  path: 'shopping',
+  component: Shopping,
+  name: 'Shopping',
+  children: [
+    { path: 'goodsList', name: 'GoodsList', component: GoodsList }, // 商品页
+    { path: 'cart', name: 'Cart', component: Cart }, // 购物车页面
+    { path: 'shoppingCart', name: 'ShoppingCart', component: ShoppingCart }, // 订单成功页
+    { path: 'address', name: 'Address', component: Address }, // 地址页
+    { path: 'orderConfirm', name: 'OrderConfirm', component: OrderConfirm }, // 订单确认页
+    { path: 'orderSuccess', name: 'OrderSuccess', component: OrderSuccess } // 订单成功页
+  ]
+}
+
 // 日常工作
 const workRoute = { path: 'work', name: 'work', component: Work, children: [] }
 
-workRoute.children = [].concat(questionnaireRoute, suppliesRoute)
+workRoute.children = [].concat(questionnaireRoute, suppliesRoute, shoppingRoute)
 
 // 通讯录
 const phonebookRoute = { path: 'phonebook', name: 'Phonebook', component: Phonebook }
@@ -137,7 +132,7 @@ const scrollTabRoute = { path: '/scrollTab', name: 'ScrollTab', component: Scrol
 // 组装移动办公APP路由
 homeRoute.children = [].concat(workRoute, phonebookRoute, informaRoute, personalRoute)
 
-const routes = [].concat(redirectRoute, loginRoute, goodsRoute, cartRoute, homeRoute, addressRoute, orderRoute, orderSuccessRoute, scrollTabRoute, test)
+const routes = [].concat(redirectRoute, loginRoute, homeRoute, scrollTabRoute, test)
 
 let router = new Router({
   routes: routes

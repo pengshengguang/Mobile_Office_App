@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="cover">
     <nav-header></nav-header>
     <nav-bread></nav-bread>
     <div class="container">
@@ -28,11 +28,9 @@
           </p>
           <div class="order-create-btn-wrap">
             <div class="btn-l-wrap">
-              <!--<a href="javascript:;" class="btn btn&#45;&#45;m">Cart List</a>-->
               <router-link class="btn btn--m" to="/cart">Cart List</router-link>
             </div>
             <div class="btn-r-wrap">
-              <!--<a href="javascript:;" class="btn btn&#45;&#45;m">Goods List</a>-->
               <router-link class="btn btn--m" to="/">Goods List</router-link>
             </div>
           </div>
