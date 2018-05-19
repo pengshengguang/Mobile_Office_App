@@ -1,6 +1,6 @@
 <template>
   <div class="goodsList-wrapper cover">
-    <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">办公用品目录<div class="add" slot="right" @click="goToCart" v-if="cartCount > 0"><i>{{cartCount}}</i></div></x-header>
+    <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">优惠商店<div class="add" slot="right" @click="goToCart" v-if="cartCount > 0"><i>{{cartCount}}</i></div></x-header>
     <div class="container-box">
       <div class="filter-nav">
         <span class="sortby"> Sort by:</span>

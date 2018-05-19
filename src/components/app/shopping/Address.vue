@@ -1,9 +1,10 @@
 <template>
-  <div>
-    <nav-header></nav-header>
-    <nav-bread>
-      <span slot="two">Address</span>
-    </nav-bread>
+  <div class="address-wrapper cover">
+    <!--<nav-header></nav-header>-->
+    <!--<nav-bread>-->
+      <!--<span slot="two">Address</span>-->
+    <!--</nav-bread>-->
+    <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">地址选择<div class="add" slot="right" v-if="cartCount > 0"  @click="goToCart"><i>{{cartCount}}</i></div></x-header>
     <div class="checkout-page">
       <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <defs>
@@ -41,21 +42,22 @@
       <div class="container">
         <div class="checkout-addr">
           <div class="page-title-normal">
-            <h2 class="page-title-h2"><span>check out</span></h2>
+            <h2 class="page-title-h2"><span>购物流程</span></h2>
           </div>
           <!-- process step -->
           <div class="check-step">
             <ul>
-              <li class="cur"><span>Confirm</span> address</li>
-              <li><span>View your</span> order</li>
-              <li><span>Make</span> payment</li>
-              <li><span>Order</span> confirmation</li>
+              <li class="cur">确认地址</li>
+              <li>查看订单</li>
+              <li>付款</li>
+              <li><span>订单</span>确认</li>
             </ul>
           </div>
 
           <!-- address list -->
           <div class="page-title-normal checkout-title">
-            <h2><span>Shipping address</span></h2>
+            <!--<h2><span>Shipping address</span></h2>-->
+            <h2><span>收货地址选择</span></h2>
           </div>
           <div class="addr-list-wrap">
             <div class="addr-list">
@@ -72,16 +74,17 @@
                     </a>
                   </div>
                   <div class="addr-opration addr-set-default">
-                    <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault" @click="setDefault(item.addressId)"><i>Set default</i></a>
+                    <a href="javascript:;" class="addr-set-default-btn" v-if="!item.isDefault" @click="setDefault(item.addressId)"><i>设为默认</i></a>
                   </div>
-                  <div class="addr-opration addr-default" v-if="item.isDefault">Default address</div>
+                  <div class="addr-opration addr-default" v-if="item.isDefault">默认地址</div>
                 </li>
                 <li class="addr-new">
                   <div class="add-new-inner">
                     <i class="icon-add">
                       <svg class="icon icon-add"><use xlink:href="#icon-add"></use></svg>
                     </i>
-                    <p>Add new address</p>
+                    <!--<p>Add new address</p>-->
+                    <p>添加新的地址</p>
                   </div>
                 </li>
               </ul>
@@ -100,51 +103,58 @@
 
           <!-- shipping method-->
           <div class="page-title-normal checkout-title">
-            <h2><span>Shipping method</span></h2>
+            <!--<h2><span>Shipping method</span></h2>-->
+            <h2><span>温馨提示</span></h2>
           </div>
           <div class="shipping-method-wrap">
             <div class="shipping-method">
               <ul>
                 <li class="check">
-                  <div class="name">Standard shipping</div>
-                  <div class="price">Free</div>
+                  <!--<div class="name">Standard shipping</div>-->
+                  <!--<div class="price">Free</div>-->
+                  <div class="name">标准购物</div>
+                  <div class="price">免费</div>
                   <div class="shipping-tips">
-                    <p>Once shipped，Order should arrive in the destination in 1-7 business days</p>
+                    <!--<p>Once shipped，Order should arrive in the destination in 1-7 business days</p>-->
+                    <p>一旦下单成功，物品将会在1-7个工作日内到达目的地</p>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
           <div class="next-btn-wrap">
-            <router-link class="btn btn--m btn--red" v-bind:to="{path: 'orderConfirm', query:{'addressId': selectedAddrId}}">Next</router-link>
+            <router-link class="btn btn--m btn--red" v-bind:to="{path: 'orderConfirm', query:{'addressId': selectedAddrId}}">下一步</router-link>
           </div>
         </div>
       </div>
     </div>
-    <modal :mdShow="isMdShow" @close="closeModal">
-      <p slot="message">Are you sure you want to delete this address?</p>
-      <div slot="btnGroup">
-        <a class='btn btn--m' href="javascript:" @click="delAddress">Confirm</a>
-        <a class='btn btn--m' href="javascript:" @click="isMdShow=false">Cancel</a>
-      </div>
-    </modal>
-    <nav-footer></nav-footer>
+    <!--<modal :mdShow="isMdShow" @close="closeModal">-->
+      <!--<p slot="message">Are you sure you want to delete this address?</p>-->
+      <!--<div slot="btnGroup">-->
+        <!--<a class='btn btn&#45;&#45;m' href="javascript:" @click="delAddress">Confirm</a>-->
+        <!--<a class='btn btn&#45;&#45;m' href="javascript:" @click="isMdShow=false">Cancel</a>-->
+      <!--</div>-->
+    <!--</modal>-->
+    <!--<nav-footer></nav-footer>-->
   </div>
 </template>
 
 <script>
-  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
-  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
-  import NavBread from '@/components/app/shopping/assembly/NavBread'
+//  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
+//  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
+//  import NavBread from '@/components/app/shopping/assembly/NavBread'
   import Modal from './assembly/Modal'
   import Httpservice from '@/services/HttpService'
+  import { XHeader } from 'vux'
+  import { mapState } from 'vuex'
 
   export default {
     components: {
-      NavHeader,
-      NavFooter,
-      NavBread,
-      Modal
+//      NavHeader,
+//      NavFooter,
+//      NavBread,
+      Modal,
+      XHeader
     },
     data () {
       return {
@@ -152,7 +162,7 @@
         addressList: [],  // 地址对象数组
         limit: 3, // 初次展开地址的数量
         checkIndex: 0, // 当前选中的地址下标
-        isMdShow: false, // 删除地址模态框
+//        isMdShow: false, // 删除地址模态框
         addressId: '', // 当前需要删除的地址ID
         selectedAddrId: '' // 当前选中的地址Id
       }
@@ -163,7 +173,9 @@
     computed: {
       addressListFilter () {
         return this.addressList.slice(0, this.limit)  // slice，从0位置开始截取，3个长度的元素
-      }
+      },
+      // 获取购物车数量
+      ...mapState(['nickName', 'cartCount'])
     },
     methods: {
       // 获得当前用户的地址数组
@@ -179,6 +191,17 @@
           } else {
             console.log(res.msg)
           }
+        })
+      },
+      goBack () {
+        this.$router.push({
+          name: 'Cart'
+        })
+      },
+      // 去往购物车页面
+      goToCart () {
+        this.$router.push({
+          name: 'Cart'
         })
       },
       // 默认地址Id的加载
@@ -212,15 +235,24 @@
       },
       // 垃圾桶功能, 删除当前选中地址
       delAddressConfirm (addressId) {
-        this.isMdShow = true
+//        this.isMdShow = true
         this.addressId = addressId
+        let that = this
+        this.$vux.confirm.show({
+          content: `您确定要删除这行地址吗？`,
+          confirmText: '是',
+          cancelText: '否',
+          onConfirm () {
+            that.delAddress()
+          }
+        })
       },
       // 确定删除该地址功能
       delAddress () {
         this.http.post('/users/delAddress', {addressId: this.addressId}).then((response) => {
           let res = response.data
           if (res.status === '0') {
-            this.isMdShow = false
+//            this.isMdShow = false
             // 重新调用接口把地址数组取出来
             this.init()
             console.log('地址删除操作成功！')
@@ -228,15 +260,61 @@
             console.log('地址删除操作失败！')
           }
         })
-      },
-      // 模态框子组件调用父组件closeModal方法,模态框里面有一个div是flexd定位，点击这个div，就关闭模态框
-      closeModal () {
-        this.isMdShow = false
       }
+      // 模态框子组件调用父组件closeModal方法,模态框里面有一个div是flexd定位，点击这个div，就关闭模态框
+//      closeModal () {
+//        this.isMdShow = false
+//      }
     }
   }
 </script>
 
-<style>
+<style lang="scss">
+  .address-wrapper{
+    display: flex;
+    flex-direction: column;
+    .whiteBgHeader{
+      flex: 0 0 44px;
+      .add{
+        width: 22px;
+        height: 22px;
+        display: inline-block;
+        background: url("./../../../assets/img/shopping/cartIcon.png") no-repeat;
+        background-size: 100% 100%;
+        position: relative;
+        i{
+          position: absolute;
+          top: -10px;
+          right: -11px;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #f7524f;
+          color: #fff;
+          font-size: 13px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+    .checkout-page{
+      flex: auto;
+      overflow: auto;
+      padding-bottom: 70px;
+    }
+    .btn-box{
+      border-top: 1px solid #ebebeb;
+      position: fixed;
+      z-index: 1001;
+      bottom: 0;
+      height: 44px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+    }
+  }
 
 </style>

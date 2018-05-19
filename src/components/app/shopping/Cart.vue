@@ -200,7 +200,9 @@
     },
     methods: {
       goBack () {
-        this.$router.back()
+        this.$router.push({
+          name: 'GoodsList'
+        })
       },
       // 获取当前用户购物车信息
       init () {
@@ -291,7 +293,7 @@
       checkOut () {
         if (this.checkedCount > 0) {
           this.$router.push({
-            path: '/address'
+            name: 'Address'
           })
         }
       }
@@ -402,7 +404,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        background-color: #149c81;
+        background-color: #d1434a;
       }
       .btn-dis{
         background-color: #cccccc;
