@@ -30,7 +30,7 @@
           <h3>购物成功! <br>您的订单正在处理中!</h3>
           <p>
             <span>订单编号：{{orderId}}</span>
-            <span>商品总额：{{orderTotal | currency('$')}}</span>
+            <span>商品总额：{{orderTotal | currency('￥')}}</span>
           </p>
           <div class="order-create-btn-wrap">
             <div class="btn-l-wrap">

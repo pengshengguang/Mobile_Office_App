@@ -89,7 +89,7 @@
     <!--<div class="no-data" v-if="cartList.length === 0">-->
       <!--你好，您的购物车暂无商品-->
     <!--</div>-->
-    <div class="empty-tips-wrapper" v-if="cartList.length === 0">
+    <div class="empty-tips-wrapper" v-if="cartList.length === 0&&showNoData">
       <div class="empty-tips-box">
         <i class="add-approval-icon" :style="backgroundNoDate" @click="goGoodListView"></i>
         <div class="line-1">你好，购物车为空</div>
@@ -183,7 +183,8 @@
         // 图片引用-弹簧箭头图标
         backgroundArrow: {
           backgroundImage: 'url(' + require('@/assets/img/noData/null_arrow.jpg') + ')'
-        }
+        },
+        showNoData: false
       }
     },
     mounted () {
@@ -218,6 +219,13 @@
       }
     },
     methods: {
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
       goBack () {
         this.$router.push({
           name: 'GoodsList'
@@ -230,9 +238,28 @@
       },
       // 获取当前用户购物车信息
       init () {
+        this.loading(true)
         this.http.get('/users/cartList').then((response) => {
-          let res = response.data
-          this.cartList = res.result
+          this.loading(false)
+          this.showNoData = true
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.cartList = res.result
+            } else {
+              this.$vux.alert.show({
+                title: '提示',
+                content: '获取购物车信息失败',
+                buttonText: '确定'
+              })
+            }
+          } else {
+            this.$vux.alert.show({
+              title: '提示',
+              content: '接口请求异常',
+              buttonText: '确定'
+            })
+          }
         })
       },
       // 是否删除当前商品

@@ -78,7 +78,7 @@
                   </div>
                   <div class="addr-opration addr-default" v-if="item.isDefault">默认地址</div>
                 </li>
-                <li class="addr-new">
+                <li class="addr-new" @click="goNewAddressView">
                   <div class="add-new-inner">
                     <i class="icon-add">
                       <svg class="icon icon-add"><use xlink:href="#icon-add"></use></svg>
@@ -184,6 +184,9 @@
           let res = response.data
           if (res.status === '0') {
             this.addressList = res.result
+            if (this.addressList) { // 如果地址列表查询为空，则不对地址列表进行处理
+              return
+            }
             // 初始化默认选中地址为地址数组的第一个
             this.selectedAddrId = this.addressList[0].addressId
             // 加载默认地址Id
@@ -202,6 +205,11 @@
       goToCart () {
         this.$router.push({
           name: 'Cart'
+        })
+      },
+      goNewAddressView () {
+        this.$router.push({
+          name: 'NewAddress'
         })
       },
       // 默认地址Id的加载

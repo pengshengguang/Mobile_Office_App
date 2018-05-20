@@ -74,8 +74,8 @@ router.post('/logout', (req, res, next) => {
 
 /* 查询当前用户购物车数据 */
 router.get('/cartList', (req, res, next) => {
-  let userId = req.cookies.userId
-  User.findOne({userId: userId}, (err, userDoc) => {
+  let userName = req.cookies.userName
+  User.findOne({userName: userName}, (err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
@@ -102,7 +102,7 @@ router.get('/cartList', (req, res, next) => {
 
 /* 检查是否登陆 */
 router.get('/checkLogin', (req, res, next) => {
-  if (req.cookies.userId) {
+  if (req.cookies.userName) {
     res.json({
       status: '0',
       msg: '',
@@ -120,10 +120,10 @@ router.get('/checkLogin', (req, res, next) => {
 /* 删除购物车 */
 router.post('/delCart', (req, res, next) => {
   // 从缓存获取用户id
-  let userId = req.cookies.userId
+  let userName = req.cookies.userName
   // post请求使用body获取参数
   let productId = req.body.productId
-  User.update({userId: userId}, {$pull: {'cartList': {'productId': productId}}}, (err, doc) => {
+  User.update({userName: userName}, {$pull: {'cartList': {'productId': productId}}}, (err, doc) => {
     if (err) {
       res.json({
         status: '1',
@@ -142,12 +142,12 @@ router.post('/delCart', (req, res, next) => {
 
 /* 编辑购物车商品数量 */
 router.post('/cartEdit', (req, res, next) => {
-  let userId = req.cookies.userId
+  let userName = req.cookies.userName
   let productId = req.body.productId
   let productNum = req.body.productNum
   let checked = req.body.checked
   let conditions = {
-    'userId': userId,
+    'userName': userName,
     'cartList.productId': productId
   }
   let update = {
@@ -173,9 +173,9 @@ router.post('/cartEdit', (req, res, next) => {
 
 /* 全选与否 */
 router.post('/editCheckAll', (req, res, next) => {
-  let userId = req.cookies.userId
+  let userName = req.cookies.userName
   let checkAll = req.body.checkAll ? '1' : '0'
-  User.findOne({userId: userId}, (err, userDoc) => {
+  User.findOne({userName: userName}, (err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
@@ -215,8 +215,8 @@ router.post('/editCheckAll', (req, res, next) => {
 
 /* 查询用户地址 */
 router.get('/addressList', (req, res, next) => {
-  let userId = req.cookies.userId
-  User.findOne({userId: userId}, (err, userDoc) => {
+  let userName = req.cookies.userName
+  User.findOne({userName: userName}, (err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
@@ -237,7 +237,7 @@ router.get('/addressList', (req, res, next) => {
 
 /* 设置默认收货地址 */
 router.post('/setDefault', (req, res, next) => {
-  let userId = req.cookies.userId
+  let userName = req.cookies.userName
   let addressId = req.body.addressId
   // 对addressId作一个判断,如果前端传过来的addressId为空，则报一下错误
   if (!addressId) {
@@ -247,7 +247,7 @@ router.post('/setDefault', (req, res, next) => {
       result: ''
     })
   }
-  User.findOne({userId: userId}, (err, userDoc) => {
+  User.findOne({userName: userName}, (err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
@@ -283,6 +283,52 @@ router.post('/setDefault', (req, res, next) => {
   })
 })
 
+/* 添加收货地址 */
+router.post('/addNewAddress', (req, res, next) => {
+  let userName = req.cookies.userName
+  let addressObj = req.body.addressObj
+  let newAddress = {
+    addressId: '',
+    userName: addressObj.userName,
+    streetName: addressObj.address + addressObj.details,
+    postCode: addressObj.postCode,
+    tel: addressObj.phone,
+    isDefault: false
+  }
+  /* 生成地址随机数 */
+  let platform = '622' // 系统平台，622代表当前系统架构的一个码
+  let r1 = Math.floor(Math.random() * 10) // 随机数1
+  let r2 = Math.floor(Math.random() * 10) // 随机数2
+  let sysDate = new Date().Format('yyyyMMddhhmmss') // 系统时间
+  let addressId = platform + r1 + sysDate + r2 // 订单ID为21位，这么复杂是为了让订单ID不重复，但也有重复的可能
+  newAddress.addressId = addressId
+  // 开始查询插入地址
+  let conditions = { // 查询条件
+    userName: userName
+  }
+  let update = { // 更新内容
+    '$push': {
+      addressList: newAddress
+    }
+  }
+  User.update(conditions, update, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message
+      })
+    } else {
+      if (userDoc) {
+        res.json({
+          status: '0',
+          msg: '',
+          result: '地址保存成功'
+        })
+      }
+    }
+  })
+})
+
 /* 删除地址接口 */
 router.post('/delAddress', (req, res, next) => {
   let userId = req.cookies.userId
@@ -306,10 +352,10 @@ router.post('/delAddress', (req, res, next) => {
 
 /* 订单确认按钮功能 */
 router.post('/payment', (req, res, next) => {
-  let userId = req.cookies.userId
+  let userName = req.cookies.userName
   let addressId = req.body.addressId
   let orderTotal = req.body.orderTotal
-  User.findOne({userId: userId}, (err, userDoc) => {
+  User.findOne({userName: userName}, (err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
@@ -373,10 +419,10 @@ router.post('/payment', (req, res, next) => {
 
 /* 获取订单详情 */
 router.get('/orderDetail', (req, res, next) => {
-  let userId = req.cookies.userId
+  let userName = req.cookies.userName
   // let orderId = req.body.orderId
   let orderId = req.param('orderId')
-  User.findOne({userId: userId}, (err, userDoc) => {
+  User.findOne({userName: userName}, (err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
@@ -421,9 +467,9 @@ router.get('/orderDetail', (req, res, next) => {
 
 /* 获取购物车数量 */
 router.get('/getCartCount', (req, res, next) => {
-  if (req.cookies && req.cookies.userId) {
-    let userId = req.cookies.userId
-    User.findOne({userId: userId}, (err, userDoc) => {
+  if (req.cookies && req.cookies.userName) {
+    let userName = req.cookies.userName
+    User.findOne({userName: userName}, (err, userDoc) => {
       if (err) {
         res.json({
           status: '1',

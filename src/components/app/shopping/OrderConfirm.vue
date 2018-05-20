@@ -210,7 +210,9 @@
     methods: {
       // 获取当前购物车选中物品的信息
       init () {
+        this.loading(true)
         this.http.get('/users/cartList').then((response) => {
+          this.loading(false)
           let res = response.data
           if (res.status === '0') {
             this.cartList = res.result
@@ -226,6 +228,13 @@
             console.log('查询购物车数据失败')
           }
         })
+      },
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
       },
       goBack () {
         this.$router.push({
@@ -243,10 +252,12 @@
         // 获取默认收获地址
         let addressId = this.$route.query.addressId
         console.log(addressId)
+        this.loading(true)
         this.http.post('/users/payment', {
           addressId: addressId,
           orderTotal: this.orderTotal
         }).then((response) => {
+          this.loading(false)
           let res = response.data
           if (res.status === '0') {
             console.log('order created suc.')

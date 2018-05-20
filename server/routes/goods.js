@@ -78,13 +78,14 @@ router.get('/list', (req, res, next) => {
 })
 // 加入购物车
 router.post('/addCart', (req, res, next) => {
-  let userId = '100000077'
+  // let userId = '100000077'
+  let userName = req.cookies.userName
   let productId = req.body.productId
   // 通过模型来执行数据库更新的aip
   let User = require('../models/user')
 
   // 根据userId获取当前用户信息
-  User.findOne({userId: userId}, (err, userDoc) => {
+  User.findOne({userName: userName}, (err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
