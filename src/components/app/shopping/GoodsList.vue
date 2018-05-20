@@ -231,10 +231,10 @@
       // 加入购物车
       addCart (proId) {
         let that = this
-        if (!this.$store.state.nickName) {
-          this.mdShow = true
-          return
-        }
+//        if (!this.$store.state.nickName) {
+//          this.mdShow = true
+//          return
+//        }
         this.http.post('/goods/addCart', {productId: proId}).then((res) => {
           if (res.status === 0 || res.status === 200) {
 //            this.mdShowCart = true

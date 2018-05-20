@@ -5,7 +5,6 @@ import Router from 'vue-router'
 import Shopping from '@/components/app/shopping/ShoppingHome'
 import GoodsList from '@/components/app/shopping/GoodsList'
 import Cart from '@/components/app/shopping/Cart'
-import ShoppingCart from '@/components/app/shopping/ShoppingCart'
 import Address from '@/components/app/shopping/Address'
 import OrderConfirm from '@/components/app/shopping/OrderConfirm'
 import OrderSuccess from '@/components/app/shopping/OrderSuccess'
@@ -98,7 +97,6 @@ const shoppingRoute = {
   children: [
     { path: 'goodsList', name: 'GoodsList', component: GoodsList }, // 商品页
     { path: 'cart', name: 'Cart', component: Cart }, // 购物车页面
-    { path: 'shoppingCart', name: 'ShoppingCart', component: ShoppingCart }, // 订单成功页
     { path: 'address', name: 'Address', component: Address }, // 地址页
     { path: 'orderConfirm', name: 'OrderConfirm', component: OrderConfirm }, // 订单确认页
     { path: 'orderSuccess', name: 'OrderSuccess', component: OrderSuccess } // 订单成功页

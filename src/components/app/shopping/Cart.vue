@@ -1,7 +1,7 @@
 <template>
   <div class="cart-wrapper cover">
     <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">购物车<div class="add" slot="right" v-if="cartCount > 0"><i>{{cartCount}}</i></div></x-header>
-    <div class="container">
+    <div class="container" v-if="cartList.length !== 0">
       <!--<div>购物清单如下</div>-->
       <div class="cart">
         <div class="item-list-wrap">
@@ -86,6 +86,17 @@
         <!--</div>-->
       </div>
     </div>
+    <!--<div class="no-data" v-if="cartList.length === 0">-->
+      <!--你好，您的购物车暂无商品-->
+    <!--</div>-->
+    <div class="empty-tips-wrapper" v-if="cartList.length === 0">
+      <div class="empty-tips-box">
+        <i class="add-approval-icon" :style="backgroundNoDate" @click="goGoodListView"></i>
+        <div class="line-1">你好，购物车为空</div>
+        <div class="line-2">快来把商品加入购物车吧</div>
+        <i class="spring-arrow-icon" :style="backgroundArrow"></i>
+      </div>
+    </div>
     <div class="btn-box">
       <div class="selectAll" @click="toggleCheckAll">
         <a class="checkbox-btn item-check-btn" :class="{'check':checkAllFlag}">
@@ -164,7 +175,15 @@
         msg: 'hello',
         http: Httpservice.getAxios,
         cartList: [],
-        modalConfirm: false // 删除的模态框
+        modalConfirm: false, // 删除的模态框
+        // 图片引用-新增图标
+        backgroundNoDate: {
+          backgroundImage: 'url(' + require('@/assets/img/noData/icon_null_new.png') + ')'
+        },
+        // 图片引用-弹簧箭头图标
+        backgroundArrow: {
+          backgroundImage: 'url(' + require('@/assets/img/noData/null_arrow.jpg') + ')'
+        }
       }
     },
     mounted () {
@@ -185,7 +204,7 @@
       },
       // 商品是否已经全选
       checkAllFlag () {
-        return this.cartList.length === this.checkedCount
+        return this.cartList.length === this.checkedCount && this.cartList.length !== 0
       },
       // 计算购物车选中商品总价格
       totalPrice () {
@@ -200,6 +219,11 @@
     },
     methods: {
       goBack () {
+        this.$router.push({
+          name: 'GoodsList'
+        })
+      },
+      goGoodListView () {
         this.$router.push({
           name: 'GoodsList'
         })
@@ -361,6 +385,49 @@
       flex: auto;
       overflow: auto;
       padding-bottom: 70px;
+    }
+    .no-data{
+      flex: auto;
+      display: flex;
+      justify-content: center;
+      padding-top: 100px;
+    }
+    .empty-tips-wrapper{
+      flex: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 50px;
+      .empty-tips-box{
+        flex: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 200px;
+        height: 200px;
+        font-size: 16px;
+        position: relative;
+        .add-approval-icon{
+          width: 50px;
+          height: 50px;
+          background-size: 100% 100%;
+        }
+        .line-1{
+          padding-top: 10px;
+        }
+        .line-2{
+        }
+        .spring-arrow-icon{
+          width: 100px;
+          height: 100px;
+          background-size: 100% 100%;
+          position: absolute;
+          z-index: -1;
+          top: 44px;
+          right: -25px;
+        }
+      }
     }
     .btn-box{
       border-top: 1px solid #ebebeb;

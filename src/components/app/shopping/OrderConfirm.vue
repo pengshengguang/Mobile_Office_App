@@ -1,9 +1,10 @@
 <template>
-  <div class="cover">
-    <nav-header></nav-header>
-    <nav-bread>
-      <span slot="two">Order Confirm</span>
-    </nav-bread>
+  <div class="order-confirm-wrapper cover">
+    <!--<nav-header></nav-header>-->
+    <!--<nav-bread>-->
+      <!--<span slot="two">Order Confirm</span>-->
+    <!--</nav-bread>-->
+    <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">地址选择<div class="add" slot="right" v-if="cartCount > 0"  @click="goToCart"><i>{{cartCount}}</i></div></x-header>
     <svg style="position: absolute; width: 0; height: 0; overflow: hidden;" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
         <symbol id="icon-add" viewBox="0 0 32 32">
@@ -31,30 +32,42 @@
     <div class="container">
       <div class="checkout-order">
         <div class="page-title-normal">
-          <h2 class="page-title-h2"><span>check out</span></h2>
+          <!--<h2 class="page-title-h2"><span>check out</span></h2>-->
+          <h2 class="page-title-h2"><span>购物流程</span></h2>
         </div>
         <!-- process step -->
         <div class="check-step">
+          <!--<ul>-->
+            <!--<li class="cur"><span>Confirm</span> address</li>-->
+            <!--<li class="cur"><span>View your</span> order</li>-->
+            <!--<li><span>Make</span> payment</li>-->
+            <!--<li><span>Order</span> confirmation</li>-->
+          <!--</ul>-->
           <ul>
-            <li class="cur"><span>Confirm</span> address</li>
-            <li class="cur"><span>View your</span> order</li>
-            <li><span>Make</span> payment</li>
-            <li><span>Order</span> confirmation</li>
+            <li class="cur">确认地址</li>
+            <li class="cur">查看订单</li>
+            <li>付款</li>
+            <li><span>订单</span>确认</li>
           </ul>
         </div>
 
         <!-- order list -->
         <div class="page-title-normal checkout-title">
-          <h2><span>Order content</span></h2>
+          <!--<h2><span>Order content</span></h2>-->
+          <h2><span>订单内容</span></h2>
         </div>
         <div class="item-list-wrap confirm-item-list-wrap">
           <div class="cart-item order-item">
             <div class="cart-item-head">
               <ul>
-                <li>Order contents</li>
-                <li>Price</li>
-                <li>Quantity</li>
-                <li>Subtotal</li>
+                <!--<li>Order contents</li>-->
+                <!--<li>Price</li>-->
+                <!--<li>Quantity</li>-->
+                <!--<li>Subtotal</li>-->
+                <li>订单内容</li>
+                <li>单价</li>
+                <li>数量</li>
+                <li>价格</li>
               </ul>
             </div>
             <ul class="cart-item-list">
@@ -69,7 +82,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-2">
-                  <div class="item-price">{{item.salePrice | currency('$')}}</div>
+                  <div class="item-price">{{item.salePrice | currency('￥')}}</div>
                 </div>
                 <div class="cart-tab-3">
                   <div class="item-quantity">
@@ -82,7 +95,7 @@
                   </div>
                 </div>
                 <div class="cart-tab-4">
-                  <div class="item-price-total">{{parseFloat(item.salePrice) * parseInt(item.productNum) | currency('$')}}</div>
+                  <div class="item-price-total">{{parseFloat(item.salePrice) * parseInt(item.productNum) | currency('￥')}}</div>
                 </div>
               </li>
             </ul>
@@ -92,26 +105,48 @@
         <!-- Price count -->
         <div class="price-count-wrap">
           <div class="price-count">
+            <!--<ul>-->
+              <!--<li>-->
+                <!--<span>Item subtotal:</span>-->
+                <!--<span>{{subTotal | currency('￥')}}</span>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<span>shopping:</span>-->
+                <!--<span>{{shopping | currency('￥')}}</span>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<span>Discount:</span>-->
+                <!--<span>{{discount | currency('￥')}}</span>-->
+              <!--</li>-->
+              <!--<li>-->
+                <!--<span>Tax:</span>-->
+                <!--<span>{{tax | currency('￥')}}</span>-->
+              <!--</li>-->
+              <!--<li class="order-total-price">-->
+                <!--<span>Order total:</span>-->
+                <!--<span>{{orderTotal | currency('￥')}}</span>-->
+              <!--</li>-->
+            <!--</ul>-->
             <ul>
               <li>
-                <span>Item subtotal:</span>
-                <span>{{subTotal | currency('$')}}</span>
+                <span>总金额:</span>
+                <span>{{subTotal | currency('￥')}}</span>
               </li>
               <li>
-                <span>shopping:</span>
-                <span>{{shopping | currency('$')}}</span>
+                <span>运费:</span>
+                <span>{{shopping | currency('￥')}}</span>
               </li>
               <li>
-                <span>Discount:</span>
-                <span>{{discount | currency('$')}}</span>
+                <span>折扣:</span>
+                <span>{{discount | currency('￥')}}</span>
               </li>
               <li>
-                <span>Tax:</span>
-                <span>{{tax | currency('$')}}</span>
+                <span>税收:</span>
+                <span>{{tax | currency('￥')}}</span>
               </li>
               <li class="order-total-price">
-                <span>Order total:</span>
-                <span>{{orderTotal | currency('$')}}</span>
+                <span>实付总金额:</span>
+                <span>{{orderTotal | currency('￥')}}</span>
               </li>
             </ul>
           </div>
@@ -119,25 +154,28 @@
 
         <div class="order-foot-wrap">
           <div class="prev-btn-wrap">
-            <router-link class="btn btn--m" to="/address">Previous</router-link>
+            <!--<router-link class="btn btn&#45;&#45;m" to="/address">Previous</router-link>-->
+            <router-link class="btn btn--m" to="/address">前一步</router-link>
           </div>
           <div class="next-btn-wrap">
-            <button class="btn btn--m btn--red" @click="payment">Proceed to payment</button>
+            <button class="btn btn--m btn--red" @click="payment">付款</button>
           </div>
         </div>
       </div>
     </div>
-    <nav-footer></nav-footer>
+    <!--<nav-footer></nav-footer>-->
   </div>
 </template>
 
 <script>
-  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
-  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
-  import NavBread from '@/components/app/shopping/assembly/NavBread'
+//  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
+//  import NavFooter from '@/components/app/shopping/assembly/NavFooter'
+//  import NavBread from '@/components/app/shopping/assembly/NavBread'
   import Modal from './assembly/Modal'
   import Httpservice from '@/services/HttpService'
   import {currency} from '@/services/currency'
+  import { XHeader } from 'vux'
+  import { mapState } from 'vuex'
 
   export default {
     data () {
@@ -153,16 +191,21 @@
       }
     },
     components: {
-      NavHeader,
-      NavFooter,
-      NavBread,
-      Modal
+//      NavHeader,
+//      NavFooter,
+//      NavBread,
+      Modal,
+      XHeader
     },
     filters: {
       currency: currency
     },
     mounted () {
       this.init()
+    },
+    computed: {
+      // 获取购物车数量
+      ...mapState(['nickName', 'cartCount'])
     },
     methods: {
       // 获取当前购物车选中物品的信息
@@ -184,6 +227,17 @@
           }
         })
       },
+      goBack () {
+        this.$router.push({
+          name: 'Cart'
+        })
+      },
+      // 去往购物车页面
+      goToCart () {
+        this.$router.push({
+          name: 'Cart'
+        })
+      },
       // 订单付款按钮
       payment () {
         // 获取默认收获地址
@@ -199,7 +253,7 @@
             // 获取路由参数是用$route
             // 通过路由的跳转用$router
             this.$router.push({
-              path: '/orderSuccess?orderId=' + res.result.orderId
+              path: '/home/0/work/shopping/orderSuccess?orderId=' + res.result.orderId
             })
           } else {
             console.log('order created fau')
@@ -211,6 +265,40 @@
   }
 </script>
 
-<style>
-
+<style lang="scss">
+  .order-confirm-wrapper{
+    display: flex;
+    flex-direction: column;
+    .whiteBgHeader{
+      flex: 0 0 44px;
+      .add{
+        width: 22px;
+        height: 22px;
+        display: inline-block;
+        background: url("./../../../assets/img/shopping/cartIcon.png") no-repeat;
+        background-size: 100% 100%;
+        position: relative;
+        i{
+          position: absolute;
+          top: -10px;
+          right: -11px;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #f7524f;
+          color: #fff;
+          font-size: 13px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+      }
+    }
+    .container{
+      flex: auto;
+      overflow: auto;
+      padding-bottom: 70px;
+    }
+  }
 </style>
+
