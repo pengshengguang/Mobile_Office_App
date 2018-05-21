@@ -18,6 +18,8 @@ import SuppliesConfirm from '@/components/app/supplies/SuppliesConfirm'
 import SuppliesDetailList from '@/components/app/supplies/SuppliesDetailList'
 
 import Questionnaire from '@/components/app/questionnaire/Questionnaire'
+import QuestionnairePerson from '@/components/app/questionnaire/QuestionnairePerson'
+import QuestionnaireResultHome from '@/components/app/questionnaire/QuestionnaireResultHome'
 import QuestionnaireDetails from '@/components/app/questionnaire/QuestionnaireDetails'
 import QuestionnaireResult from '@/components/app/questionnaire/QuestionnaireResult'
 
@@ -85,6 +87,8 @@ const questionnaireRoute = {
   component: Questionnaire,
   name: 'questionnaire',
   children: [
+    { path: 'questionnairePerson', name: 'questionnairePerson', component: QuestionnairePerson },
+    { path: 'questionnaireResultHome', name: 'QuestionnaireResultHome', component: QuestionnaireResultHome },
     { path: 'questionnaireDetails', name: 'questionnaireDetails', component: QuestionnaireDetails },
     { path: 'questionnaireResult', name: 'questionnaireResult', component: QuestionnaireResult }
   ]

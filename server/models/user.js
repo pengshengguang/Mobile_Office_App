@@ -36,7 +36,8 @@ var userSchema = new mongoose.Schema({
       smallClassCode: String,
       isSelected: Boolean
     }
-  ]
+  ],
+  'questionnaireList': []
 })
 
 module.exports = mongoose.model('User', userSchema, 'users')
