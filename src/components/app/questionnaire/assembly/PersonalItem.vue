@@ -93,6 +93,10 @@
       // 马上参与
       takePartIn (questionnaire) {
         if (this.state === -1) {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '该问卷已过有效期，无法参与作答'
+          })
           return
         }
         let param = {

@@ -64,6 +64,7 @@
       position: relative;
     }
     .function-box{
+      font-family: kuzhanziti;
       position: fixed;
       /*top: 0px;*/
       overflow: auto;

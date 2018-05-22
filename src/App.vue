@@ -11,11 +11,17 @@ export default {
 </script>
 
 <style lang="scss">
+  @font-face {
+    font-family: kuzhanziti;
+    src: url('./assets/font/kuzhanziti.ttf');
+  }
   /*初始化，使得整个页面铺面整个页面*/
   html,
   body{
     height: 100%;
     width: 100%;
+    /*font-family: kuzhanziti;*/
+    /*font-family: msyhbd;*/
   }
   #app{
     height: 100%;

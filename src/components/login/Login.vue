@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrapper">
     <div class="logo-box">
-      <img src="./../../assets/img/login/logo.png">
+      <img src="./../../assets/img/login/logo1.png">
       <div class="login-name">光子工作室</div>
     </div>
     <div class="login-box">
@@ -191,6 +191,8 @@
     height: 100%;
     background-color: #fff;
     .logo-box{
+      font-family: kuzhanziti;
+      padding-top: 50px;
       background-color: #fff;
       width: 100%;
       height: 34%;
@@ -200,14 +202,14 @@
       align-items: center;
       justify-content: center;
       img{
-        width: 108px;
+        width: 200px;
         align-items: center;
         /*border: 1px solid #000;*/
         /*border-radius: 50%;*/
       }
       .login-name{
         color: #5fb913;
-        font-size: 20px;
+        font-size: 44px;
         font-weight: bold;
       }
     }
@@ -215,6 +217,7 @@
       width: 100%;
       display: flex;
       flex-direction: column;
+      padding-top: 10px;
       .userIcon {
         width: 26px;
       }
@@ -232,7 +235,7 @@
       button {
         margin: 30px 20px 0 20px;
         background-color: #60bc5e;
-        border-radius: 4px;
+        border-radius: 22px;
         border: none;
         height: 38px;
         color: #fff;
