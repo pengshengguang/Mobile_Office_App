@@ -88,7 +88,7 @@ const questionnaireRoute = {
   name: 'questionnaire',
   children: [
     { path: 'questionnairePerson', name: 'questionnairePerson', component: QuestionnairePerson },
-    { path: 'questionnaireResultHome', name: 'QuestionnaireResultHome', component: QuestionnaireResultHome },
+    { path: 'questionnaireResultHome', name: 'questionnaireResultHome', component: QuestionnaireResultHome },
     { path: 'questionnaireDetails', name: 'questionnaireDetails', component: QuestionnaireDetails },
     { path: 'questionnaireResult', name: 'questionnaireResult', component: QuestionnaireResult }
   ]

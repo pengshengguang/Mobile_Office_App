@@ -4,7 +4,7 @@
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">统计分析</x-header>
       <div class="main-box">
         <div class="list-wrapper" v-for="questionnaire in questionnaireList">
-          <personal-item :questionnaire="questionnaire"></personal-item>
+          <personal-item :questionnaire="questionnaire" :tabnum="2"></personal-item>
         </div>
         <div class="empty-tips-wrapper" v-if="questionnaireList.length === 0">
           <div class="empty-tips-box">
@@ -25,7 +25,6 @@
     data () {
       return {
         http: HttpService.getAxios,
-        tabnum: 0, // tab页签
         applyList: [], // 申请列表
         userName: '',
         isApproval: false,
@@ -37,7 +36,8 @@
         isLoading: false,
         /* ----------- */
         showTips: true,
-        questionnaireList: []
+        questionnaireList: [],
+        tabnum: 2 // 标签页
       }
     },
     components: {
@@ -60,6 +60,25 @@
       },
       // 初始化
       init () {
+        this.getAllQuestionnaires()
+      },
+      // 获取所有问卷
+      getAllQuestionnaires () {
+        this.loading(true)
+        this.http.get('questionnaires/getAllQuestionnaires').then((response) => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              let list = res.result || []
+              this.questionnaireList = list
+            } else {
+              this.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }

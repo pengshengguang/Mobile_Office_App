@@ -1,21 +1,21 @@
 <template>
-  <div>
+  <div class="cover">
     <div class="questionnaire-person-wrapper cover">
-      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">问卷调查<div class="add" slot="right" @clikc="goResultView">统计</div></x-header>
+      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">问卷调查<div class="add" slot="right" @click="goResultView">统计</div></x-header>
       <div class="tab-box">
         <div class="feedback-tab" @click="tab_click(0);" :class="{'active':tabnum === 0}">未参与（10）<i :style="{top: tabnum === 0 ? 12 + 'px' : 0}" v-if="tabState.checkedNoRead"></i></div>
         <div class="empty"></div>
         <div class="approvaling-tab" ref="inApprovalDiv" @click="tab_click(1);" :class="{'active':tabnum === 1}">已参与（10）<i :style="{top: tabnum === 1 ? 12 + 'px' : 0}" v-if="tabState.inApprovalNoRead"></i></div>
       </div>
-      <div class="tips-box" v-if="showTips" @click="closeTip">
-        <span>如要发布问卷，请联系管理员</span>
-        <i></i>
-      </div>
+      <!--<div class="tips-box" v-if="showTips" @click="closeTip">-->
+        <!--<span>如要发布问卷，请联系管理员</span>-->
+        <!--<i></i>-->
+      <!--</div>-->
       <div class="main-box">
         <div class="list-wrapper" v-for="questionnaire in questionnaireList">
           <personal-item :questionnaire="questionnaire" :tabnum="tabnum"></personal-item>
         </div>
-        <div class="empty-tips-wrapper" v-if="questionnaireList.length === 0">
+        <div class="empty-tips-wrapper" v-if="questionnaireList.length === 0&&!isLoading">
           <div class="empty-tips-box" v-if="tabnum === 1">
             <i class="add-approval-icon" :style="backgroundNoDate" @click="tab_click(0)"></i>
             <div class="line-1">你好，暂无参与问卷</div>
@@ -23,7 +23,7 @@
             <i class="spring-arrow-icon" :style="backgroundArrow"></i>
           </div>
           <div class="empty-tips-box" v-if="tabnum === 0">
-            <div class="line-1">你好，暂无问卷</div>
+            <div class="line-1">你好，暂无问卷发布</div>
           </div>
         </div>
       </div>
@@ -81,8 +81,14 @@
       goBack () {
         this.$router.back()
       },
+      goResultView () {
+        this.$router.push({
+          name: 'questionnaireResultHome'
+        })
+      },
       tab_click (num) {
         this.page = 1
+        this.isLoading = true
         this.questionnaireList = []
         this.tabnum = num
         num === 0 ? this.getNotInvolved() : this.getInvolved()
@@ -90,13 +96,14 @@
       },
       // 初始化
       init () {
-        this.getInvolved()
+        this.tab_click(0)
       },
       // 获取待参与问卷
       getNotInvolved () {
         this.loading(true)
         this.http.get('questionnaires/getNotInvolved').then(response => {
           this.loading(false)
+          this.isLoading = false
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
@@ -115,6 +122,7 @@
         this.loading(true)
         this.http.get('questionnaires/getInvolved').then(response => {
           this.loading(false)
+          this.isLoading = false
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {

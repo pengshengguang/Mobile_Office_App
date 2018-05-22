@@ -1,13 +1,16 @@
 <template>
   <div class="personal-item-wrapper">
     <div class="item-box">
-      <div class="flag-box" v-if="tabnum === 0">
-        <div class="flag-text">结束</div>
+      <div class="ing-flag-box" v-if="state === 0">
+        <div class="flag-text">进行中</div>
+      </div>
+      <div class="flag-box" v-if="state === -1">
+        <div class="flag-text">已结束</div>
       </div>
       <div class="left-box">
         <div class="center-box">
           <span class="text">已参与人</span>
-          <span class="number">1</span>
+          <span class="number">{{questionnaire.attendNum}}</span>
         </div>
       </div>
       <div class="right-box">
@@ -21,7 +24,8 @@
         <i></i>
       </div>
     </div>
-    <div class="btn-box" v-if="tabnum === 0">马上参与</div>
+    <div class="btn-box" v-if="tabnum === 0" :class="{'btn-box-dis': state === -1}" @click="takePartIn(questionnaire)">马上参与</div>
+    <div class="btn-box" v-if="tabnum === 2">统计结果</div>
   </div>
 </template>
 
@@ -30,24 +34,71 @@
     props: ['tabnum', 'questionnaire'],
     data () {
       return {
+        state: 0 // 问卷状态 0：有效期内；-1：过期结束
       }
+    },
+    mounted () {
+      this.checkValidityPeriod()
+      console.log('传进来的questionnaire为：')
+      console.log(this.questionnaire)
     },
     methods: {
       // 日期转换
       formatTime (data) {
-        let past = new Date(data)
-        let now = new Date()
+        let past = new Date(data) // 问卷结束时间
+        let now = new Date() // 当前系统时间
+        // 格式化问卷结束时间
         let year = past.getFullYear()
-        let month = past.getMonth() + 1
-        let day = past.getDate()
-        if (month > 0 && month < 10) {
-          month = '0' + month
-        }
+        let month = this.fillZero(past.getMonth() + 1, 2) // 月份补0
+        let day = this.fillZero(past.getDate(), 2) // 天补0
+        // 格式化当前时间YYYY-MMM-DD
+        this.currentTime = now.getFullYear() + '-' + this.fillZero(now.getMonth() + 1, 2) + '-' + this.fillZero(now.getDate(), 2)
+        // 格式化问卷结束时间
         // 如果是当前年份，不显示年份
         if (past.getFullYear() === now.getFullYear()) {
           return month + '-' + day
         }
         return year + '-' + month + '-' + day
+      },
+      // 补0
+      fillZero (number, digits) {
+        number = String(number)
+        let length = number.length
+        if (length < digits) {
+          for (let i = 0; i < digits - length; i++) {
+            number = '0' + number
+          }
+        }
+        return number
+      },
+      // 判断问卷状态
+      checkValidityPeriod () {
+        let time = this.questionnaire.timeEnd // 问卷结束时间
+        let timeEnd = new Date(time)
+        let year = timeEnd.getFullYear()
+        let month = this.fillZero(timeEnd.getMonth() + 1, 2)
+        let day = this.fillZero(timeEnd.getDate(), 2)
+        timeEnd = year + '-' + month + '-' + day
+        console.log('--------------------')
+        console.log(this.currentTime)
+        console.log(timeEnd)
+        console.log(this.currentTime > timeEnd)
+        console.log('--------------------')
+        if (this.currentTime > timeEnd) {
+          this.state = -1 // 已结束
+        } else {
+          this.state = 0 // 进行中
+        }
+      },
+      // 马上参与
+      takePartIn (questionnaire) {
+        if (this.state === -1) {
+          return
+        }
+        let param = {
+          questionnaire: questionnaire
+        }
+        this.$router.push({name: 'questionnaireDetails', params: param})
       }
     }
   }
@@ -59,6 +110,26 @@
       position: relative;
       display: flex;
       padding: 10px;
+      .ing-flag-box{
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 0px;
+        height: 0px;
+        border-color: transparent #149c81;
+        border-width: 0 0 52px 52px;
+        border-style: solid;
+        .flag-text{
+          position: absolute;
+          left: -56px;
+          top: 9px;
+          width: 43px;
+          -webkit-transform: rotate(-36deg);
+          transform: rotate(-45deg);
+          color: #fff;
+          font-size: 14px;
+        }
+      }
       .flag-box{
         position: absolute;
         top: 0;
@@ -66,13 +137,13 @@
         width: 0px;
         height: 0px;
         border-color: transparent #dfb01c;
-        border-width: 0 0 44px 44px;
+        border-width: 0 0 52px 52px;
         border-style: solid;
         .flag-text{
           position: absolute;
-          left: -44px;
-          top: 6px;
-          width: 30px;
+          left: -56px;
+          top: 9px;
+          width: 43px;
           -webkit-transform: rotate(-36deg);
           transform: rotate(-45deg);
           color: #fff;
@@ -145,6 +216,10 @@
       padding: 12px 0;
       font-size: 16px;
       color: #008e6f;
+    }
+    .btn-box-dis{
+      color: #a0a0a0!important;
+      cursor: default;
     }
   }
 </style>

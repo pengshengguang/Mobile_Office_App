@@ -5,6 +5,7 @@ var questionnaireSchema = new Schema({
   'attendNum': Number, // 参加人数
   'participants': [], // 参与者名单
   'questionnaireId': String, // 问卷Id
+  'publisher': String, // 问卷发布人名字
   'questionnaireTitle': String, // 问卷题目
   'questionnaireDescribe': String, // 问卷描述
   'timeStart': String, // 开始时间

@@ -31,7 +31,7 @@ router.get('/getNotInvolved', (req, res, next) => {
       if (questionnaireDoc) {
         let questionnaireList = []
         questionnaireDoc.forEach(questionnaireItem => {
-          if (questionnaireItem.participants.indexOf(userName) !== -1) { // 当前用户没答过该问卷
+          if (questionnaireItem.participants.indexOf(userName) === -1) { // 当前用户没答过该问卷
             questionnaireList.push(questionnaireItem)
           }
         })
@@ -65,7 +65,7 @@ router.get('/getInvolved', (req, res, next) => {
         result: ''
       })
     } else {
-      if (userDoc) {
+      if (userDoc.length !== 0) {
         let list = userDoc[0].questionnaireList
         res.json({
           status: '0',
@@ -77,6 +77,42 @@ router.get('/getInvolved', (req, res, next) => {
           status: '1',
           msg: err.message,
           result: '无法从cookies中获取用户姓名！'
+        })
+      }
+    }
+  })
+})
+
+/* 获取所有问卷，即统计数据 */
+router.get('/getAllQuestionnaires', (req, res, next) => {
+  // let currentDate = new Date().Format('yyyy-MM-dd')
+  // let params = {// 查询参数，&lte：意为小于。即问卷结束时间小于当前时间
+  //   timeEnd: {
+  //     $lte: currentDate
+  //   }
+  // }
+  let questionnaireModel = Questionnaire.find({})
+  questionnaireModel.sort({'timeEnd': -1}) // 按开始时间降序排序
+  questionnaireModel.exec((err, questionnaireDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      if (questionnaireDoc) {
+        let questionnaireList = questionnaireDoc
+        res.json({
+          status: '0',
+          msg: '',
+          result: questionnaireList
+        })
+      } else {
+        res.json({
+          status: '1',
+          msg: err.message,
+          result: '问卷为空！'
         })
       }
     }

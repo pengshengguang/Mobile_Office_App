@@ -1,7 +1,10 @@
 <template>
-  <div class="questionnaire-wrapper">
-    <router-view class="cover"></router-view>
-  </div>
+  <transition name="slide" class="questionnaire-wrapper">
+    <div>
+      <div class="cover"></div>
+      <router-view class="cover"></router-view>
+    </div>
+  </transition>
 </template>
 <script>
   import QuestionnaireItem from '@/components/app/questionnaire/assembly/QuestionnaireItem'
@@ -38,5 +41,13 @@
     border-radius: 10px;
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
     background-color: #fff;
+  }
+</style>
+<style lang="scss">
+  .slide-enter-active,.slide-leave-active{
+    transition: all 0.8s;// 关于vue自带的动画效果，可看官网
+  }
+  .slide-enter, .slide-leave-to{
+    transform: translate3d(100%, 0, 0)
   }
 </style>

@@ -23,7 +23,7 @@
 <script>
   import { XHeader, Confirm } from 'vux'
   import QuestionnaireItem from '@/components/app/questionnaire/assembly/QuestionnaireItem'
-  import axios from 'axios'
+//  import axios from 'axios'
 
   export default {
     components: {
@@ -63,14 +63,15 @@
       },
       // 获取问卷数据
       getQuestionsData () {
-        axios.get('/api/questions').then(res => {
-          if (res.status === 200) {
-            this.questions = res.data.data
-            console.log('获取问卷题目数据成功了！')
-            console.log(this.questions)
-            console.log('-------------------------')
-          }
-        })
+        this.questions = this.$route.params.questionnaire
+//        axios.get('/api/questions').then(res => {
+//          if (res.status === 200) {
+//            this.questions = res.data.data
+//            console.log('获取问卷题目数据成功了！')
+//            console.log(this.questions)
+//            console.log('-------------------------')
+//          }this.$route.params.questionnaire;
+//        })
       },
       // 获取每一个问题的答案
       updateAnswer (questionId, optionId) {
