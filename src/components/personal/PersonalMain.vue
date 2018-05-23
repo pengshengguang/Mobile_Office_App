@@ -23,16 +23,6 @@
         </div>
         <div class="tab-swiper">
           <div class="area-box">
-            <div class="head-box">个人信息</div>
-            <div class="function-box">
-              <div class="function">职业：人工智能工程师</div>
-              <div class="function">年龄：90后 魔蝎座</div>
-              <div class="function">地区：广东省 珠海市</div>
-            </div>
-          </div>
-        </div>
-        <div class="tab-swiper">
-          <div class="area-box">
             <div class="head-box">个人介绍</div>
             <div class="function-box">
               <div class="function">还没有填写个人介绍</div>

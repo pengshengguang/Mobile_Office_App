@@ -81,7 +81,9 @@
         }
       },
       goBack () {
-        this.$router.back()
+        this.$router.push({
+          name: 'SuppliesClassify'
+        })
       },
       // 检查当前用户是否审批人
       checkIdentity () {

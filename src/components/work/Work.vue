@@ -5,7 +5,7 @@
       <Swiper></Swiper>
     </div>
     <!--功能区域-->
-    <scroll ref="scroll" class="function-box" :data="funcList" style="bottom: 52px">
+    <scroll ref="scroll" class="function-box" :data="funcList" style="bottom: 52px;width: 100%">
       <div>
         <grid :cols="4" :show-lr-borders="false">
           <grid-item v-for="(func, index) in funcList" :key="index" :link="func.link" :label="func.funcName">
