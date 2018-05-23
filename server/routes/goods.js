@@ -81,7 +81,7 @@ router.post('/addCart', (req, res, next) => {
   // let userId = '100000077'
   let userName = req.cookies.userName
   let productId = req.body.productId
-  // 通过模型来执行数据库更新的aip
+  // 通过模型来执行数据库更新的api
   let User = require('../models/user')
 
   // 根据userId获取当前用户信息

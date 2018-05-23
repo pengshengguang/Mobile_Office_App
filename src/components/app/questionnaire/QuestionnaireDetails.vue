@@ -22,6 +22,7 @@
 </template>
 <script>
   import { XHeader, Confirm } from 'vux'
+  import HttpService from '@/services/HttpService'
   import QuestionnaireItem from '@/components/app/questionnaire/assembly/QuestionnaireItem'
 //  import axios from 'axios'
 
@@ -33,6 +34,7 @@
     },
     data () {
       return {
+        http: HttpService.getAxios,
         questions: {},
         isSumbit: false  // 提交过的标志，只要提交过一次，就转为true
       }
@@ -41,6 +43,13 @@
       this.getQuestionsData()
     },
     methods: {
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
       goBack () {
         let self = this
         this.$vux.confirm.show({
@@ -147,10 +156,26 @@
             }
           })
         } else {
-          this.$vux.toast.show({
-            type: 'text',
-            text: '提交成功，感谢参与',
-            width: '11em'
+          let config = {
+            questionnaire: this.questions
+          }
+          this.loading(true)
+          this.http.post('/questionnaires/commitQuestionnaire', config).then(response => {
+            this.loading(false)
+            if (response.status === 200) {
+              let res = response.data
+              if (res.status === '0') {
+                this.$vux.toast.show({
+                  type: 'text',
+                  text: '提交成功，感谢参与',
+                  width: '11em'
+                })
+              } else {
+                this.$vux.toast.show({ text: '请求失败', type: 'text' })
+              }
+            } else {
+              this.$vux.toast.show({ text: '接口异常', type: 'text' })
+            }
           })
         }
         console.log(`notDidNum:${notDidNum}`)
