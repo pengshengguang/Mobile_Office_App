@@ -4,6 +4,7 @@ require('./../../src/services/util')
 
 var User = require('./../models/user')
 var Questionnaire = require('./../models/questionnaires')
+var Message = require('./../models/messages')
 
 router.get('/', function (req, res, next) {
   res.send('response with a resource')
@@ -179,6 +180,167 @@ router.get('/getAllQuestionnaires', (req, res, next) => {
     }
   })
 })
+
+// 获取当前用户未参与+已参与的记录条数
+router.get('/getTabState', (req, res, next) => {
+  let userName = req.cookies.userName
+  let queryParams = {
+    userName: userName
+  }
+  Questionnaire.find({}, (err, questionnairesDoc) => { // 第一步，获取系统所有问卷
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      let oldNotDidCount = 0 // 初始化历史待参与/已参与条目数
+      let oldDidCount = 0
+      // 查询消息表，获取当前已读未读状态
+      Message.findOne(queryParams, (err1, messageDoc) => {  // 第二步， 获取当前用户所有已读未读信息，赋值到历史待参与/已参与条目数
+        if (err1) {
+          res.json({
+            status: '1',
+            msg: err1.message,
+            result: ''
+          })
+        } else {
+          if (messageDoc == null || messageDoc.questionnaire == null) { // 如果messageDoc的长度为0，表示当前用户尚未拥有已读未读记录，需要新建已读未读记录 message
+            let messageConfig = {
+              userName: userName,
+              questionnaire: {
+                notDidCount: 0,
+                didCount: 0
+              }
+            }
+            var newMessage = new Message(messageConfig)
+            newMessage.save((err2, newMessageDoc) => {
+              if (err2) {
+                res.json({
+                  status: '1',
+                  msg: 'message新建数据保存异常',
+                  result: ''
+                })
+              } else {
+                let notDidCount = 0 // 最新 待参与 记录数累加器
+                let didCount = 0 // 最新 已参与 记录数累加器
+                questionnairesDoc.forEach(questionnaire => {
+                  if (questionnaire.participants.indexOf(userName) !== -1) { // 如果系统问卷中的参与人有当前用户，证明用户参与过该问卷
+                    didCount += 1
+                  } else {
+                    notDidCount += 1
+                  }
+                })
+                let noDidNoRead = false // 待参与未读？
+                let didNoRead = false // 已参与未读？
+                // 判断是否有未读
+                if (notDidCount > oldNotDidCount) {
+                  noDidNoRead = true
+                }
+                if (didCount > oldDidCount) {
+                  didNoRead = true
+                }
+                // 封装数据返回给前端
+                let tabState = {
+                  noDidNoRead: noDidNoRead,
+                  didNoRead: didNoRead,
+                  notDidCount: notDidCount,
+                  didCount: didCount
+                }
+                // 更新message中的questionnaire
+                Message.findOne(queryParams, (err3, updateDoc) => { // 第三部，把最新的待参与/已参与条目数更新到Message表中
+                  if (err3) {
+                    res.json({
+                      status: '1',
+                      msg: err3.message,
+                      result: '更新message中的questionnaire失败'
+                    })
+                  } else {
+                    updateDoc.questionnaire.notDidCount = notDidCount
+                    updateDoc.questionnaire.didCount = didCount
+                    updateDoc.save((err4, newestDoc) => {
+                      if (err) {
+                        res.json({
+                          status: '1',
+                          msg: err4.messages,
+                          result: '最终更新message中的supplies失败'
+                        })
+                      } else {
+                        res.json({
+                          status: '0',
+                          msg: '',
+                          result: tabState  // 第六步，值给前端
+                        })
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          } else {
+            oldNotDidCount = messageDoc.questionnaire.notDidCount // 获取历史未参与数
+            oldDidCount = messageDoc.questionnaire.didCount // 获取历史已参与数
+            let notDidCount = 0 // 最新 待参与 记录数累加器
+            let didCount = 0 // 最新 已参与 记录数累加器
+            questionnairesDoc.forEach(questionnaire => {
+              if (questionnaire.participants.indexOf(userName) !== -1) { // 如果系统问卷中的参与人有当前用户，证明用户参与过该问卷
+                didCount += 1
+              } else {
+                notDidCount += 1
+              }
+            })
+            let noDidNoRead = false // 待参与未读？
+            let didNoRead = false // 已参与未读？
+            // 判断是否有未读
+            if (notDidCount > oldNotDidCount) {
+              noDidNoRead = true
+            }
+            if (didCount > oldDidCount) {
+              didNoRead = true
+            }
+            // 封装数据返回给前端
+            let tabState = {
+              noDidNoRead: noDidNoRead,
+              didNoRead: didNoRead,
+              notDidCount: notDidCount,
+              didCount: didCount
+            }
+            // 更新message中的questionnaire
+            Message.findOne(queryParams, (err3, updateDoc) => { // 第三部，把最新的待参与/已参与条目数更新到Message表中
+              if (err3) {
+                res.json({
+                  status: '1',
+                  msg: err3.message,
+                  result: '更新message中的questionnaire失败'
+                })
+              } else {
+                updateDoc.questionnaire.notDidCount = notDidCount
+                updateDoc.questionnaire.didCount = didCount
+                updateDoc.save((err4, newestDoc) => {
+                  if (err) {
+                    res.json({
+                      status: '1',
+                      msg: err4.messages,
+                      result: '最终更新message中的supplies失败'
+                    })
+                  } else {
+                    res.json({
+                      status: '0',
+                      msg: '',
+                      result: tabState  // 第六步，值给前端
+                    })
+                  }
+                })
+              }
+            })
+          }
+        }
+      })
+    }
+  })
+})
+
 // 获取用户已参与问卷的答案，赋值到总问卷中
 function getAnswer (sysQuestionnaire, perQuestionnaire) {
   for (let i = 0; i < perQuestionnaire.list.length; i++) { // 循环当前用户问卷问题列表
@@ -196,6 +358,7 @@ function getAnswer (sysQuestionnaire, perQuestionnaire) {
   }
   return sysQuestionnaire
 }
+
 // 将总问卷的type改为4
 function modifyType (questionnaireList) {
   for (let i = 0; i < questionnaireList.length; i++) {

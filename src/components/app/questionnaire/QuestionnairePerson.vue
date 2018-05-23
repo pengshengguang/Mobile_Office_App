@@ -3,9 +3,9 @@
     <div class="questionnaire-person-wrapper cover">
       <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">问卷调查<div class="add" slot="right" @click="goResultView">统计</div></x-header>
       <div class="tab-box">
-        <div class="feedback-tab" @click="tab_click(0);" :class="{'active':tabnum === 0}">未参与（10）<i :style="{top: tabnum === 0 ? 12 + 'px' : 0}" v-if="tabState.checkedNoRead"></i></div>
+        <div class="feedback-tab" @click="tab_click(0);" :class="{'active':tabnum === 0}">未参与（10）<i :style="{top: tabnum === 0 ? 12 + 'px' : 0}" v-if="tabState.noDidNoRead"></i></div>
         <div class="empty"></div>
-        <div class="approvaling-tab" ref="inApprovalDiv" @click="tab_click(1);" :class="{'active':tabnum === 1}">已参与（10）<i :style="{top: tabnum === 1 ? 12 + 'px' : 0}" v-if="tabState.inApprovalNoRead"></i></div>
+        <div class="approvaling-tab" ref="inApprovalDiv" @click="tab_click(1);" :class="{'active':tabnum === 1}">已参与（10）<i :style="{top: tabnum === 1 ? 12 + 'px' : 0}"  v-if="tabState.didNoRead"></i></div>
       </div>
       <!--<div class="tips-box" v-if="showTips" @click="closeTip">-->
         <!--<span>如要发布问卷，请联系管理员</span>-->
@@ -92,7 +92,7 @@
         this.questionnaireList = []
         this.tabnum = num
         num === 0 ? this.getNotInvolved() : this.getInvolved()
-//        this.getTabState()// 刷新tab状态值
+        this.getTabState()// 刷新tab状态值
       },
       // 初始化
       init () {
@@ -133,6 +133,24 @@
             }
           } else {
             this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
+      },
+      // 获取tab头部状态值，已读未读，总条数等信息
+      getTabState () {
+        this.loading(true)
+        this.http.get('/questionnaires/getTabState').then((response) => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.tabState = res.result
+              console.log(this.tabState)
+            } else {
+              this.$vux.toast.show({ text: '接口异常,Tab状态值获取失败1', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常,Tab状态值获取失败2', type: 'text' })
           }
         })
       },

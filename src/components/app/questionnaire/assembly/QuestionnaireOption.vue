@@ -308,10 +308,10 @@
           width: 70%;
         }
         .num{
-          align-self: flex-start;
+          /*align-self: flex-start;*/
         }
         .percent{
-          align-self: flex-end;
+          /*align-self: flex-end;*/
         }
       }
       .choice-text{

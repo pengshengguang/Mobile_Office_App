@@ -1,7 +1,7 @@
 <template>
   <div class="questionnaire-result-wrapper">
     <!-- 顶部标题 -->
-    <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">2017年度远光智慧商旅服务满意度调查</x-header>
+    <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: true}" @on-click-back="goBack">{{result.questionnaireTitle}}</x-header>
     <!--问卷主体内容-->
     <div class="questionnaire-list-wrapper" ref="listBox">
       <!--问卷描述-->
@@ -60,7 +60,7 @@
 .questionnaire-result-wrapper{
   .whiteBgHeader{
     .vux-header-title{
-      margin: 0 60px !important;
+      /*margin: 0 60px !important;*/
     }
   }
 }
