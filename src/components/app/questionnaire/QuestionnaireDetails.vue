@@ -79,7 +79,7 @@
 //            console.log('获取问卷题目数据成功了！')
 //            console.log(this.questions)
 //            console.log('-------------------------')
-//          }this.$route.params.questionnaire;
+//          }
 //        })
       },
       // 获取每一个问题的答案

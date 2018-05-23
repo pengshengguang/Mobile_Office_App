@@ -18,7 +18,7 @@
 <script>
   import { XHeader } from 'vux'
   import QuestionnaireItem from '@/components/app/questionnaire/assembly/QuestionnaireItem'
-  import axios from 'axios'
+//  import axios from 'axios'
 
   export default {
     components: {
@@ -42,14 +42,15 @@
       },
       // 根据ID获取问卷统计数据
       getQuestionsResultData () {
-        axios.get('/api/result').then(res => {
-          if (res.status === 200) {
-            this.result = res.data.data
-            console.log('调查问卷统计结果数据收到')
-            console.log(this.result)
-            console.log('----------------------')
-          }
-        })
+//        axios.get('/api/result').then(res => {
+//          if (res.status === 200) {
+//            this.result = res.data.data
+//            console.log('调查问卷统计结果数据收到')
+//            console.log(this.result)
+//            console.log('----------------------')
+//          }
+//        })
+        this.result = this.$route.params.result
       }
     }
   }

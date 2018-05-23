@@ -119,9 +119,13 @@ router.get('/getAllQuestionnaires', (req, res, next) => {
   //     $lte: currentDate
   //   }
   // }
+  let userName = req.cookies.userName
+  let params = {
+    userName: userName
+  }
   let questionnaireModel = Questionnaire.find({})
   questionnaireModel.sort({'timeEnd': -1}) // 按开始时间降序排序
-  questionnaireModel.exec((err, questionnaireDoc) => {
+  questionnaireModel.exec((err, questionnairesDoc) => { // 第一步：获取系统所有问卷
     if (err) {
       res.json({
         status: '1',
@@ -129,12 +133,41 @@ router.get('/getAllQuestionnaires', (req, res, next) => {
         result: ''
       })
     } else {
-      if (questionnaireDoc) {
-        let questionnaireList = questionnaireDoc
-        res.json({
-          status: '0',
-          msg: '',
-          result: questionnaireList
+      if (questionnairesDoc) {
+        let sysQuestionnaireList = questionnairesDoc // 系统所有问卷
+        User.findOne(params, (err1, userDoc) => { // 第二步：获取当前用户的所有问卷列表
+          if (err) {
+            res.json({
+              status: '1',
+              msg: err.message,
+              result: ''
+            })
+          } else {
+            if (userDoc) {
+              let userQuestionnaireList = userDoc.questionnaireList // 当前用户所有参与问卷
+              for (let i = 0; i < sysQuestionnaireList.length; i++) { // 第三步：循环系统问卷，如果当前用户参与该问卷，就把当前用户的选项答案赋值给对应的系统问卷
+                if (sysQuestionnaireList[i].participants.indexOf(userName) !== -1) { // 如果用户参与了该问卷
+                  for (let j = 0; j < userQuestionnaireList.length; j++) { // 循环用户问卷列表，找出该问卷，然后赋值答案
+                    if (sysQuestionnaireList[i].questionnaireId === userQuestionnaireList[j].questionnaireId) {
+                      sysQuestionnaireList[i] = getAnswer(sysQuestionnaireList[i], userQuestionnaireList[j])
+                      break
+                    }
+                  }
+                }
+              }
+              res.json({
+                status: '0',
+                msg: '',
+                result: modifyType(sysQuestionnaireList)
+              })
+            } else {
+              res.json({
+                status: '1',
+                msg: '系统不存在该用户',
+                result: ''
+              })
+            }
+          }
         })
       } else {
         res.json({
@@ -146,6 +179,34 @@ router.get('/getAllQuestionnaires', (req, res, next) => {
     }
   })
 })
+// 获取用户已参与问卷的答案，赋值到总问卷中
+function getAnswer (sysQuestionnaire, perQuestionnaire) {
+  for (let i = 0; i < perQuestionnaire.list.length; i++) { // 循环当前用户问卷问题列表
+    if (perQuestionnaire.list[i].isDid) { // 如果该问题有做
+      if (perQuestionnaire.list[i].type === '3') { // 如果该题为简答题
+        sysQuestionnaire.list[i].answer = perQuestionnaire.list[i].answer
+      } else { // 该题为单选或多选题
+        for (let j = 0; j < perQuestionnaire.list[i].options.length; j++) { // 循环选项
+          if (perQuestionnaire.list[i].options[j].isSelected) { // 如果该选项是当前用户选中的
+            sysQuestionnaire.list[i].options[j].isSelected = true // 就把系统问卷该题该选项选中标志变为true
+          }
+        }
+      }
+    }
+  }
+  return sysQuestionnaire
+}
+// 将总问卷的type改为4
+function modifyType (questionnaireList) {
+  for (let i = 0; i < questionnaireList.length; i++) {
+    for (let j = 0; j < questionnaireList[i].list.length; j++) {
+      if (questionnaireList[i].list[j].type !== '3') {
+        questionnaireList[i].list[j].type = '4'
+      }
+    }
+  }
+  return questionnaireList
+}
 
 /* 提交问卷，且更新总问卷中的选中数量 */
 router.post('/commitQuestionnaire', (req, res, next) => {

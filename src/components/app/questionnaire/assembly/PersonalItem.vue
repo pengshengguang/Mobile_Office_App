@@ -1,6 +1,6 @@
 <template>
   <div class="personal-item-wrapper">
-    <div class="item-box">
+    <div class="item-box" @click="viewResult()">
       <div class="ing-flag-box" v-if="state === 0">
         <div class="flag-text">进行中</div>
       </div>
@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="btn-box" v-if="tabnum === 0" :class="{'btn-box-dis': state === -1}" @click="takePartIn(questionnaire)">马上参与</div>
-    <div class="btn-box" v-if="tabnum === 2">统计结果</div>
+    <div class="btn-box" v-if="tabnum === 2" @click="goResultDetailsView">统计结果</div>
   </div>
 </template>
 
@@ -103,6 +103,23 @@
           questionnaire: questionnaire
         }
         this.$router.push({name: 'questionnaireDetails', params: param})
+      },
+      // 查看已参与问卷答案详情
+      viewResult () {
+        if (this.tabnum !== 1) {
+          return
+        }
+        this.$router.push({
+          name: 'questionnaireResult',
+          params: {result: this.questionnaire}
+        })
+      },
+      // 查看统计答案结果详情
+      goResultDetailsView () {
+        this.$router.push({
+          name: 'questionnaireResult',
+          params: {result: this.questionnaire}
+        })
       }
     }
   }

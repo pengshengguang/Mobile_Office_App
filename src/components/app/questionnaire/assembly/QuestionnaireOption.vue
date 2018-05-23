@@ -4,7 +4,7 @@
     <div v-if="item.type === '1'" class="single-radio-box">
       <div class="popupRadio-wrapper">
         <group>
-          <popup-radio :options="options2" v-model="radioSelect" placeholder="请选择一个选项"  @on-change="selectedEvent"></popup-radio>
+          <popup-radio :options="options2" v-model="radioSelect" placeholder="请选择一个选项"  @on-change="selectedEvent" :readonly="singleOptionOnlyRead"></popup-radio>
         </group>
       </div>
       <!--<div class="single-choice" @click="selectedEvent(option.optionId)" v-for="option in item.options">-->
@@ -22,11 +22,11 @@
     <!--问答题-->
     <div class="question" v-else-if="item.type === '3'">
       <!--文本框是否可编辑根据 item.questionId 来判断，这是因为统计结果中没有questionId字段，而调查问卷详情中，有questionId字段。-->
-      <x-textarea placeholder="请输入您的宝贵意见" v-model="item.answer" :max="200" @input="fillAnswerEvent(item.answer)" :readonly="!item.questionId"></x-textarea>
+      <x-textarea placeholder="请输入您的宝贵意见" v-model="item.answer" :max="200" @input="fillAnswerEvent(item.answer)" :readonly="textareaOnlyRead"></x-textarea>
     </div>
     <!--统计答案-->
     <div class="result" v-else-if="item.type === '4'" v-for="option in item.options">
-      <div class="result-choice" v-if="option.isSelect">
+      <div class="result-choice" v-if="option.isSelected">
         <div class="bg-box" :style="{width: percent + '%'}"></div>
         <div class="text-box">
           <div class="title">{{option.name}}</div>
@@ -59,7 +59,9 @@
       return {
         percent: 20,
         radioSelect: '',
-        options2: []
+        options2: [],
+        singleOptionOnlyRead: false,
+        textareaOnlyRead: false
       }
     },
     mounted () {
@@ -68,6 +70,10 @@
       // 加载页面的时候，因为用watch监测不到父组件传过来的值，所以要在mounted这里拿到父组件传过来的值，然后对数据进行处理
       if (this.item.type === '1') {
         this.assemblyOptions()
+        this.getSelectSingle() // 这个函数是为了在个人已参与界面，单选题如果有做的话，就会把选项选中
+      }
+      if (this.item.type === '3' && this.item.answer) {
+        this.textareaOnlyRead = true
       }
     },
     methods: {
@@ -97,6 +103,15 @@
       },
       hahaha () {
         console.log('hahahahah')
+      },
+      // 获取用户选择的单选选项
+      getSelectSingle () {
+        this.item.options.forEach(option => {
+          if (option.isSelected) {
+            this.radioSelect = option.optionId
+            this.singleOptionOnlyRead = true // singleOptionOnlyRead，true，代表这道题已经做了，这就意味当前用户已经参与过这道题了，所有这个属性结合readonly，就能使点选题不能选择
+          }
+        })
       }
     }
   }

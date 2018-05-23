@@ -22,7 +22,7 @@ var questionnaireSchema = new Schema({
     //       'name': String, // 选项名称
     //       'selectedNum': Number, // 此选项选择的数量
     //       'optionId': String // 选项Id
-    //       // 'isSelect': Boolean // 是否选中
+    //       // 'isSelected': Boolean // 是否选中
     //     }
     //   ]
     // }
