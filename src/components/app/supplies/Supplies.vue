@@ -11,9 +11,10 @@
       <div class="main-box">
         <div class="approval-apply-list">
           <supplies-apply-item  v-for="(applyItem, index) in applyList" :key="index" :applyItem="applyItem" :tabnum="tabnum" :isApproval="isApproval" :initialize="initialize"></supplies-apply-item>
-        </div>
-        <div style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-          <img src="@/assets/loading-spinning-bubbles.svg" v-show="isLoading" width="50px">
+          <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+            <!--<img src="@/assets/loading-spinning-bubbles.svg" v-show="isLoading" width="50px">-->
+            <spinner type='lines' v-show="isLoading"></spinner>
+          </div>
         </div>
         <div class="empty-tips-wrapper" v-if="applyList.length === 0">
           <div class="empty-tips-box" v-if="tabnum === 0">
@@ -32,7 +33,7 @@
 </template>
 
 <script>
-  import { XHeader } from 'vux'
+  import { XHeader, Spinner } from 'vux'
   import SuppliesApplyItem from './assembly/SuppliesApplyItem.vue'
   import HttpService from '@/services/HttpService'
 
@@ -62,6 +63,7 @@
     },
     components: {
       XHeader,
+      Spinner,
       SuppliesApplyItem
     },
     mounted () {
@@ -186,6 +188,21 @@
 
 <style lang="scss">
   .supplies-wrapper{
+    .main-box{
+      .approval-apply-list{
+        .loading-icon{
+          .vux-spinner{
+            stroke: #149c81;
+            height: 50px;
+            width: 50px;
+            svg{
+              height: 50px;
+              width: 50px;
+            }
+          }
+        }
+      }
+    }
   }
 </style>
 

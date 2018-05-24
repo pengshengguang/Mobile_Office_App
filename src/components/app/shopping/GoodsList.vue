@@ -41,7 +41,8 @@
                 </ul>
                 <!--加载更多插件-->
                 <div class="load-more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-                  <img src="@/assets/loading-spinning-bubbles.svg" v-show="loading">
+                  <!--<img src="@/assets/loading-spinning-bubbles.svg" v-show="loading">-->
+                  <spinner type='lines' v-show="loading"></spinner>
                 </div>
               </div>
             </div>
@@ -74,7 +75,7 @@
   </div>
 </template>
 <script>
-  import { XHeader } from 'vux'
+  import { XHeader, Spinner } from 'vux'
 //  import NavHeader from '@/components/app/shopping/assembly/NavHeader'
   import Modal from './assembly/Modal'
   import Httpservice from '@/services/HttpService'
@@ -83,7 +84,7 @@
   export default {
     components: {
       XHeader,
-//      NavHeader,
+      Spinner,
       Modal
     },
     data () {
@@ -309,6 +310,15 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      .vux-spinner{
+        stroke: #d1434a;
+        height: 50px;
+        width: 50px;
+        svg{
+          height: 50px;
+          width: 50px;
+        }
+      }
     }
   }
 </style>

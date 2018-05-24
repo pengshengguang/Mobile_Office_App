@@ -8,12 +8,13 @@
         </tab-item>
       </tab>
     </div>
-    <div class="list-box" style="padding-bottom: 80px">
+    <div class="list-box" style="padding-bottom: 100px">
       <div class="item-wrapper" v-for="item in suppliesList">
         <supplies-product-Item :item="item" :isShopping="isShopping"></supplies-product-Item>
       </div>
-      <div style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-        <img src="@/assets/loading-spinning-bubbles.svg" v-show="loading" width="50px">
+      <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+        <!--<img src="@/assets/loading-spinning-bubbles.svg" v-show="loading" width="50px">-->
+        <spinner type='lines' v-show="loading"></spinner>
       </div>
     </div>
     <div class="btn-box">
@@ -34,7 +35,7 @@
 </template>
 
 <script>
-  import { Tab, TabItem, XButton, XHeader } from 'vux'
+  import { Tab, TabItem, XButton, XHeader, Spinner } from 'vux'
   import SuppliesProductItem from './assembly/SuppliesProductItem.vue'
   import Httpservice from '@/services/HttpService'
 
@@ -44,7 +45,8 @@
       TabItem,
       XButton,
       XHeader,
-      SuppliesProductItem
+      SuppliesProductItem,
+      Spinner
     },
     data () {
       return {
@@ -321,6 +323,17 @@
       overflow: auto;
       .item-wrapper{
         overflow: auto;
+      }
+      .loading-icon{
+        .vux-spinner{
+          stroke: #149c81;
+          height: 50px;
+          width: 50px;
+          svg{
+            height: 50px;
+            width: 50px;
+          }
+        }
       }
     }
     .btn-box{
