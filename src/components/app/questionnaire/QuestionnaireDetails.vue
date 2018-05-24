@@ -63,7 +63,9 @@
             console.log('plugin hide')
           },
           onCancel () {
-            self.$router.back()
+            self.$router.push({
+              name: 'questionnairePerson'
+            })
           },
           onConfirm () {
             console.log('plugin confirm')
@@ -166,9 +168,11 @@
               let res = response.data
               if (res.status === '0') {
                 this.$vux.toast.show({
-                  type: 'text',
                   text: '提交成功，感谢参与',
                   width: '11em'
+                })
+                this.$router.push({
+                  name: 'questionnairePerson'
                 })
               } else {
                 this.$vux.toast.show({ text: '请求失败', type: 'text' })

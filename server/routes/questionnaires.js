@@ -206,7 +206,7 @@ router.get('/getTabState', (req, res, next) => {
             result: ''
           })
         } else {
-          if (messageDoc == null || messageDoc.questionnaire == null) { // 如果messageDoc的长度为0，表示当前用户尚未拥有已读未读记录，需要新建已读未读记录 message
+          if (messageDoc == null) { // 如果messageDoc的长度为0，表示当前用户尚未拥有已读未读记录，需要新建已读未读记录 message
             let messageConfig = {
               userName: userName,
               questionnaire: {
@@ -221,6 +221,75 @@ router.get('/getTabState', (req, res, next) => {
                   status: '1',
                   msg: 'message新建数据保存异常',
                   result: ''
+                })
+              } else {
+                let notDidCount = 0 // 最新 待参与 记录数累加器
+                let didCount = 0 // 最新 已参与 记录数累加器
+                questionnairesDoc.forEach(questionnaire => {
+                  if (questionnaire.participants.indexOf(userName) !== -1) { // 如果系统问卷中的参与人有当前用户，证明用户参与过该问卷
+                    didCount += 1
+                  } else {
+                    notDidCount += 1
+                  }
+                })
+                let noDidNoRead = false // 待参与未读？
+                let didNoRead = false // 已参与未读？
+                // 判断是否有未读
+                if (notDidCount > oldNotDidCount) {
+                  noDidNoRead = true
+                }
+                if (didCount > oldDidCount) {
+                  didNoRead = true
+                }
+                // 封装数据返回给前端
+                let tabState = {
+                  noDidNoRead: noDidNoRead,
+                  didNoRead: didNoRead,
+                  notDidCount: notDidCount,
+                  didCount: didCount
+                }
+                // 更新message中的questionnaire
+                Message.findOne(queryParams, (err3, updateDoc) => { // 第三部，把最新的待参与/已参与条目数更新到Message表中
+                  if (err3) {
+                    res.json({
+                      status: '1',
+                      msg: err3.message,
+                      result: '更新message中的questionnaire失败'
+                    })
+                  } else {
+                    updateDoc.questionnaire.notDidCount = notDidCount
+                    updateDoc.questionnaire.didCount = didCount
+                    updateDoc.save((err4, newestDoc) => {
+                      if (err) {
+                        res.json({
+                          status: '1',
+                          msg: err4.messages,
+                          result: '最终更新message中的supplies失败'
+                        })
+                      } else {
+                        res.json({
+                          status: '0',
+                          msg: '',
+                          result: tabState  // 第六步，值给前端
+                        })
+                      }
+                    })
+                  }
+                })
+              }
+            })
+          } else if (JSON.stringify(messageDoc.questionnaire) === '{}') { // 如果message.questionnaire为{}，证明该用户问卷已读未读信息不存在，就更新
+            let questionnaire = {
+              notDidCount: 0,
+              didCount: 0
+            }
+            messageDoc.questionnaire = questionnaire
+            messageDoc.save((err, updateMessageDoc) => {
+              if (err) {
+                res.json({
+                  status: '1',
+                  msg: err.message,
+                  result: '更新message中的questionnaire失败'
                 })
               } else {
                 let notDidCount = 0 // 最新 待参与 记录数累加器
