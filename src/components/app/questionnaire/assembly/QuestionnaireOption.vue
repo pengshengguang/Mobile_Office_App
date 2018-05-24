@@ -27,19 +27,21 @@
     <!--统计答案-->
     <div class="result" v-else-if="item.type === '4'" v-for="option in item.options">
       <div class="result-choice" v-if="option.isSelected">
-        <div class="bg-box" :style="{width: percent + '%'}"></div>
+        <!--<div class="bg-box" :style="{width: percent + '%'}"></div>-->
+        <div class="bg-box" :style="{width: getPercent(option.selectedNum) + '%'}"></div>
         <div class="text-box">
           <div class="title">{{option.name}}</div>
           <div class="num">{{option.selectedNum}}票</div>
-          <div class="percent">20%</div>
+          <div class="percent">{{getPercent(option.selectedNum)}}%</div>
         </div>
       </div>
       <div class="result-choice other-choice" v-else>
-        <div class="bg-box" :style="{width: percent + '%'}"></div>
+        <!--<div class="bg-box" :style="{width: percent + '%'}"></div>-->
+        <div class="bg-box" :style="{width: getPercent(option.selectedNum) + '%'}"></div>
         <div class="text-box">
           <div class="title">{{option.name}}</div>
           <div class="num">{{option.selectedNum}}票</div>
-          <div class="percent">20%</div>
+          <div class="percent">{{getPercent(option.selectedNum)}}%</div>
         </div>
       </div>
     </div>
@@ -49,7 +51,7 @@
   import { XTextarea, Group, PopupRadio } from 'vux'
 
   export default {
-    props: ['item'],
+    props: ['item', 'totalSelectedNum'],
     components: {
       XTextarea,
       Group,
@@ -112,6 +114,14 @@
             this.singleOptionOnlyRead = true // singleOptionOnlyRead，true，代表这道题已经做了，这就意味当前用户已经参与过这道题了，所有这个属性结合readonly，就能使点选题不能选择
           }
         })
+      },
+      // 获取当前题目的所有选项的选中数量，统计当前选项占比
+      getPercent (currentselectedNum) {
+        if (currentselectedNum === 0) {
+          return 0
+        } else {
+          return currentselectedNum / this.totalSelectedNum * 100
+        }
       }
     }
   }

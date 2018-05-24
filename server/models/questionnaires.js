@@ -11,21 +11,22 @@ var questionnaireSchema = new Schema({
   'timeStart': String, // 开始时间
   'timeEnd': String, // 结束时间
   'list': [ // 问题列表
-    // {
-    //   'questionId': String, // 问卷Id
-    //   'isDid': Boolean, // 是否已做
-    //   'required': Boolean, // 是否为必选题
-    //   'type': String, // 题目类型 1：单选题；2：多选题；3：简答题
-    //   'title': String, // 题目
-    //   'options': [ // 选项
-    //     {
-    //       'name': String, // 选项名称
-    //       'selectedNum': Number, // 此选项选择的数量
-    //       'optionId': String // 选项Id
-    //       // 'isSelected': Boolean // 是否选中
-    //     }
-    //   ]
-    // }
+    {
+      'questionId': String, // 问卷Id
+      'isDid': Boolean, // 是否已做
+      'required': Boolean, // 是否为必选题
+      // 'type': String, // 题目类型 1：单选题；2：多选题；3：简答题             我的天啊，把type注释掉，就可以更新选项选择数量 成功！！！！！
+      'title': String, // 题目
+      'answer': String,
+      'options': [ // 选项
+        {
+          'name': String, // 选项名称
+          'selectedNum': Number, // 此选项选择的数量
+          'optionId': String // 选项Id
+          // 'isSelected': Boolean // 是否选中
+        }
+      ]
+    }
   ]
 })
 module.exports = mongoose.model('Questionnaire', questionnaireSchema)

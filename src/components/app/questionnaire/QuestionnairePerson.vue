@@ -79,7 +79,9 @@
         }
       },
       goBack () {
-        this.$router.back()
+        this.$router.push({
+          name: 'work'
+        })
       },
       goResultView () {
         this.$router.push({

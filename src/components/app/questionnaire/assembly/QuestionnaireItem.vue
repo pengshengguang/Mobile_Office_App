@@ -16,7 +16,7 @@
       </div>
         <div class="main-wrapper">
           <!--选项组组件  接收参数 item（单条题目总信息）-->
-          <QuestionnaireOption :item="item" @setAnswer="setAnswer" ></QuestionnaireOption>
+          <QuestionnaireOption :item="item" :totalSelectedNum="totalSelectedNum" @setAnswer="setAnswer" ></QuestionnaireOption>
         </div>
       </div>
   </div>
@@ -28,13 +28,20 @@
     props: ['item', 'questionsNum', 'index', 'isSumbit'],
     data () {
       return {
-        answer: {} // 该题问题答案
+        answer: {}, // 该题问题答案
+        totalSelectedNum: 0 // 本道题的选项选择总数量
       }
     },
     components: {
       QuestionnaireOption
     },
+    mounted () {
+      this.init()
+    },
     methods: {
+      init () {
+        this.getSelectedNum()
+      },
       // 传送当前题目答案给父组件
       setAnswer (optionId) {
         if (optionId) {
@@ -127,6 +134,17 @@
         } else {
           this.item.isDid = false
         }
+      },
+      // 获取该题的选中总数
+      getSelectedNum () {
+        if (this.item.type === '3') {
+          return
+        }
+        let totalSelectedNum = 0
+        for (let i = 0; i < this.item.options.length; i++) {
+          totalSelectedNum += this.item.options[i].selectedNum
+        }
+        this.totalSelectedNum = totalSelectedNum
       }
     }
   }

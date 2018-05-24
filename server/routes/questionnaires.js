@@ -419,7 +419,7 @@ function getAnswer (sysQuestionnaire, perQuestionnaire) {
       } else { // 该题为单选或多选题
         for (let j = 0; j < perQuestionnaire.list[i].options.length; j++) { // 循环选项
           if (perQuestionnaire.list[i].options[j].isSelected) { // 如果该选项是当前用户选中的
-            sysQuestionnaire.list[i].options[j].isSelected = true // 就把系统问卷该题该选项选中标志变为true
+            sysQuestionnaire.list[i].options[j]._doc.isSelected = true // 就把系统问卷该题该选项选中标志变为true     !!!!!! 这里超厉害的，因为系统问卷表中没有isSelected这个字段，用_doc.xxxx，就可以新增字段了！！！！
           }
         }
       }
@@ -432,8 +432,8 @@ function getAnswer (sysQuestionnaire, perQuestionnaire) {
 function modifyType (questionnaireList) {
   for (let i = 0; i < questionnaireList.length; i++) {
     for (let j = 0; j < questionnaireList[i].list.length; j++) {
-      if (questionnaireList[i].list[j].type !== '3') {
-        questionnaireList[i].list[j].type = '4'
+      if (questionnaireList[i].list[j]._doc.type !== '3') {  // 这里注意了，因为questionnaires的模型中没有type这个字段，所有你是找不到type的，但是通过_doc这一层，就能找到type的值！！！！（这里为什么不把type字段写在questionnaires.js模型里面呢？原因是模型里面的list[]这个字段里面的值，可能包含单选题（多选题）和简答题！！！，把type加上去，不知道为什么，系统就不能检查出list字段里面的值出来了！！！这个搞了很久啊！！！！！）
+        questionnaireList[i].list[j]._doc.type = '4'
       }
     }
   }
