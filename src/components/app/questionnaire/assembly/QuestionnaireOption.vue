@@ -120,7 +120,7 @@
         if (currentselectedNum === 0) {
           return 0
         } else {
-          return currentselectedNum / this.totalSelectedNum * 100
+          return Math.round(currentselectedNum / this.totalSelectedNum * 100) // 四舍五入
         }
       }
     }

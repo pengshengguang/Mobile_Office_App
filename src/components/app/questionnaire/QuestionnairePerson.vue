@@ -15,6 +15,10 @@
         <div class="list-wrapper" v-for="questionnaire in questionnaireList">
           <personal-item :questionnaire="questionnaire" :tabnum="tabnum"></personal-item>
         </div>
+        <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+          <!--<spinner type='lines' v-show="loading"></spinner>-->
+          <spinner type='lines'></spinner>
+        </div>
         <div class="empty-tips-wrapper" v-if="questionnaireList.length === 0&&!isLoading">
           <div class="empty-tips-box" v-if="tabnum === 1">
             <i class="add-approval-icon" :style="backgroundNoDate" @click="tab_click(0)"></i>
@@ -32,7 +36,7 @@
 </template>
 
 <script>
-  import { XHeader } from 'vux'
+  import { XHeader, Spinner } from 'vux'
   import HttpService from '@/services/HttpService'
   import PersonalItem from './assembly/PersonalItem.vue'
 
@@ -65,6 +69,7 @@
     },
     components: {
       XHeader,
+      Spinner,
       PersonalItem
     },
     mounted () {
@@ -90,6 +95,7 @@
       },
       tab_click (num) {
         this.page = 1
+        this.busy = false
         this.isLoading = true
         this.questionnaireList = []
         this.tabnum = num
@@ -100,17 +106,43 @@
       init () {
         this.tab_click(0)
       },
+      // 根据tabnum获取问卷
+      getQuestionnaireByTabnum () {
+        this.tabnum === 0 ? this.getNotInvolved(true) : this.getInvolved(true)
+      },
       // 获取待参与问卷
-      getNotInvolved () {
-        this.loading(true)
-        this.http.get('questionnaires/getNotInvolved').then(response => {
-          this.loading(false)
+      getNotInvolved (flag) {
+        let param = {
+          page: this.page,
+          pageSize: this.pageSize
+        }
+        this.isLoading = true
+        this.http.get('questionnaires/getNotInvolved', {params: param}).then(response => {
           this.isLoading = false
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              let list = res.result || []
-              this.questionnaireList = list
+              let newList = res.result || []
+              if (flag) { // 第二次加载数据
+                this.questionnaireList = this.questionnaireList.concat(newList)
+                if (newList.length === 0) {
+                  this.$vux.toast.show({
+                    text: '没有更多'
+                  })
+                  this.busy = true
+                } else {
+                  this.busy = false
+                }
+              } else { // 第一次加载数据
+                this.questionnaireList = newList || []
+                this.busy = false
+                if (newList.length === 0) {
+                  this.$vux.toast.show({
+                    text: '没有更多'
+                  })
+                  this.busy = true
+                }
+              }
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -120,16 +152,38 @@
         })
       },
       // 获取已参与问卷
-      getInvolved () {
-        this.loading(true)
-        this.http.get('questionnaires/getInvolved').then(response => {
-          this.loading(false)
+      getInvolved (flag) {
+        let param = {
+          page: this.page,
+          pageSize: this.pageSize
+        }
+        this.isLoading = true
+        this.http.get('questionnaires/getInvolved', param).then(response => {
           this.isLoading = false
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              let list = res.result || []
-              this.questionnaireList = list
+              let newList = res.result || []
+              if (flag) { // 第二次加载数据
+                this.questionnaireList = this.questionnaireList.concat(newList)
+                if (newList.length === 0) {
+                  this.$vux.toast.show({
+                    text: '没有更多'
+                  })
+                  this.busy = true
+                } else {
+                  this.busy = false
+                }
+              } else { // 第一次加载数据
+                this.questionnaireList = newList || []
+                this.busy = false
+                if (newList.length === 0) {
+                  this.$vux.toast.show({
+                    text: '没有更多'
+                  })
+                  this.busy = true
+                }
+              }
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -156,6 +210,14 @@
           }
         })
       },
+    // 加载更多
+      loadMore () {
+        this.busy = true
+        setTimeout(() => {
+          this.page++
+          this.getQuestionnaireByTabnum()
+        }, 500)
+      },
       // 关闭提示
       closeTip () {
         this.showTips = false
@@ -169,6 +231,20 @@
     .vux-header{
       .vux-header-right{
         top: 12px;
+      }
+    }
+    .main-box{
+      .loading-icon{
+        flex: 0 0 50px;
+        .vux-spinner{
+          stroke: #149c81;
+          height: 50px;
+          width: 50px;
+          svg{
+            height: 50px;
+            width: 50px;
+          }
+        }
       }
     }
   }

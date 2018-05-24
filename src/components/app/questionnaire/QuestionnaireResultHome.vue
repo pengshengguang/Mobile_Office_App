@@ -6,6 +6,9 @@
         <div class="list-wrapper" v-for="questionnaire in questionnaireList">
           <personal-item :questionnaire="questionnaire" :tabnum="2"></personal-item>
         </div>
+        <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+          <spinner type='lines' v-show="loading"></spinner>
+        </div>
         <div class="empty-tips-wrapper" v-if="questionnaireList.length === 0">
           <div class="empty-tips-box">
             <div class="line-1">你好，暂无统计</div>
@@ -17,7 +20,7 @@
 </template>
 
 <script>
-  import { XHeader } from 'vux'
+  import { XHeader, Spinner } from 'vux'
   import HttpService from '@/services/HttpService'
   import PersonalItem from './assembly/PersonalItem.vue'
 
@@ -42,6 +45,7 @@
     },
     components: {
       XHeader,
+      Spinner,
       PersonalItem
     },
     mounted () {
@@ -63,15 +67,38 @@
         this.getAllQuestionnaires()
       },
       // 获取所有问卷
-      getAllQuestionnaires () {
-        this.loading(true)
-        this.http.get('questionnaires/getAllQuestionnaires').then((response) => {
-          this.loading(false)
+      getAllQuestionnaires (flag) {
+        let param = {
+          page: this.page,
+          pageSize: this.pageSize
+        }
+        this.loading = true
+        this.http.get('questionnaires/getAllQuestionnaires', {params: param}).then((response) => {
+          this.loading = false
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
-              let list = res.result || []
-              this.questionnaireList = list
+              let newList = res.result
+              if (flag) { // 第二次加载数据
+                this.questionnaireList = this.questionnaireList.concat(newList)
+                if (newList.length === 0) {
+                  this.$vux.toast.show({
+                    text: '没有更多'
+                  })
+                  this.busy = true
+                } else {
+                  this.busy = false
+                }
+              } else { // 第一次加载数据
+                this.questionnaireList = newList || []
+                this.busy = false
+                if (newList.length === 0) {
+                  this.$vux.toast.show({
+                    text: '没有更多'
+                  })
+                  this.busy = true
+                }
+              }
             } else {
               this.$vux.toast.show({ text: '请求失败', type: 'text' })
             }
@@ -79,6 +106,14 @@
             this.$vux.toast.show({ text: '接口异常', type: 'text' })
           }
         })
+      },
+      // 加载更多
+      loadMore () {
+        this.busy = true
+        setTimeout(() => {
+          this.page++
+          this.getAllQuestionnaires(true)
+        }, 500)
       }
     }
   }
@@ -89,6 +124,20 @@
     .vux-header{
       .vux-header-right{
         top: 12px;
+      }
+    }
+    .main-box{
+      .loading-icon{
+        flex: 0 0 50px;
+        .vux-spinner{
+          stroke: #149c81;
+          height: 50px;
+          width: 50px;
+          svg{
+            height: 50px;
+            width: 50px;
+          }
+        }
       }
     }
   }

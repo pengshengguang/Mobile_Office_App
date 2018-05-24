@@ -13,13 +13,17 @@ router.get('/', function (req, res, next) {
 /* 获取用户待参与问卷 */
 router.get('/getNotInvolved', (req, res, next) => {
   let userName = req.cookies.userName
+  // 获取分页参数
+  let page = parseInt(req.param('page'))
+  let pageSize = parseInt(req.param('pageSize'))
+  let skip = (page - 1) * pageSize
   // let currentDate = new Date().Format('yyyy-MM-dd')
   // let params = {// 查询参数，&lte：意为小于。即问卷结束时间小于当前时间
   //   timeEnd: {
   //     $lte: currentDate
   //   }
   // }
-  let questionnaireModel = Questionnaire.find({})
+  let questionnaireModel = Questionnaire.find({}).skip(skip).limit(pageSize)
   questionnaireModel.sort({'timeEnd': -1}) // 按开始时间降序排序
   questionnaireModel.exec((err, questionnaireDoc) => {
     if (err) {
@@ -58,7 +62,12 @@ router.get('/getInvolved', (req, res, next) => {
   let params = {
     userName: userName
   }
-  User.findOne(params, (err, userDoc) => {
+  // 获取分页参数
+  let page = parseInt(req.param('page'))
+  let pageSize = parseInt(req.param('pageSize'))
+  let skip = (page - 1) * pageSize
+  let userModel = User.findOne(params).skip(skip).limit(pageSize)
+  userModel.exec((err, userDoc) => {
     if (err) {
       res.json({
         status: '1',
@@ -124,7 +133,12 @@ router.get('/getAllQuestionnaires', (req, res, next) => {
   let params = {
     userName: userName
   }
-  let questionnaireModel = Questionnaire.find({})
+  // 获取分页参数
+  let page = parseInt(req.param('page'))
+  let pageSize = parseInt(req.param('pageSize'))
+  let skip = (page - 1) * pageSize
+  // 分页查询
+  let questionnaireModel = Questionnaire.find({}).skip(skip).limit(pageSize)
   questionnaireModel.sort({'timeEnd': -1}) // 按开始时间降序排序
   questionnaireModel.exec((err, questionnairesDoc) => { // 第一步：获取系统所有问卷
     if (err) {

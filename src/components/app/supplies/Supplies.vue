@@ -11,10 +11,10 @@
       <div class="main-box">
         <div class="approval-apply-list">
           <supplies-apply-item  v-for="(applyItem, index) in applyList" :key="index" :applyItem="applyItem" :tabnum="tabnum" :isApproval="isApproval" :initialize="initialize"></supplies-apply-item>
-          <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-            <!--<img src="@/assets/loading-spinning-bubbles.svg" v-show="isLoading" width="50px">-->
-            <spinner type='lines' v-show="isLoading"></spinner>
-          </div>
+        </div>
+        <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+          <!--<img src="@/assets/loading-spinning-bubbles.svg" v-show="isLoading" width="50px">-->
+          <spinner type='lines' v-show="isLoading"></spinner>
         </div>
         <div class="empty-tips-wrapper" v-if="applyList.length === 0">
           <div class="empty-tips-box" v-if="tabnum === 0">
@@ -111,7 +111,7 @@
       // 根据tabnum获取申请信息
       getApplyByTabnum (flag) {
         let that = this
-        this.loading(true)
+        this.isLoading = true
         let param = {
           state: this.tabnum,
           page: this.page,
@@ -120,7 +120,7 @@
         this.http.get('/supplies/getOrderByState', {
           params: param
         }).then(response => {
-          this.loading(false)
+          this.isLoading = false
           if (response.status === 200) {
             let res = response.data
             if (res.status === '0') {
@@ -130,8 +130,7 @@
                 if (res.result.count === 0) {
                   this.busy = true // 无限滚动禁止 启动
                   this.$vux.toast.show({
-                    text: '没有更多',
-                    type: 'text'
+                    text: '没有更多'
                   })
                 } else {
                   this.busy = false // 无限滚动禁止 取消
@@ -142,8 +141,7 @@
                 this.busy = false // 无限滚动禁止 取消
                 if (res.result.count === 0) {
                   this.$vux.toast.show({
-                    text: '无数据',
-                    type: 'text'
+                    text: '没有更多'
                   })
                   this.busy = true
                 }
@@ -173,7 +171,6 @@
             let res = response.data
             if (res.status === '0') {
               this.tabState = res.result
-              console.log(this.tabState)
             } else {
               this.$vux.toast.show({ text: '接口异常,Tab状态值获取失败1', type: 'text' })
             }
@@ -189,19 +186,20 @@
 <style lang="scss">
   .supplies-wrapper{
     .main-box{
-      .approval-apply-list{
-        .loading-icon{
-          .vux-spinner{
-            stroke: #149c81;
+      .approval-apply-list{}
+      .loading-icon{
+        flex: 0 0 50px;
+        .vux-spinner{
+          stroke: #149c81;
+          height: 50px;
+          width: 50px;
+          svg{
             height: 50px;
             width: 50px;
-            svg{
-              height: 50px;
-              width: 50px;
-            }
           }
         }
       }
+
     }
   }
 </style>

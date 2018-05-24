@@ -13,7 +13,6 @@
         <supplies-product-Item :item="item" :isShopping="isShopping"></supplies-product-Item>
       </div>
       <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-        <!--<img src="@/assets/loading-spinning-bubbles.svg" v-show="loading" width="50px">-->
         <spinner type='lines' v-show="loading"></spinner>
       </div>
     </div>
@@ -108,8 +107,7 @@
                 if (res.result.count === 0) {
                   this.busy = true
                   this.$vux.toast.show({
-                    text: '没有更多',
-                    type: 'text'
+                    text: '没有更多'
                   })
                 } else {
                   this.busy = false
@@ -121,8 +119,7 @@
                 this.busy = false
                 if (res.result.count === 0) {
                   this.$vux.toast.show({
-                    text: '该分类下无数据',
-                    type: 'text'
+                    text: '没有更多'
                   })
                   this.busy = true
                 }
