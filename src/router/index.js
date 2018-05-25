@@ -30,8 +30,11 @@ import Forget from '@/components/login/Forget'
 import Home from '@/components/home/Home'
 import Work from '@/components/work/Work'
 import Phonebook from '@/components/phonebook/Phonebook'
+
 import Information from '@/components/information/Information'
 import InformationDetails from '@/components/information/InformationDetails'
+import AddInformation from '@/components/information/AddInformation'
+
 import Personal from '@/components/personal/Personal'
 
 import ImageUpload from '@/base/ImageUpload/ImageUpload'
@@ -123,7 +126,8 @@ const informaRoute = {
   name: 'Information',
   component: Information,
   children: [
-    { path: 'informationDetails', name: 'InformationDetails', component: InformationDetails }
+    { path: 'informationDetails', name: 'InformationDetails', component: InformationDetails },
+    { path: 'addInformation', name: 'AddInformation', component: AddInformation }
   ]
 }
 

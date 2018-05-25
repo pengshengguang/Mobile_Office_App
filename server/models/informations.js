@@ -4,7 +4,7 @@ var Schema = mongoose.Schema
 var informationSchema = new Schema({
   'informationId': String,
   'publisher': String,
-  'publisherTime': String,
+  'publishTime': String,
   'title': String,
   'content': String,
   'commitList': []
