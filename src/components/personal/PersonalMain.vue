@@ -5,7 +5,11 @@
     </tab>
     <swiper v-model="index" :show-dots="false">
       <swiper-item>
-        <div class="tab-swiper vux-center">1 Container</div>
+        <div class="tab-swiper vux-center tab1">
+          <div class="funcBox">登出系统</div>
+          <div class="funcBox">修改密码</div>
+          <div class="funcBox">修改个人信息</div>
+        </div>
       </swiper-item>
       <swiper-item >
         <div class="tab-swiper vux-center">暂时还没有动态哦</div>
@@ -117,6 +121,16 @@
                   /*border-bottom: 1px solid #605F5F;*/
                 }
               }
+            }
+          }
+          .tab1{
+            display: flex;
+            .funcBox{
+              flex: auto;
+              width: 50px;
+              height: 100px;
+              display: flex;
+              flex-direction: column;
             }
           }
         }

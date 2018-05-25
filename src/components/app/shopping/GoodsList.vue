@@ -28,7 +28,7 @@
                 <ul>
                   <li v-for="item in goodsList">
                     <div class="pic">
-                      <a href="#"><img v-lazy="'static/' + item.productImage" alt=""></a>
+                      <a href="#"><img v-lazy ="item.productImage" alt="" class="lazy"></a>
                     </div>
                     <div class="main">
                       <div class="name">{{item.productName}}</div>
@@ -89,7 +89,6 @@
     },
     data () {
       return {
-        // userName: '',
         http: Httpservice.getAxios,
         goodsList: [],
         priceFiter: [
@@ -118,8 +117,9 @@
         // 购物车弹出窗口
         mdShow: false,
         mdShowCart: false,
-        isNoMore: false
+        isNoMore: false,
 //        cartCount: 0
+        haha: './../../../../src/assets/img/static/'
       }
     },
     mounted () {
@@ -139,7 +139,7 @@
     watch: {
       isNoMore (noMore) {
         if (noMore) {
-          this.$vux.toast.show({type: 'text', text: '没有更多'})
+          this.$vux.toast.show({text: '没有更多'})
         }
       }
     },
@@ -261,10 +261,17 @@
         this.mdShow = false
         this.mdShowCart = false
       }
+//      hahah (picName) {
+//        let str = './../../../assets/img/static/' + picName
+//        console.log(String(str))
+//        let path = require(String(str))
+//        let path = require('./../../../assets/img/static/1.jpg')
+//        return path
+//      }
     }
   }
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .dd{
     border: 1px solid #f16f75;
     .ddd{

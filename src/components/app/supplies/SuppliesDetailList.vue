@@ -107,7 +107,8 @@
                 if (res.result.count === 0) {
                   this.busy = true
                   this.$vux.toast.show({
-                    text: '没有更多'
+                    text: '没有更多',
+                    time: 600
                   })
                 } else {
                   this.busy = false
@@ -119,7 +120,8 @@
                 this.busy = false
                 if (res.result.count === 0) {
                   this.$vux.toast.show({
-                    text: '没有更多'
+                    text: '没有更多',
+                    time: 1000
                   })
                   this.busy = true
                 }
@@ -231,7 +233,8 @@
       // 底部bar精准跟随，点击tab-item触发事件
       onItemClick (keyword, index, smallClassCode) {
         let barLeft = 0
-        document.getElementsByClassName('vux-tab-ink-bar')[0].style.right = '100%'
+//        document.getElementsByClassName('vux-tab-ink-bar')[0].style.right = '100%'
+        document.getElementsByClassName('vux-tab-ink-bar')[0].style.display = 'none'
         for (let i = 0; i < this.smallClassList.length;) {
           if (document.getElementsByClassName('vux-tab-item')[i].innerText === keyword) {
 //            console.log('document.getElementsByClassName(\'vux-tab-item\')[' + index + '].offsetWidth = ' + document.getElementsByClassName('vux-tab-item')[i].offsetWidth)

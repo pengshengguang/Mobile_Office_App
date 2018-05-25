@@ -11,6 +11,7 @@ var users = require('./routes/users')
 var goods = require('./routes/goods')
 var securitys = require('./routes/securitys')
 var supplies = require('./routes/supplies')
+var informations = require('./routes/informations')
 // var questionnaires = require('./routes/questionnaires')
 var questionnaires = require('./routes/questionnaires')
 
@@ -53,6 +54,7 @@ app.use('/goods', goods)
 app.use('/securitys', securitys)
 app.use('/supplies', supplies)
 app.use('/questionnaires', questionnaires)
+app.use('/informations', informations)
 // app.use('/questionnaires', questionnaires)
 
 // catch 404 and forward to error handler

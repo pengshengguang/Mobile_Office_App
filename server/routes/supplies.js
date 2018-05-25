@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-require('./../../src/services/util')
+require('./../util/util')
 
 var Classifiers = require('./../models/classifiers')
 var Supplies = require('./../models/supplies')

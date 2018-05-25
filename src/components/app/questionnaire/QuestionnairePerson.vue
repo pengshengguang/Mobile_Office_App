@@ -17,7 +17,7 @@
         </div>
         <div class="loading-icon" style="text-align: center" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
           <!--<spinner type='lines' v-show="loading"></spinner>-->
-          <spinner type='lines'></spinner>
+          <spinner type='lines' v-show="isLoading"></spinner>
         </div>
         <div class="empty-tips-wrapper" v-if="questionnaireList.length === 0&&!isLoading">
           <div class="empty-tips-box" v-if="tabnum === 1">
@@ -153,12 +153,12 @@
       },
       // 获取已参与问卷
       getInvolved (flag) {
-        let param = {
+        let config = {
           page: this.page,
           pageSize: this.pageSize
         }
         this.isLoading = true
-        this.http.get('questionnaires/getInvolved', param).then(response => {
+        this.http.get('questionnaires/getInvolved', {params: config}).then(response => {
           this.isLoading = false
           if (response.status === 200) {
             let res = response.data

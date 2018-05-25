@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-require('./../../src/services/util')
+require('./../util/util')
 
 var User = require('./../models/user')
 /* GET users listing. */
@@ -617,6 +617,29 @@ router.post('/modifyPwd', (req, res, next) => {
         status: '0',
         msg: '修改密码成功',
         result: true
+      })
+    }
+  })
+})
+
+/* 获取用户信息 */
+router.get('/getPersonalInfo', (req, res, next) => {
+  let userName = req.cookies.userName
+  let params = {
+    userName: userName
+  }
+  User.findOne(params, (err, userDoc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+        result: ''
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '获取用户信息成功',
+        result: userDoc
       })
     }
   })

@@ -1,6 +1,6 @@
 var express = require('express')
 var router = express.Router()
-require('./../../src/services/util')
+require('./../util/util')
 
 var User = require('./../models/user')
 var Questionnaire = require('./../models/questionnaires')

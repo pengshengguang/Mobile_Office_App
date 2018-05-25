@@ -4,9 +4,9 @@
       <div class="mask"></div>
       <div class="myInfo">
         <div class="avatar">
-          <img src="./../../assets/img/avatar/men1.png" alt="">
+          <img :src="personalInfo.avatar" alt="">
         </div>
-        <div class="name">Lighter_Studio</div>
+        <div class="name">{{personalInfo.userName}}</div>
         <div class="position">职位：人工智能工程师</div>
         <div class="label-box">
           <span class="label">90后</span>
@@ -66,6 +66,7 @@
   import Avatar from '@/base/ImageUpload/Avatar'
   import Scroll from '@/base/scroll/Scroll'
   import TabSwitch from './PersonalMain.vue'
+  import HttpService from '@/services/HttpService'
 
   export default {
     components: {
@@ -75,7 +76,41 @@
     },
     data () {
       return {
-        backgroundImage: 'url(' + require('@/assets/img/swiper/Bubbly.png') + ')'
+        backgroundImage: 'url(' + require('@/assets/img/swiper/Bubbly.png') + ')',
+        http: HttpService.getAxios,
+        personalInfo: {} // 用户信息
+      }
+    },
+    mounted () {
+      this.init()
+    },
+    methods: {
+      init () {
+        this.getPersonalInfo()
+      },
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
+      getPersonalInfo () {
+        this.loading(true)
+        this.http.get('/users/getPersonalInfo').then(response => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.personalInfo = res.result
+              console.log(this.personalInfo)
+            } else {
+              this.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }

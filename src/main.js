@@ -29,7 +29,8 @@ Vue.use(VueCordova)
 Vue.config.productionTip = false
 
 Vue.use(VueLazyLoad, {
-  loading: '/static/loading-svg/loading-bars.svg'
+  // loading: '/static/loading-svg/loading-bars.svg'
+  loading: require('./assets/img/loading-svg/loading-bars.svg')
 })
 
 // const store = new Vuex.Store({

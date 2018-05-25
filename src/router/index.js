@@ -65,8 +65,8 @@ const homeRoute = { path: '/home/:tabbar', name: 'home', component: Home, childr
 
 // 商品页
 // const goodsRoute = { path: '/goodsList', component: GoodsList, name: 'GoodsList' }
-const redirectRoute = { path: '/', redirect: 'home/0/work' }
-// const redirectRoute = { path: '/', redirect: 'login' }
+// const redirectRoute = { path: '/', redirect: 'home/0/work' }
+const redirectRoute = { path: '/', redirect: 'login' }
 
 // 办公用品
 const suppliesRoute = {
