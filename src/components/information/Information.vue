@@ -1,7 +1,7 @@
 <template>
   <div class="information-wrapper">
     <div class="title" height="100px" width="100%">
-      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: false}"><div class="del" slot="left" @click="toggleDel"></div>资讯圈<div class="add" slot="right" @click="add"></div></x-header>
+      <x-header class="whiteBgHeader" :left-options="{backText:'', preventGoBack: false}"><div class="del" slot="left" @click="toggleDel" v-if="isApproval"></div>资讯圈<div class="add" slot="right" @click="add" v-if="isApproval"></div></x-header>
     </div>
     <div class="container">
       <div style="margin: 10px;overflow: hidden;" v-for="(item, index) in informationList" :class="{'info-box': isDel}" @click="clickEvent(item)">
@@ -67,10 +67,13 @@
           title: '远离车内毒气，日本车载空气净化器精选',
           img: 'https://o3e85j0cv.qnssl.com/tulips-1083572__340.jpg'
         }],
-        informationList: [] // 问卷列表
+        informationList: [], // 问卷列表
+        userName: '',
+        isApproval: false
       }
     },
     mounted () {
+      this.checkIdentity()
       this.getInformations()
     },
     methods: {
@@ -82,6 +85,15 @@
           this.$vux.loading.show({ text: '加载中' })
         } else {
           this.$vux.loading.hide()
+        }
+      },
+      // 检查当前用户是否审批人
+      checkIdentity () {
+        this.userName = this.$store.state.nickName
+        if (this.userName === 'admin') {
+          this.isApproval = true
+        } else {
+          this.isApproval = false
         }
       },
       // 获取资讯列表
