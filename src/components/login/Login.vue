@@ -61,6 +61,9 @@
       }
     },
     mounted () {
+      if (this.$route.params.hah === 1) { // 判断是否从个人信息页面转过来的，是的话就不用验证身份
+        return
+      }
       this.checkLogin()
     },
     computed: {

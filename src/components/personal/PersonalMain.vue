@@ -6,9 +6,25 @@
     <swiper v-model="index" :show-dots="false">
       <swiper-item>
         <div class="tab-swiper vux-center tab1">
-          <div class="funcBox">登出系统</div>
-          <div class="funcBox">修改密码</div>
-          <div class="funcBox">修改个人信息</div>
+          <!--<div class="funcBox">-->
+            <!--<img src="./../../assets/img/personal/loginOutIcon.png" alt="">-->
+            <!--<span>登出系统</span>-->
+          <!--</div>-->
+          <!--<div class="funcBox">-->
+            <!--<img src="./../../assets/img/personal/myInfoIcon.png" alt="">-->
+            <!--<span>修改密码</span>-->
+          <!--</div>-->
+          <!--<div class="funcBox">-->
+            <!--<img src="./../../assets/img/personal/modifyPasswordIcon.png" alt="">-->
+            <!--<span>修改信息</span>-->
+          <!--</div>-->
+          <div>
+            <grid :cols="4" :show-lr-borders="false">
+              <grid-item v-for="(func, index) in funcList" :key="index":label="func.funcName">
+                <img slot="icon" :src="func.icon" @click="goToFunc(index)">
+              </grid-item>
+            </grid>
+          </div>
         </div>
       </swiper-item>
       <swiper-item >
@@ -38,26 +54,91 @@
   </div>
 </template>
 <script>
-  import { Tab, TabItem, Swiper, SwiperItem } from 'vux'
+  import HttpService from '@/services/HttpService'
+  import { Tab, TabItem, Swiper, SwiperItem, Grid, GridItem } from 'vux'
   const list = () => ['设置', '动态', '关于我']
+
+  const tmpConfig = [
+    { funcName: '开发者', link: '/home/0/work/suppliesHome/suppliesClassify', icon: require('./../../assets/img/personal/goodPeopleIcon.png') },
+    { funcName: '关于软件', link: '/home/0/work/questionnaire/questionnairePerson', icon: require('./../../assets/img/personal/aboutIcon.png') },
+    { funcName: '个人信息', link: '/home/work/questionnaire', icon: require('./../../assets/img/personal/myInfoIcon.png') },
+    { funcName: '修改头像', link: '/home/0/work/shopping/goodsList', icon: require('./../../assets/img/personal/avata.png') },
+    { funcName: '修改密码', link: '/home/work/questionnaire', icon: require('./../../assets/img/personal/modifyPasswordIcon.png') },
+    { funcName: '登出', link: '/home/work/questionnaire', icon: require('./../../assets/img/personal/loginOutIcon.png') }
+  ]
 
   export default {
     components: {
       Tab,
       TabItem,
       Swiper,
-      SwiperItem
+      SwiperItem,
+      Grid,
+      GridItem
     },
     data () {
       return {
+        http: HttpService.getAxios,
         list2: list(),
         demo2: '美食',
-        index: 0
+        index: 0,
+        funcList: tmpConfig
       }
     },
     methods: {
+      loading (isShow) {
+        if (isShow) {
+          this.$vux.loading.show({ text: '加载中' })
+        } else {
+          this.$vux.loading.hide()
+        }
+      },
       onItemClick (index) {
         console.log('on item click:', index)
+      },
+      goToFunc (index) {
+        let that = this
+        if (index === 4) {
+          this.$router.push({
+            name: 'Forget',
+            params: {
+              hah: 1
+            }
+          })
+        } else if (index === 5) {
+          this.$vux.confirm.show({
+            title: '提示',
+            content: '是否想要退出该系统？',
+            onConfirm () {
+              that.loginOut()
+            }
+          })
+        } else {
+          this.$vux.alert.show({
+            title: '提示',
+            content: '该功能尚未开放，尽情期待！',
+            buttonText: '确定'
+          })
+        }
+      },
+      // 登出
+      loginOut () {
+        this.loading(true)
+        this.http.post('/users/logout').then(response => {
+          this.loading(false)
+          if (response.status === 200) {
+            let res = response.data
+            if (res.status === '0') {
+              this.$router.push({
+                name: 'Login'
+              })
+            } else {
+              this.$vux.toast.show({ text: '请求失败', type: 'text' })
+            }
+          } else {
+            this.$vux.toast.show({ text: '接口异常', type: 'text' })
+          }
+        })
       }
     }
   }
@@ -131,6 +212,9 @@
               height: 100px;
               display: flex;
               flex-direction: column;
+              img{
+                width: 100%;
+              }
             }
           }
         }
