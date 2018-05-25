@@ -45,7 +45,7 @@
     <div class="botton-box">
       <div class="comment-btn">评论</div>
       <div class="empty-btn"></div>
-      <div class="edit-btn">编辑</div>
+      <div class="edit-btn" v-if="isApproval">编辑</div>
     </div>
   </div>
 </template>
@@ -59,12 +59,26 @@
     },
     data () {
       return {
-        msg: '资讯详情'
+        msg: '资讯详情',
+        userName: '',
+        isApproval: false
       }
+    },
+    mounted () {
+      this.checkIdentity()
     },
     methods: {
       goBack () {
         this.$router.back()
+      },
+      // 检查当前用户是否审批人
+      checkIdentity () {
+        this.userName = this.$store.state.nickName
+        if (this.userName === 'admin') {
+          this.isApproval = true
+        } else {
+          this.isApproval = false
+        }
       }
     }
   }
